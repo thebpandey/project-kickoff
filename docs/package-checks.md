@@ -28,7 +28,7 @@ and local runtime state are outside this allowlist.
 | --- | --- |
 | Bundled `quick_validate.py` | Passed: `Skill is valid!` |
 | YAML and release version | Parsed with PyYAML 6.0.3. `SKILL.md` version `0.1.0` matches README version, `v0.1.0` tag guidance, `project-kickoff-0.1.0.zip`, and CHANGELOG entry. Codex metadata names `$project-kickoff` and enables implicit invocation. |
-| Markdown links | All 37 local runtime links resolved. Links in templates were resolved as generated-project sibling targets against the corresponding named templates. Two external Markdown links were excluded from local resolution. No link contained a dynamic placeholder. |
+| Markdown links | All 37 local runtime links resolved. Links in templates were resolved as generated-project sibling targets against the corresponding named templates. Three external Markdown links were excluded from local resolution. No link contained a dynamic placeholder. |
 | ID schema | No stale `AP-`, `E-`, or `US-` workflow prefixes were found. The package uses `APR-`, `EPIC-`, and `STORY-`, while its existing-project rules preserve established external IDs. |
 | Release contents | Exact allowlist match: 23 regular files, no symlinks, no executable files, no binary archives, and no dependency or cache trees. |
 | Sensitive content | Credential and private-key pattern scan returned no matches in the release allowlist. Source inspection found instructions and labeled placeholders, not credential values. |
@@ -40,3 +40,12 @@ These checks validate the package structure and the integrated source tree. They
 do not replace the independent behavior scenarios in `docs/behavior-checks.md`.
 No release archive, Git tag, installation, publication, dependency download, or
 external mutation occurred during this check.
+
+## README and action-router extension
+
+The extension started from integration revision `d316210`. The package now
+documents seven prompt actions and keeps `help`, `version`, and `status` read-only.
+The README contains two Mermaid flowcharts and two shell install blocks. Both
+shell blocks passed `bash -n`. The package validator and patch whitespace check
+also passed after this extension. Mermaid render evidence is recorded separately
+after an independent renderer checks the committed source.

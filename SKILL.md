@@ -10,13 +10,40 @@ metadata:
 Move the project through four explicit states: `discovery`, `approved planning`,
 `setup`, and `ready for handoff`. Do not start product feature implementation.
 
+## Route the requested action
+
+Treat these as actions supplied after the host invokes the Skill. They are not
+shell commands.
+
+- `start <idea>` starts a new-project kickoff. Continue with **Start or resume**.
+- `audit [path]` inspects an existing project, writes the approved audit records,
+  and then continues through guided retain/change decisions and setup.
+- `audit-only [path]` performs the same bounded audit and stops after the report.
+- `resume [path]` restores the saved version, decisions, approvals, pending
+  question, setup receipt, and next action before continuing.
+- `status [path]` is read-only. Report the loaded Skill version, resolved project
+  and revision, current phase, last approval, pending question, blockers, and
+  next action. Do not write a checkpoint, ask an interview question, run setup,
+  or initialize a dependency.
+- `help` is read-only. Show these actions, their arguments, and the current host's
+  invocation syntax. Do not inspect or change a project.
+- `version` is read-only. Report `metadata.version`, the loaded Skill path when
+  available, and the matching CHANGELOG entry. Do not start or resume a kickoff.
+
+Accept clear natural-language equivalents. For a read-only action with an
+ambiguous or missing project path, report the limit and show how to supply the
+path. Do not turn it into discovery. All state-changing actions continue to use
+the one-question protocol and the approval boundaries below.
+
 ## Start or resume
 
 1. Classify the request as a new project, existing-project kickoff, or resumed
    kickoff. For an existing project, first read
    [the existing-project audit](references/existing-projects.md). After the
    audit, continue through guided decisions and setup unless the user explicitly
-   requested audit-only scope.
+   requested audit-only scope. Ignore this Skill's installed `.agents/skills/`
+   or `.claude/skills/` directory, empty Git metadata, and install-only
+   housekeeping when you decide if product work already exists.
 2. Identify the intended project directory and inspect existing project files,
    Git metadata, `.project-kickoff/DISCOVERY.md`, and `CONTEXT.md`. Preserve all
    user files, including unknown untracked and ignored files.

@@ -4,6 +4,10 @@ Detect the current host from exposed runtime and tools. A mention in the prompt
 does not change the host. Use native paths and controls; do not emulate missing
 capabilities or claim a model/agent switch that the host did not perform.
 
+The action words `start`, `audit`, `audit-only`, `resume`, `status`, `help`, and
+`version` are prompt vocabulary after Skill invocation. Never execute them as
+shell binaries. Route them through `SKILL.md` before loading the workflow.
+
 ## Codex
 
 - Project skills: `.agents/skills/<skill-name>/SKILL.md`, searched from the

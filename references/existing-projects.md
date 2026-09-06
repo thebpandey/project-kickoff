@@ -6,6 +6,11 @@ with read-only inspection. Do not initialize Git, rename existing branches, repl
 project files, select a new tracker, install dependencies, or run mutating setup
 during the audit.
 
+Do not use this route only because the directory contains installed host skill
+folders, empty Git metadata, or install-only housekeeping. Exclude skill-package
+source under `.agents/skills/` and `.claude/skills/` from product inspection.
+An otherwise empty project remains a new project.
+
 ## Establish the evidence boundary
 
 Resolve the intended project root and actual Git root. If they differ, report
