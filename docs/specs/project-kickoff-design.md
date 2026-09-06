@@ -36,7 +36,9 @@ blueprint, and implementation handoff for `agent-team`.
 10. Use semantic skill versioning, a changelog, matching Git release tags, and
     versioned archives. Record the generating skill version in project setup.
 11. Support auditing and inspecting existing projects as well as new projects.
-    The user is choosing the default transition from audit into project setup.
+    The user approved audit followed by guided project setup: agree on what to
+    retain or change, update approved documents/setup/tracking, and hand product
+    code changes to Agent-Team.
 
 ## Required project outputs
 
@@ -356,8 +358,9 @@ the appropriate subagent. If dependencies, credentials, or services are missing,
 report the limitation and continue independent inspection. Product refactors,
 feature changes, and migration code belong to the agent-team handoff.
 
-The default post-audit transition is pending the user's one-question choice.
-Regardless of that choice, inspection must not silently approve remediation.
+Continue from audit into guided project setup in the same invocation. Obtain
+retain/change decisions and the relevant stage approvals before edits. A separate
+kickoff request is not required. Inspection does not silently approve remediation.
 
 ## Source checks and optional recommendations
 
