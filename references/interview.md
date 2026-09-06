@@ -81,9 +81,14 @@ Use stable records:
 
 On resume, inspect actual files before trusting the checkpoint. Continue the
 pending question if it still applies. If the user changes `DEC-###`, mark the old
-value superseded, identify the dependency edges, invalidate affected `AP-##`
+value superseded, identify the dependency edges, invalidate affected `APR-###`
 records and derived sections, and preserve unrelated approvals. Refresh only the
 affected artifacts after renewed approval.
+
+Record an explicit user-supplied change as the answer and decision source. Do not
+ask the user to reconfirm that same decision. Ask only for its next unresolved
+consequence or for approval of a revised stage bundle that the instruction did
+not already approve.
 
 Compare the recorded Skill version with the loaded `metadata.version`. On a
 mismatch, read the intervening `CHANGELOG.md` entries and record whether artifact

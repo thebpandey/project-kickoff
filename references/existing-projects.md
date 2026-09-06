@@ -77,9 +77,11 @@ the selected current tracker when it remains suitable. A tracker migration needs
 its own user choice, reconciliation plan, and verified mapping before the new
 tracker becomes authoritative.
 
-Route required code or configuration changes through the approved plan and
-Agent-Team handoff. Any executable verification uses an approved task-owned
-worktree and suitable delegated worker. If dependencies, credentials, or services
-are missing, report the limit and continue independent inspection. Do not repair
-or refactor product code during kickoff. Keep current and target architecture
-visible until the approved transition is implemented and verified.
+Route product-code and application-configuration remediation through the approved
+plan and Agent-Team handoff. Kickoff can update approved planning documents,
+project agent instructions, skill setup, and tracker setup within their approved
+scope. Any executable verification uses an approved task-owned worktree and
+suitable delegated worker. If dependencies, credentials, or services are missing,
+report the limit and continue independent inspection. Do not repair or refactor
+product code during kickoff. Keep current and target architecture visible until
+the approved transition is implemented and verified.
