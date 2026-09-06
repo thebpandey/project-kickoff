@@ -293,3 +293,173 @@ worker worktree is this new report; the old behavior report was not modified.
 Fixture cleanup confirmation will be recorded below after synthetic-only removal.
 
 Cleanup verified: removed only the fixture and evidence directories created by this worker, after confirming the expected synthetic file inventory and retaining the audit, hashes, Git states and exact question in this report. No temporary fixture or review-state file remains.
+
+## Targeted README and action-router delta review
+
+Reviewed delta: d316210..`73a73d42e1244ba405f85335bb65d5d52d6c55bc` on 2026-09-06.
+Scope: README, SKILL action routing, changed host/existing-project references,
+and CHANGELOG. New merged reports were excluded. Diagram rendering was assigned
+elsewhere and was not repeated. Earlier audit evidence above is unchanged.
+
+### Concrete install defect found and reported
+
+**DELTA-001 — Failed clone can return successful installation-block status.**
+At 73a73d4, both README shell examples continue after a failed `gh repo clone`
+and after the required-file `test` fails. Their final `git check-ignore` can
+succeed for an ignored but nonexistent path. This masks failed installation
+with exit 0. Impact: a reader or scripted use can treat an absent Skill as a
+successful install. Severity: Medium. The finding was sent promptly to the
+parent; no source change was made by this reviewer.
+
+Observed reproduction: each exact README `sh` block ran in its own disposable
+empty directory under Bash. Only `gh` was replaced by a shell function returning
+42 and printing `SYNTHETIC clone failure`. Both blocks returned 0 and neither
+produced SKILL.md. Local Git initialization was fixture setup. No real clone,
+network request, dependency install or application execution occurred.
+
+| Host | Stub clone result | Complete block exit | SKILL.md exists |
+| --- | --- | --- | --- |
+| Codex | 42, failure message | 0 | No |
+| Claude Code | 42, failure message | 0 | No |
+
+Required correction: stop dependent steps after clone or validation failure and
+make the failure result observable. The parent assigned the fix to its workflow
+worker. Final corrected-source disposition remains pending below.
+
+### Installation and documentation checks
+
+Each of the two exact original README blocks also ran with a bounded successful
+clone stub in three fresh synthetic roots: empty/no Git, ordinary existing Git,
+and a linked worktree whose `.git` is a file. The stub validated the documented
+`gh repo clone OWNER/REPO DIRECTORY -- --branch v0.1.0 --single-branch` arguments
+and created three synthetic package marker files. This tested local shell and
+Git path handling, not the remote repository or full package download.
+
+All six success cases returned 0, excluded the private Skill path using Git's
+local `info/exclude`, left committed `.gitignore` absent/unchanged, and retained
+original user content. New roots selected `main`; existing roots kept `dev`;
+linked worktrees kept `task`. A repeated run refused the existing target with
+exit 1 in all six cases. Linked-worktree exclusion correctly resolved to the
+repository's common `.git/info/exclude`, so the exclude is shared by that
+repository's worktrees. No user/global setting or hook was changed.
+
+The installed `gh repo clone --help` confirms the directory argument and `--`
+forwarding of Git flags. The README labels host-chat examples separately from
+shell commands and explicitly says the action words are prompt vocabulary.
+It describes private repository authorization and the then-planned release tag
+without asserting that the release is already available. Upgrade prose preserves
+outputs, tracker IDs, decisions and valid approvals, and agrees with the 0.x
+version rules. The 0.1.0 entry records these additions before first publication.
+
+The README's short-sentence, single-topic and active-voice principles, and its
+claim that the standard is available free of charge, are supported by the
+[official ASD-STE100 FAQ](https://www.asd-ste100.org/STE_faq.html), checked
+2026-09-06. The README disclaims formal certification/dictionary verification.
+No full-standard or dictionary compliance check was performed here.
+
+### Observed informational-action and start replays
+
+These were worker responses after reading the actual routing instructions and
+inspecting disposable local state; they were not inferred from a text search.
+No real user input tool was called. Replies were retained as evidence outside
+the target fixtures. The protocol remains model-executed prose, so these bounded
+runs do not establish deterministic behavior in every future host invocation.
+
+The status fixture had an unanswered OQ-002, APR-001 approval, context, and an
+untracked user note. Its Git repository had `main` but no initial commit.
+Read-only Git resolution reported no HEAD, which the response represented as
+no commit rather than inventing a revision. The version action read only the
+loaded package metadata and matching changelog; it did not inspect the project.
+The status action read the existing checkpoint, and did not write or replay its
+pending question.
+
+Every file, including synthetic Git metadata, was hashed before and after the
+information actions. The complete status snapshot was identical; its sorted
+snapshot SHA-256 was `757f63bcca593a83b5e7ee8c3fb82cc555621aad2a40c6f9ba6d19589653a348`.
+The new-project fixture also remained byte-identical until the explicit start
+step; its original snapshot SHA-256 was
+`7d139ab1055e6805cac39ed3820daefaa3e51ccac30e4163647a8c9a4499eb60`.
+
+Exact `version` response:
+
+```text
+project-kickoff 0.1.0
+Loaded source: /home/server/dev/skills/project-kickoff/.worktrees/integration/SKILL.md (reviewed at 73a73d4).
+CHANGELOG entry: 0.1.0, dated 2026-09-06. It adds five-stage discovery, artifact and setup contracts, existing-project audits, Codex/Claude support, help/version/status and start/audit/audit-only/resume actions, detailed installation and workflow diagrams, and the proprietary license with separate output permissions.
+```
+
+Exact `status` response:
+
+```text
+project-kickoff 0.1.0
+Project: /tmp/project-kickoff-actions-delta-7frctjyl/status-project
+Branch: main. Revision: no commit exists yet.
+Phase: discovery stage 2, awaiting an answer.
+Last approval: APR-001 approved the problem and users on 2026-09-06.
+Pending decision: OQ-002, first-release budget.
+Blocker: budget remains unresolved. Tracker is not selected; setup has not started.
+Next action: wait for the OQ-002 answer. This status request does not answer or replay it.
+```
+
+For `start Build a scheduling tool for a small repair shop`, the supplied exact
+root contained only empty Git metadata, a local exclusion entry and a synthetic
+`.agents/skills/project-kickoff/SKILL.md` installation marker. A scoped file
+inventory found no product content outside host skills/Git metadata. The worker
+selected **new project**, wrote only `.project-kickoff/DISCOVERY.md` and
+`CONTEXT.md`, and saved one pending stage-1 question before stopping. All
+original files and Git metadata stayed byte-identical. No AUDIT.md, tracker,
+scaffold, or dependency setup was created.
+
+Exact `start` next response:
+
+```text
+Who will use the repair-shop scheduling tool most often?
+
+1. Front-desk staff (Recommended) — focus the first release on booking and changing appointments during customer calls.
+2. Technicians — focus on daily job visibility and schedule changes during repair work.
+3. Customers — focus on self-service booking and appointment updates.
+
+Reply with a number or your own answer.
+```
+
+Routing inspection also found `help` explicitly avoids project inspection;
+`audit-only` stops after the report; `audit` continues to decisions; and `resume`
+restores actual saved decisions and work. Informational actions route before
+pending-question restoration, with no fall-through. The changed existing-project
+reference excludes private host-skill content from product inspection.
+
+No full existing-project fixture, Beads setup, chart rendering, or product
+runtime check was repeated during this delta review. Successful stub tests do
+not establish private-repository access, a published release tag, actual cloning,
+host skill discovery, or complete dependency readiness.
+
+Delta fixture cleanup verified: all synthetic install/action directories and temporary evidence-state files created for these checks were removed after this report retained their relevant observations. Original-file hashes were checked again before removal.
+
+### Corrected-source disposition
+
+Re-reviewed README correction at `1daa07af9f20f462c8e24c60de53b6069d0befdb`;
+README Git blob `0e52912882784e80237a26574da62d80d1857469`. The corrected shell examples run
+inside a subshell with `set -eu`, so install failures stop the block without
+changing the caller's shell options. Required-file validation now enumerates the
+complete entrypoint, README, changelog, license, UI metadata, seven references,
+and eleven templates. Other additions clarify scoped dependency approval and
+list the existing authoritative dependency sources.
+
+Independently reran only the changed failure behavior using each exact corrected
+README block in fresh disposable empty roots. A clone stub returning 42 now
+makes both complete blocks return 42. A nominally successful partial clone that
+creates only SKILL.md makes both blocks return 1 and names the missing README.md.
+All four assertions passed. No remote clone, real install, or runtime test ran.
+The temporary correction fixtures were removed after results were captured.
+
+**DELTA-001 resolved by observed corrected behavior. No unresolved material
+requirement defect found in the reviewed delta.** Successful root/exclusion
+behavior was already tested above at 73a73d4; the worker did not repeat those
+unchanged scenarios. The upstream workflow worker owns full-package success
+verification after the expanded file checklist. Diagram verification remains
+separate. Action routing and its tested files are unchanged by this correction.
+
+The final README now calls v0.1.0 a verified release tag. Publication/tag
+verification remains the parent's release task; this bounded local review did
+not certify remote release state. Current host discovery and full-standard STE
+verification also remain outside its claims.
