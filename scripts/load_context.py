@@ -56,6 +56,7 @@ def excerpt(record, context):
         stripped = line.strip()
         if stripped.startswith(("```", "~~~")):
             fenced = not fenced
+            continue
         if fenced:
             continue
         if stripped.startswith("## "):

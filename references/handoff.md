@@ -81,6 +81,10 @@ Declare `ready for handoff` only when:
 - AGENTS, CLAUDE, MISTAKES, CONTEXT, discovery, and tracker ownership agree;
 - no roadmap item was activated and no feature implementation began.
 
+At completed handoff, disable the optional context hook marker as described in
+[its lifecycle guide](context-hook.md). Keep the checkpoint files for manual
+resumption. Do not remove unrelated host hooks.
+
 Report any deferred optional tool separately. A failed install is not Ready.
 
 ## Cleanup after verified integration
