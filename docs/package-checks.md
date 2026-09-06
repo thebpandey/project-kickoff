@@ -49,3 +49,15 @@ The README contains two Mermaid flowcharts and two shell install blocks. Both
 shell blocks passed `bash -n`. The package validator and patch whitespace check
 also passed after this extension. Mermaid render evidence is recorded separately
 after an independent renderer checks the committed source.
+
+## Fail-closed installation fixtures
+
+The two README install blocks were tested with a local mock of `gh repo clone`.
+The fixture used no network access. For both Codex and Claude Code, a failed clone
+returned status 42, a partial package returned status 1, and a complete package
+returned status 0. Complete packages also passed from linked Git worktrees. Every
+installed private target was ignored by Git and absent from `git status`.
+
+Each successful fixture contained all 23 required release files. The blocks stop
+before later writes and checks after a clone failure, and they stop when any
+required file is missing.

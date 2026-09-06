@@ -80,7 +80,18 @@ decision again. It asks only for the next unresolved consequence or stage bundle
 
 The Skill checks these six dependencies. It records the selected path, source,
 version or revision, scope, license or access terms, and verification result.
-It installs nothing only to complete this list.
+It proposes missing tools within an explicit installation scope. It waits for
+approval before installation. It does not install an irrelevant tool only to
+complete the list.
+
+| Dependency | Purpose | Official or authorized source |
+| --- | --- | --- |
+| Ponytail | Guides minimal implementation and YAGNI decisions. | https://github.com/DietrichGebert/ponytail |
+| Using-Superpowers | Supplies planning, debugging, testing, and review procedures. | https://github.com/obra/superpowers |
+| Beads | Supplies dependency-aware task tracking. | https://github.com/gastownhall/beads |
+| Agent-Team | Coordinates delegated implementation and integration. | Use the authorized source recorded for the proprietary installed copy. |
+| Impeccable | Guides product and interface design. | https://github.com/pbakaus/impeccable |
+| UI UX Pro Max Skill | Supplies UI patterns, data, and search tools. | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
 
 ```mermaid
 flowchart LR
@@ -117,8 +128,7 @@ authorization. If one tool is unavailable, it continues independent work.
 
 You need written permission from the licensors. You also need authenticated
 access to the private GitHub repository. The examples use GitHub CLI and the
-planned `v0.1.0` release tag. Run them only after that tag is published and
-verified.
+verified `v0.1.0` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -132,6 +142,8 @@ without Git, first inspect the content and confirm the intended root. Then run
 Open a shell at the intended project root. Run:
 
 ```sh
+(
+set -eu
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   kickoff_project_root="$(git rev-parse --show-toplevel)"
   test "$(pwd -P)" = "$(cd "$kickoff_project_root" && pwd -P)" || { echo "Run from the intended Git root."; exit 1; }
@@ -147,8 +159,12 @@ touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
 gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.1.0 --single-branch
-test -f "$kickoff_skill_path/SKILL.md" && test -f "$kickoff_skill_path/CHANGELOG.md" && test -f "$kickoff_skill_path/LICENSE"
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md'
+for kickoff_required_file in $kickoff_required_files; do
+  test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
+done
 git -C "$kickoff_project_root" check-ignore -q "$kickoff_skill_path/SKILL.md" || { echo "The private Skill is not excluded. Do not stage it."; exit 1; }
+)
 ```
 
 Codex discovers repository skills under `.agents/skills/`. Start or refresh
@@ -159,6 +175,8 @@ Codex according to the current host documentation if the Skill does not appear.
 Open a shell at the intended project root. Run:
 
 ```sh
+(
+set -eu
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   kickoff_project_root="$(git rev-parse --show-toplevel)"
   test "$(pwd -P)" = "$(cd "$kickoff_project_root" && pwd -P)" || { echo "Run from the intended Git root."; exit 1; }
@@ -174,8 +192,12 @@ touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
 gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.1.0 --single-branch
-test -f "$kickoff_skill_path/SKILL.md" && test -f "$kickoff_skill_path/CHANGELOG.md" && test -f "$kickoff_skill_path/LICENSE"
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md'
+for kickoff_required_file in $kickoff_required_files; do
+  test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
+done
 git -C "$kickoff_project_root" check-ignore -q "$kickoff_skill_path/SKILL.md" || { echo "The private Skill is not excluded. Do not stage it."; exit 1; }
+)
 ```
 
 Claude Code discovers repository skills under `.claude/skills/`. A same-named

@@ -15,6 +15,6 @@ All notable changes to Project Kickoff are recorded here. Versions follow
 - Codex and Claude Code installation and invocation guidance.
 - Read-only help, version, and status actions plus explicit start, audit,
   audit-only, and resume prompt actions.
-- Detailed project-local installation, operator workflow, and Mermaid diagrams
-  in the package README.
+- Detailed project-local installation with fail-closed package checks, operator
+  workflow, dependency sources, and Mermaid diagrams in the package README.
 - Proprietary package license with separate permissions for project outputs.
