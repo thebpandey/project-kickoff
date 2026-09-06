@@ -16,7 +16,9 @@ Use stable IDs that do not change when titles or order change:
 
 Never reuse a retired ID for a new meaning. Preserve a suitable existing
 project's established IDs instead of renumbering them to this convention. Map
-each `REQ-###` to acceptance criteria and one or more `TASK-###` entries. Map
+each actionable `REQ-###` to acceptance criteria and one or more `TASK-###`
+entries. A satisfied existing requirement can link verified historical work
+instead of creating a new task. Map
 each `EPIC-###`, `STORY-###`, and `TASK-###` to its live tracker ID when the
 tracker supports that record type. Validate missing mappings, hierarchy,
 dependency direction, cycles, and roadmap items that were accidentally made

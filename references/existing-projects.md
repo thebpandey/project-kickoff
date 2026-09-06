@@ -66,6 +66,10 @@ material area, offer retain, change, or defer choices with trade-offs and a
 recommendation. Keep accepted current decisions as valid inputs; do not force a
 greenfield redesign. A completed audit does not approve remediation.
 
+The audit can conclude that no remediation is needed. Record the evidence and
+the user's retain decisions. Preserve completed and historical tracker records;
+do not manufacture runnable requirements or tasks to make the handoff nonempty.
+
 After the user selects a direction, record affected decisions and approvals.
 Update documents, setup, or tracking only after the relevant stage approval.
 Merge into existing files and preserve their useful content and identity. Reuse

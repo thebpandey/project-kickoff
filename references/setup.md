@@ -79,7 +79,8 @@ unrelated fields. Keep it in the canonical planning checkout and record:
 - each dependency's source, version/revision, license/access condition, scope,
   selected path, status, verification evidence, and check date;
 - declined, deferred, failed, and superseded choices;
-- `TASK-###` to tracker-ID mappings and last seeded plan revision.
+- every stable epic, story, and task plan-ID to tracker-ID mapping, plus the last
+  seeded plan revision.
 
 Do not store credentials or task status there. The receipt records choices; it
 does not grant new permission.
