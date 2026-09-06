@@ -50,8 +50,43 @@ Wait for OQ-102.
 
 The parser toggled its fence flag and then continued to parse the closing line.
 The builder received this reproduction and a request for a narrow fix and
-regression test. Final fix verification and configuration review follow below
-when their source revision is available.
+regression test. The fix and its verification are recorded below.
+
+## Final delta review
+
+Reviewed final implementation and documentation: `7253e6d`. The review branch
+merged that source after preserving the initial report. No material defect
+remains within the reviewed scope.
+
+The parser now skips the delimiter immediately after updating fence state. A
+fresh run passed all 14 test methods. A separate fixture repeated the original
+failure with `source: compact` and a project path containing spaces and an
+apostrophe. It loaded `Wait for OQ-102.` and omitted the fence and fenced text.
+The fixture was removed when the check ended.
+
+The targeted documentation and configuration review confirmed:
+
+- Activation is optional and scoped to an approved project. Installing or
+  upgrading the Skill does not activate the hook.
+- Both example commands use explicit interpreter, Skill, and project paths.
+  Their JSON definitions select only the four shared source values and apply a
+  five-second timeout. The suite executed both substituted example commands.
+- Configuration guidance preserves unrelated host settings, avoids duplicate
+  entries, and retains host trust controls. It explains how to check an available
+  Codex hook feature without bypassing managed policy.
+- The marker is disabled after completed handoff, completed audit-only work, or
+  abandonment. The loader never edits its marker or validates approval meaning.
+- The guide states Python 3.9 or later and POSIX requirements. Native Windows
+  and unavailable hooks retain manual resumption. Existing short checkpoint
+  fields remain the source; no duplicate summary is introduced.
+- Both README installation allowlists exactly match the 27 tracked runtime
+  files. The lists include the script, two configuration examples, and guide.
+  README shell blocks passed `bash -n` without running their install commands.
+- Skill metadata, README, and changelog agree on version 0.2.0. The bundled
+  Skill validator and `git diff --check` passed.
+
+The README names the intended v0.2.0 release. Release publication and archive
+verification remain the release owner's work; this review did not publish it.
 
 ## Host contract and limits
 
