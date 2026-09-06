@@ -32,3 +32,15 @@ Primary interface references checked during audit:
 
 Later findings remain undecided. Present the next finding only after completing
 the approved conversion.
+
+Implementation and independent review are complete for finding 1. Fourteen
+script tests pass. An independent existing-template fixture confirmed 0.1.0
+checkpoint compatibility. A fence-parsing defect was reproduced and fixed.
+The host examples and runtime file lists passed review. See
+[implementation checks](context-hook-checks.md) and
+[independent review](context-hook-review.md) for evidence and limits.
+
+The optional script needs Python 3.9 or later on Linux, macOS, or WSL. Native
+Windows retains manual resumption. Native CLI hook sessions were not exercised;
+the tests executed event-shaped inputs and the example command definitions.
+No hook was activated in the skill repository or global host configuration.
