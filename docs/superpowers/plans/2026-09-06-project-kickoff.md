@@ -47,6 +47,10 @@ Also include references/existing-projects.md and CHANGELOG.md for the added scop
 - [ ] Add existing-project audit routing and the user's selected transition,
   preserving current code, documents, task IDs, branches, and uncommitted work.
 - [ ] Document license, installation, invocation, optional skills, and limitations.
+- [ ] Expand README with detailed simple-language installation and command
+  instructions. Implement its start/audit/audit-only/resume/status/help/version
+  action descriptions in the actual skill routing.
+- [ ] Add readable Mermaid workflow/dependency charts and render them locally.
 - [ ] Check metadata with the bundled quick_validate.py and review references.
 - [ ] Commit the deliverable in its owned worktree.
 
@@ -84,6 +88,8 @@ Also add assets/templates/AUDIT.md for existing-project findings and decisions.
 - [ ] Exercise an existing project with stale docs, a current tracker, a non-main
   branch, and local edits; verify inspection preserves state and asks for change.
 - [ ] Verify version metadata, changelog, release tag and archive naming agree.
+- [ ] Check README/command changes, nonmutating informational actions, and new
+  project detection when only private skill installation files are present.
 - [ ] Run package metadata, local-reference, and release-content checks.
 - [ ] Review requirements and license/output boundaries; fix demonstrated defects.
 - [ ] Recheck only affected scenarios and record real results.

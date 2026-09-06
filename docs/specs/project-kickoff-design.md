@@ -39,6 +39,9 @@ blueprint, and implementation handoff for `agent-team`.
     The user approved audit followed by guided project setup: agree on what to
     retain or change, update approved documents/setup/tracking, and hand product
     code changes to Agent-Team.
+12. Include a detailed README with simple ASD-STE100-style explanations, complete
+    installation and invocation steps, a command reference, and graphical
+    flowcharts explaining the workflow, dependencies, and user actions.
 
 ## Required project outputs
 
@@ -313,6 +316,30 @@ and [GitHub repository licensing guidance](https://docs.github.com/en/repositori
 Host documentation checked:
 [Codex skill documentation](https://developers.openai.com/codex/skills) and
 [Claude Code skills](https://code.claude.com/docs/en/skills).
+
+## Added scope: README and user commands
+
+Explain new-project and existing-project use in simple, direct language. Include
+project-local installation for both hosts, private-repository access, complete
+package contents, safe handling of existing installations, invocation examples,
+outputs, dependencies and alternatives, resumption, version updates, and license
+terms. Distinguish terminal commands from prompts entered in the coding host.
+
+Support documented prompt actions for start, audit, audit-only, resume, status,
+help, and version. Informational actions do not initialize a project, start an
+interview, install tools, or change saved state. Audit normally continues into
+guided setup; explicit audit-only scope stops after the report. These actions
+use the skill's instructions, not a separate executable program.
+
+Include Mermaid flowcharts that GitHub renders graphically. Show the new/existing
+route, one-question/answer/approval cycle, planning outputs, six dependencies,
+user-selected alternatives, worktree execution, verification/cleanup, and final
+Agent-Team handoff. Validate diagram rendering locally and preserve the result
+as development evidence. Do not send the private skill to a public diagram service.
+
+Use short, active sentences and consistent technical terms. Follow the official
+ASD-STE100 principles and state the scope of verification; do not claim formal
+dictionary compliance without a complete check against an authorized standard.
 
 ## Added scope: versioning
 
