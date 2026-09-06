@@ -1,0 +1,135 @@
+PROJECT KICKOFF — PRIVATE USE LICENSE
+License version 1.0
+
+Copyright (c) 2026 Bhaskar Pandey and Almora Technology, LLC.
+All rights reserved, except as expressly granted below.
+
+1. SCOPE
+
+This license governs the project-kickoff skill supplied with it, including
+its instructions, prompts, reference documents, scripts, templates, assets,
+and package metadata (the "Skill"). The copyright holders named above are
+the "Licensor." This is a proprietary license, not an open-source license.
+
+Project Outputs and separately licensed third-party materials have the
+separate permissions described in Sections 4 and 5.
+
+2. AUTHORIZATION AND PERMITTED USE
+
+You may use the Skill only with the Licensor's explicit permission. Permission
+must be recorded in writing, including an email or electronic message, and
+identify the authorized person or organization and any limits on its use.
+Access to a repository or possession of a copy alone is not permission.
+No purchase, subscription, or royalty is required by this license.
+
+Subject to that permission and this license, you receive a nonexclusive,
+nontransferable, nonsublicensable right to:
+
+(a) install and use the unmodified Skill in private environments you control;
+(b) use it for personal projects, internal business work, client work, and
+    development of commercial applications and services;
+(c) make copies reasonably necessary for installation, execution, and private
+    backup, preserving the license and copyright notices; and
+(d) let your AI coding tools, service providers, and automated agents process
+    the Skill only as needed to perform your authorized work on your behalf.
+
+The permission in (d) does not permit public sharing, general redistribution,
+or offering the Skill itself as a service to other users. You may configure
+ordinary host settings and supply project inputs without modifying the Skill.
+You may place unmodified Skill files at its documented installation locations.
+
+An organization may provide access only to people covered by the Licensor's
+written permission. Automated agents acting for authorized users do not need
+separate permission. Authorization does not include a right to future versions,
+maintenance, or support unless separately agreed.
+
+3. RESTRICTIONS ON THE SKILL
+
+Except for the express permissions in this license, separate written permission
+from the Licensor, or rights that applicable law does not permit restricting,
+you must not:
+
+(a) modify, adapt, translate, repackage, or create derivative versions of the
+    Skill, including through an AI tool;
+(b) distribute, publish, sell, rent, sublicense, transfer, or otherwise share
+    the Skill or substantial portions of its protected content;
+(c) put the Skill in public repositories, shared downloads, public assistants,
+    client deliveries, or products that expose it to unauthorized users; or
+(d) remove or obscure the Skill's copyright, license, or ownership notices.
+
+Keep permitted installations and backups private. This restriction concerns
+the Skill package; it does not require your resulting applications to be private.
+
+4. PROJECT OUTPUTS AND TEMPLATE PERMISSION
+
+"Project Outputs" are applications, source code, project-specific documents,
+plans, configurations, task records, and other project work created through
+authorized use of the Skill. They expressly include generated PRD.md, DESIGN.md,
+PLAN.md, AGENTS.md, CLAUDE.md, MISTAKES.md, CONTEXT.md, TASKS.md, project scaffolds,
+and project-specific material produced from the bundled output templates.
+
+The Licensor claims no ownership of your inputs or independently created
+Project Outputs by reason of your use of the Skill. You may use, edit, copy,
+distribute, sublicense, and sell your Project Outputs, including in commercial
+and client projects, without an additional fee or permission from the Licensor.
+
+To the extent bundled output templates or generated project instructions
+contain material owned by the Licensor, you receive a perpetual, worldwide,
+nonexclusive, royalty-free right to reproduce, adapt, and distribute that
+material as part of your Project Outputs, and to permit recipients to do so.
+This expressly permits modifying generated project files. It does not permit
+redistributing the Skill package, its discovery workflow, or its reference
+manuals as another skill, template collection, or competing package.
+
+Recipients do not need permission to use your Project Outputs merely because
+those outputs were made with the Skill. These output permissions survive the
+end of your permission to use the Skill. They do not promise that AI-generated
+material qualifies for copyright protection or clear third-party rights.
+
+5. THIRD-PARTY MATERIALS AND RESERVED RIGHTS
+
+Dependencies and other separately licensed materials remain governed by their
+own terms. This license does not replace those terms, remove required notices,
+or restrict rights granted under those separate licenses. Obtain any required
+third-party access or license separately.
+
+The Licensor retains rights in the Skill not expressly granted here. No
+trademark rights are granted beyond preserving supplied notices. This license
+does not claim exclusive rights in ideas, facts, or methods that applicable
+law leaves unprotected, or revoke rights granted under another valid license.
+
+6. DURATION AND TERMINATION
+
+Unless the written permission states a duration, permission continues for the
+authorized Skill release while you comply with these terms. The Licensor may
+terminate it by written notice for a material breach. A breach capable of
+correction has a 14-day correction period after notice; unauthorized sharing
+or distribution permits immediate termination by notice.
+
+When permission ends, stop using the Skill and remove usable Skill copies
+from environments you control. Inaccessible routine backups or legally
+required records may remain protected and must not be restored for use.
+You may retain and use Project Outputs under Section 4.
+
+7. WARRANTIES AND LIABILITY
+
+To the extent permitted by applicable law, the Skill is provided "as is"
+without warranties of merchantability, fitness for a particular purpose,
+noninfringement, accuracy, or compatibility. You are responsible for reviewing
+generated work and authorizing project changes.
+
+To the extent permitted by applicable law, the Licensor is not liable for
+indirect, incidental, special, or consequential losses, including lost profits,
+lost data, or business interruption arising from use of the Skill. Nothing in
+this license excludes rights or liability that applicable law does not permit
+excluding.
+
+8. SEPARATE AGREEMENTS AND CONTACT
+
+A separate written agreement controls where it expressly changes these terms.
+A new license version does not automatically change terms already granted for
+an earlier release. If a provision is unenforceable, the remaining provisions
+continue to apply to the extent permitted by law.
+
+For permission to use, modify, or distribute the Skill, contact:
+support@learnstackos.com
