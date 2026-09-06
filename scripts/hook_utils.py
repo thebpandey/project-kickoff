@@ -98,6 +98,8 @@ def edit_paths(event, event_name):
     if event.get("hook_event_name") != event_name:
         return None
     tool = event.get("tool_name")
+    if not isinstance(tool, str):
+        raise HookInputError("event tool_name is malformed")
     if tool not in SUPPORTED_TOOLS:
         return None
     tool_input = event.get("tool_input")

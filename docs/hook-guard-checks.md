@@ -25,7 +25,9 @@ red runs reproduced three concrete defects before correction:
 
 - an approved symlink name hid an unapproved canonical source target;
 - eight long patch paths produced 13,864 bytes instead of the 8192-byte limit;
-- a native-recognized indented Add header hid a canonical source destination.
+- a native-recognized indented Add header hid a canonical source destination;
+- list and object `tool_name` values raised an uncaught `TypeError` instead of
+  returning the event-appropriate bounded diagnostic.
 
 The host-command test also failed with missing PreToolUse and PostToolUse groups
 before the example files were updated. Each focused reproduction passed after
@@ -37,9 +39,9 @@ Focused verification command:
 PYTHONDONTWRITEBYTECODE=1 python3 -m unittest tests.test_project_hooks -v
 ```
 
-Result: 21 tests passed. The complete command
+Result: 22 tests passed. The complete command
 `PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v` then passed
-all 35 tests, including the unchanged 14-test SessionStart loader suite.
+all 36 tests, including the unchanged 14-test SessionStart loader suite.
 
 The Skill validator passed. Both README shell blocks passed `bash -n`. The two
 runtime-package allowlists match all 31 package files. JSON samples, local
@@ -52,9 +54,9 @@ package links, version references, the two-line wordmark width, and
 | --- | --- |
 | `scripts/guard_edits.py` | `4c9c8b8d1ba97ce38677b190f787081b422d9e4c12b2a64e0b15ff131bdcb689` |
 | `scripts/check_checkpoint.py` | `616e9a9a06644a38bc55cc5e52d4aadd459ed948cf03152374131a6bc8be5f09` |
-| `scripts/hook_utils.py` | `17006abd9da1a17e277594ebefafffc1bc58c428795452988009710b858061d4` |
+| `scripts/hook_utils.py` | `727e86a111f0ab62214ac9aec26023c5b4b55f2ca4bfef154013a8528159fd32` |
 | `scripts/load_context.py` | `4c439242dc6dac215dbd02e478d4f161bec5d73e75c1c74787dff1d808c98a1e` |
-| `tests/test_project_hooks.py` | `63a5efef778605a4b23d9a414065ea065402c66f00cc93e84d40b9b7d0b1fc73` |
+| `tests/test_project_hooks.py` | `4c69ec664f8e1cd245ee968137f460ce7c9f1fe80b4354560fc8c418fe5a75fd` |
 | Codex hook example | `4e1a83c510a32b0829abfb7b270df3b08e69a86e5cce71e5d4e30a3a5e49d18f` |
 | Claude hook example | `4af0ff0ecb2e3fa18207e02c0f5c1a89bb2b785316a6317a970cd7de14c5bf8e` |
 

@@ -302,6 +302,15 @@ class ProjectHookTests(unittest.TestCase):
         event = self.event("PreToolUse", "Write", {"file_path": "CONTEXT.md"})
         self.assert_denied(self.guard(event), "settings")
 
+    def test_non_string_tool_names_return_bounded_hook_diagnostics(self):
+        for tool_name in ([], {}):
+            with self.subTest(tool_name=tool_name, event="PreToolUse"):
+                event = self.event("PreToolUse", tool_name, {})
+                self.assert_denied(self.guard(event), "malformed")
+            with self.subTest(tool_name=tool_name, event="PostToolUse"):
+                event = self.event("PostToolUse", tool_name, {})
+                self.assertIn("malformed", self.advisory(self.checkpoint(event)))
+
     def test_guard_ignores_unsupported_tools_and_events(self):
         bash = self.event("PreToolUse", "Bash", {"command": "printf text > src/app.py"})
         post = self.event("PostToolUse", "Write", {"file_path": "src/app.py"})
