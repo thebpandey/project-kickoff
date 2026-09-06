@@ -31,6 +31,7 @@ and a small standard-library packaging/check helper only if needed.
 **Files:** SKILL.md, agents/openai.yaml, README.md,
 references/interview.md, references/artifacts.md, references/setup.md,
 references/hosts.md, references/handoff.md, references/communication.md.
+Also include references/existing-projects.md and CHANGELOG.md for the added scope.
 
 **Consumes:** Approved design, license, baseline scenario observations.
 **Produces:** Complete workflow and references to templates from Task 2.
@@ -42,6 +43,9 @@ references/hosts.md, references/handoff.md, references/communication.md.
 - [ ] Define task seeding/deduplication, tracker selection and partial recovery.
 - [ ] Define host-specific install steps from checked primary documentation.
 - [ ] Define dependency receipts, fallback choice, and artifact readiness checks.
+- [ ] Add semantic version metadata, matching changelog, and upgrade rules.
+- [ ] Add existing-project audit routing and the user's selected transition,
+  preserving current code, documents, task IDs, branches, and uncommitted work.
 - [ ] Document license, installation, invocation, optional skills, and limitations.
 - [ ] Check metadata with the bundled quick_validate.py and review references.
 - [ ] Commit the deliverable in its owned worktree.
@@ -50,6 +54,7 @@ references/hosts.md, references/handoff.md, references/communication.md.
 
 **Files:** assets/templates/PRD.md, DESIGN.md, PLAN.md, AGENTS.md, CLAUDE.md,
 MISTAKES.md, CONTEXT.md, TASKS.md, DISCOVERY.md, README.md.
+Also add assets/templates/AUDIT.md for existing-project findings and decisions.
 
 **Consumes:** Approved design. Task 1 links to these exact names.
 **Produces:** Instructional output templates, adapted by the executing agent.
@@ -60,6 +65,8 @@ MISTAKES.md, CONTEXT.md, TASKS.md, DISCOVERY.md, README.md.
 - [ ] Define one shared agent policy with a Claude Code adapter.
 - [ ] Define single-writer mistakes, context, discovery, and fallback task records.
 - [ ] Include actionable handoff, dependency availability, and verified commands.
+- [ ] Include artifact provenance/version and current-versus-target truth for
+  existing projects, with audit evidence and approved findings linked to tasks.
 - [ ] Check that placeholders are labeled template inputs, not completed output.
 - [ ] Commit templates in their owned worktree.
 
@@ -74,6 +81,9 @@ MISTAKES.md, CONTEXT.md, TASKS.md, DISCOVERY.md, README.md.
 - [ ] Exercise nonvisual artifact generation in a disposable fixture.
 - [ ] Exercise missing dependencies and repeated seeding with existing task IDs.
 - [ ] Examine scope-change approval invalidation and cleanup safety.
+- [ ] Exercise an existing project with stale docs, a current tracker, a non-main
+  branch, and local edits; verify inspection preserves state and asks for change.
+- [ ] Verify version metadata, changelog, release tag and archive naming agree.
 - [ ] Run package metadata, local-reference, and release-content checks.
 - [ ] Review requirements and license/output boundaries; fix demonstrated defects.
 - [ ] Recheck only affected scenarios and record real results.

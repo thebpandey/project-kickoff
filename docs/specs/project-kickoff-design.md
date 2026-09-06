@@ -33,6 +33,10 @@ blueprint, and implementation handoff for `agent-team`.
    stage approvals, and saved progress for interrupted sessions.
 9. Use Bhaskar Pandey and Almora Technology, LLC as copyright holders, with
    support@learnstackos.com as the permission contact.
+10. Use semantic skill versioning, a changelog, matching Git release tags, and
+    versioned archives. Record the generating skill version in project setup.
+11. Support auditing and inspecting existing projects as well as new projects.
+    The user is choosing the default transition from audit into project setup.
 
 ## Required project outputs
 
@@ -307,6 +311,53 @@ and [GitHub repository licensing guidance](https://docs.github.com/en/repositori
 Host documentation checked:
 [Codex skill documentation](https://developers.openai.com/codex/skills) and
 [Claude Code skills](https://code.claude.com/docs/en/skills).
+
+## Added scope: versioning
+
+Start the first release at 0.1.0. Keep SKILL.md metadata, CHANGELOG.md, release
+tag, and archive name consistent. Use semantic versioning: patches correct
+compatible behavior, minor versions add compatible capability, and major
+versions mark incompatible artifact/workflow contracts. During 0.x, document
+breaking changes explicitly and bump the minor version for those changes.
+
+Record the generating skill version in discovery, setup receipts, and handoff.
+On an existing installation or resumed project, report a version mismatch and
+its relevant impact. Do not silently replace a pinned installation or regenerate
+approved files merely because the current skill is newer. Migrate affected
+project records only within the user's approved scope, preserving earlier IDs,
+evidence, and approvals where still valid.
+
+## Added scope: existing projects
+
+Detect meaningful existing project content and route to inspection before new
+project scaffolding. Inspect the working directory, actual repository/root and
+branch/worktrees, uncommitted state, architecture, dependency manifests and
+locks, entrypoints, tests, docs, agent instructions, and active tracker. Do not
+rename branches, initialize over a repository, or adopt unrelated ancestor
+repositories as a side effect of discovery.
+
+Create an evidence-based AUDIT.md with a bounded scope, inspected revision and
+working-state notes, actual checks and limitations, findings with stable IDs,
+impact and confidence, and links to evidence. Distinguish implemented behavior,
+documented intent, and proposed target behavior. Check project-specific security,
+accessibility, tests, maintainability, and operations where relevant; never claim
+a complete security audit from a superficial scan. Do not collect secrets in
+audit output or execute unreviewed project hooks to inspect the code.
+
+Prefer retaining working architecture and conventions. Discuss material gaps
+and changes one decision at a time. Preserve existing PRD/DESIGN/PLAN content
+and task history; reconcile contradictions with the user before replacing
+intent. Preserve local user edits and create a reviewable revision of affected
+documents. Record approved findings as tasks, retain existing tracker IDs, and
+do not reseed completed work as new work.
+
+Any execution needed for verification uses an isolated task-owned worktree and
+the appropriate subagent. If dependencies, credentials, or services are missing,
+report the limitation and continue independent inspection. Product refactors,
+feature changes, and migration code belong to the agent-team handoff.
+
+The default post-audit transition is pending the user's one-question choice.
+Regardless of that choice, inspection must not silently approve remediation.
 
 ## Source checks and optional recommendations
 
