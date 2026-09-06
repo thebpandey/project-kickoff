@@ -74,5 +74,15 @@ This check used Mermaid CLI 11.17.0 with its default theme and a white
 background. GitHub can use a different Mermaid release, theme, font, or
 responsive container. Local rendering proves that this renderer accepts the
 syntax and that the generated layouts contain the expected visible elements. It
-does not prove pixel-identical GitHub rendering. The parent visual review of the
-retained PNGs is still required before temporary preview cleanup.
+does not prove pixel-identical GitHub rendering.
+
+## Parent visual review and cleanup
+
+The parent reviewed both PNGs on 2026-09-06. All nodes were visible. No overlap
+was present. The first diagram's tall layout was accepted because native Mermaid
+viewing supports zoom. No diagram source change was required.
+
+After this confirmation, the diagram worker checked for task-owned renderer and
+browser processes and removed the temporary renderer, extracted sources, SVGs,
+and PNGs from `/tmp/project-kickoff-diagrams-lOTXjH`. The hashes above retain
+the artifact identities after cleanup.
