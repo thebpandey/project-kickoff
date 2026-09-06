@@ -90,3 +90,9 @@ servers, ports, or services were created. Temporary test repositories and archiv
 extractions were removed. The final archives and checksums remain in canonical
 dist/, outside the disposable worktrees. Local task, context, and lesson records
 remain in the canonical checkout.
+
+After the evidence commit reached main, the orchestrator verified that the
+integration branch was an ancestor of main and its checkout was clean, including
+ignored files. Normal Git worktree removal and branch deletion succeeded. The
+empty .worktrees directory was removed. The final Git worktree inventory contains
+only canonical main; cleanup is complete.
