@@ -1,0 +1,7 @@
+interface:
+  display_name: "Project Kickoff"
+  short_description: "Plan and prepare software projects for delivery"
+  default_prompt: "Use $project-kickoff to define and prepare this software project for implementation."
+
+policy:
+  allow_implicit_invocation: true
