@@ -1,0 +1,79 @@
+# Hook guard and checkpoint advisory checks
+
+Check date: 2026-09-06. Baseline: `bba5fc8`. Environment: Linux, Python
+3.14.4. The tests use temporary Git repositories and execute each script as a
+real subprocess through its standard-input and command-line interface.
+
+## Acceptance flows
+
+| Requirement and test ID | Preconditions and data | Actions | Expected result | Evidence and outcome |
+| --- | --- | --- | --- | --- |
+| PKH-002 / AT-01 canonical edit guard | Version 1 project settings enable the guard. Temporary canonical and linked checkouts contain test-owned files. | Send Write, Edit, and apply_patch PreToolUse events with relative, absolute, `..`, symlink, mixed, move, delete, nested-repository, linked-worktree, and uninitialized-root destinations. | Exact approved planning files and task worktrees proceed silently. Canonical source, configuration, hidden symlink targets, malformed supported input, nonlocal environment patches, and active non-Git roots return a bounded deny result. | `tests.test_project_hooks`: guard path, patch, settings, symlink, worktree, malformed-input, canonical-checkout, and output-bound methods pass. AT-01 Pass. |
+| PKH-002 / AT-02 shared-record writer | Claude fixtures use a nonempty documented `agent_id`. Codex fixtures reuse session and working-directory values and include untrusted actor-like fields. | Attempt approved canonical shared-record and assigned handoff edits on each host mode. | Claude subagent shared-record edit is denied and assigned output is allowed. Codex does not infer actor identity from unsupported fields. | `test_claude_positive_subagent_identity_protects_shared_records`, `test_approved_symlink_name_does_not_hide_source_or_shared_target`, and `test_codex_does_not_infer_actor_from_shared_fields` pass. AT-02 Pass. |
+| PKH-003 / AT-03 checkpoint advisory | Version 1 settings enable the advisory. Test-owned checkpoints cover valid, missing, duplicate, conflicting, oversized, and cross-file intermediate states. | Send Write, Edit, and apply_patch PostToolUse events. | Valid structure is silent. Record-local faults add bounded context without a decision or write. Cross-file pending-question differences are not called final defects. | `tests.test_project_hooks`: all checkpoint methods and the byte-snapshot method pass. AT-03 Pass. |
+| PKH-004 / AT-04 host examples | Codex and Claude example JSON uses substituted temporary absolute paths. | Execute each new sample command with event-shaped input. | Both hosts receive the shared PreToolUse deny envelope and PostToolUse additional-context envelope. | `test_example_commands_run_each_public_entry_point` passes. Native host loading remains untested. AT-04 Pass for the sample command boundary. |
+
+Test data exists only in temporary directories and is removed by the test suite.
+The scripts do not persist results, so reload verification is not applicable.
+
+## Red-green evidence
+
+The first focused run contained 16 tests. All failed because
+`scripts/guard_edits.py` and `scripts/check_checkpoint.py` did not exist. This
+confirmed that the public-entry tests exercised the new behavior. Later focused
+red runs reproduced three concrete defects before correction:
+
+- an approved symlink name hid an unapproved canonical source target;
+- eight long patch paths produced 13,864 bytes instead of the 8192-byte limit;
+- a native-recognized indented Add header hid a canonical source destination.
+
+The host-command test also failed with missing PreToolUse and PostToolUse groups
+before the example files were updated. Each focused reproduction passed after
+the narrow implementation change.
+
+Focused verification command:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 python3 -m unittest tests.test_project_hooks -v
+```
+
+Result: 21 tests passed. The complete command
+`PYTHONDONTWRITEBYTECODE=1 python3 -m unittest discover -s tests -v` then passed
+all 35 tests, including the unchanged 14-test SessionStart loader suite.
+
+The Skill validator passed. Both README shell blocks passed `bash -n`. The two
+runtime-package allowlists match all 31 package files. JSON samples, local
+package links, version references, the two-line wordmark width, and
+`git diff --check` passed focused checks.
+
+## Tested artifact hashes
+
+| Artifact | SHA-256 |
+| --- | --- |
+| `scripts/guard_edits.py` | `4c9c8b8d1ba97ce38677b190f787081b422d9e4c12b2a64e0b15ff131bdcb689` |
+| `scripts/check_checkpoint.py` | `616e9a9a06644a38bc55cc5e52d4aadd459ed948cf03152374131a6bc8be5f09` |
+| `scripts/hook_utils.py` | `17006abd9da1a17e277594ebefafffc1bc58c428795452988009710b858061d4` |
+| `scripts/load_context.py` | `4c439242dc6dac215dbd02e478d4f161bec5d73e75c1c74787dff1d808c98a1e` |
+| `tests/test_project_hooks.py` | `63a5efef778605a4b23d9a414065ea065402c66f00cc93e84d40b9b7d0b1fc73` |
+| Codex hook example | `4e1a83c510a32b0829abfb7b270df3b08e69a86e5cce71e5d4e30a3a5e49d18f` |
+| Claude hook example | `4af0ff0ecb2e3fa18207e02c0f5c1a89bb2b785316a6317a970cd7de14c5bf8e` |
+
+## Coverage limits
+
+The checks simulate documented event JSON. No Codex or Claude Code session
+loaded these files as active native hooks, and no host or global settings were
+changed. The guard covers only matched Write, Edit, and apply_patch calls. Shell
+commands, external processes, unsupported tools, and native sessions without the
+hook stay under host controls and project instructions. Claude actor enforcement
+uses only a positive `agent_id`; Codex shared-record ownership remains an
+instruction because its edit events do not provide a verified actor identity.
+
+The advisory validates bounded structure only. It does not establish semantic
+freshness, correct approval meaning, readiness, or final agreement between files.
+Dependency installation, tracker seeding, cleanup, lesson selection, writing
+quality review, and readiness remain explicit orchestrator actions.
+
+Primary contracts checked on 2026-09-06:
+[Codex hooks](https://learn.chatgpt.com/docs/hooks),
+[Codex apply_patch streaming parser](https://github.com/openai/codex/blob/main/codex-rs/apply-patch/src/streaming_parser.rs),
+and [Claude Code hooks](https://code.claude.com/docs/en/hooks).

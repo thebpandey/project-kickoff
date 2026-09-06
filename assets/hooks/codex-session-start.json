@@ -12,6 +12,33 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/ABSOLUTE/PYTHON3' '/ABSOLUTE/SKILL/PATH/scripts/guard_edits.py' --project-root '/ABSOLUTE/PROJECT/ROOT' --host codex",
+            "timeout": 5,
+            "statusMessage": "Checking Project Kickoff edit destination"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/ABSOLUTE/PYTHON3' '/ABSOLUTE/SKILL/PATH/scripts/check_checkpoint.py' --project-root '/ABSOLUTE/PROJECT/ROOT' --host codex",
+            "timeout": 5,
+            "additionalContextLimit": 8192,
+            "statusMessage": "Checking Project Kickoff checkpoint structure"
+          }
+        ]
+      }
     ]
   }
 }

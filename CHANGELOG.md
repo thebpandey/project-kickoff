@@ -3,6 +3,30 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.3.0] - 2026-09-06
+
+### Added
+
+- Optional PreToolUse guard for supported direct edits to a canonical checkout,
+  with exact planning-path approval, linked-worktree handling, and bounded patch
+  parsing.
+- Claude Code shared-record protection when the host supplies a positive
+  subagent `agent_id`. Codex keeps instruction-based single-writer controls.
+- Optional read-only PostToolUse checkpoint structure diagnostics.
+- Filled-block Project Kickoff wordmark with loaded version and creator credit.
+
+### Compatibility
+
+- The version 0.2.0 SessionStart loader and marker remain compatible. New guard
+  and advisory features use a separate version 1 settings file and are disabled
+  until the user approves and configures them for one project.
+- Install the complete package, including the three new hook scripts and
+  `references/wordmark.md`. Python 3.9 or later on a POSIX host is needed only
+  for optional hooks. No third-party module is used.
+- Existing host settings and trust decisions are not changed by an upgrade.
+  Shell commands, external writers, unsupported tools, and native Windows stay
+  under the manual workflow and normal host controls.
+
 ## [0.2.0] - 2026-09-06
 
 ### Added

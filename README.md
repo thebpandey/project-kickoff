@@ -1,6 +1,26 @@
 # Project Kickoff
 
-Current version: **0.2.0**
+Current version: **0.3.0**
+
+```text
+██████   ██████     ████   ████████ ████████   ██████ ████████
+██    ██ ██    ██ ██    ██     ██   ██       ██         ████
+██████   ██████   ██    ██     ██   ██████   ██         ████
+██       ██  ██   ██    ██     ██   ██       ██         ████
+██       ██    ██ ██    ██ ██  ██   ██       ██         ████
+██       ██    ██   ████     ██     ████████   ██████   ████
+
+██    ██ ████████   ██████ ██    ██   ████   ████████ ████████
+██  ██     ████   ██       ██  ██   ██    ██ ██       ██
+████       ████   ██       ████     ██    ██ ██████   ██████
+████       ████   ██       ████     ██    ██ ██       ██
+██  ██     ████   ██       ██  ██   ██    ██ ██       ██
+██    ██ ████████   ██████ ██    ██   ████   ██       ██
+```
+
+Project Kickoff v0.3.0
+
+Created by thebpandey.
 
 Project Kickoff is a skill for Codex and Claude Code. It turns a software idea
 into an approved product definition, design direction, technical blueprint, and
@@ -128,7 +148,7 @@ authorization. If one tool is unavailable, it continues independent work.
 
 You need written permission from the licensors. You also need authenticated
 access to the private GitHub repository. The examples use GitHub CLI and the
-verified `v0.2.0` release tag.
+verified `v0.3.0` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -158,8 +178,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.2.0 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/load_context.py'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.0 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -191,8 +211,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.2.0 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/load_context.py'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.0 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -219,7 +239,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.2.0.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.3.0.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -238,8 +258,12 @@ project-kickoff/
 │   ├── handoff.md
 │   ├── hosts.md
 │   ├── interview.md
-│   └── setup.md
+│   ├── setup.md
+│   └── wordmark.md
 ├── scripts/
+│   ├── check_checkpoint.py
+│   ├── guard_edits.py
+│   ├── hook_utils.py
 │   └── load_context.py
 └── assets/
     ├── hooks/
@@ -263,34 +287,55 @@ Do not install only `SKILL.md`. The workflow needs its references and templates.
 Check a published archive against its release checksum when one is supplied.
 Do not mix files from different release tags.
 
-## Optional saved-context hook
+## Optional project hooks
 
-Version 0.2.0 includes a small `SessionStart` hook for Codex and Claude Code.
-It loads a short checkpoint when a session starts, resumes, clears, or compacts.
-It reads the phase, status, pending question, approval references, and next action.
-It does not answer questions or start setup. The agent must still check the files.
+Version 0.3.0 keeps the read-only `SessionStart` context loader from version
+0.2.0. It also adds an optional direct-edit guard and checkpoint advisory for
+Codex and Claude Code. Each feature is off until you approve it for one project.
+Installing or upgrading the Skill does not change host settings or activate a
+hook.
 
-The hook is off until you approve it for a specific project. Installing or
-upgrading the Skill does not change host settings. Python 3.9 or later on Linux,
-macOS, or WSL is needed only for this optional feature. No Python package install
-is needed. Native Windows users can use the normal resume instructions.
+The edit guard runs before supported `Write`, `Edit`, and `apply_patch` calls.
+It permits exact approved planning files in the canonical checkout and rejects
+other canonical source or configuration destinations. It resolves relative
+paths, `..`, symlink aliases, mixed patches, moves, and linked-worktree
+boundaries. A task worktree remains writable. The guard does not inspect shell
+commands, external processes, or every host tool, so it is not a universal
+filesystem sandbox.
+It requires a real canonical Git checkout and does not claim protection before
+the intended root is initialized.
 
-To enable it, follow [the context hook guide](references/context-hook.md). Select
-the example for your host, set the absolute interpreter, Skill, and project paths,
-and merge its one entry into the existing project hook settings. Complete normal
-host trust review. Then set `.project-kickoff/context-hook.json` to
-`{"enabled": true}` in that project. Preserve any other fields in an existing
-marker. Do not copy an example over an existing settings file.
+On Claude Code, a nonempty documented `agent_id` identifies a subagent. The
+guard then rejects supported edits to canonical shared records and tells the
+subagent to send its update to the orchestrator. Codex does not provide a
+verified actor field on these edit events. The guard does not infer a Codex
+writer from `session_id`, `cwd`, branch names, or other heuristics.
 
-The loader is read-only. It has no network, install, subprocess, or write action.
-It reads only three fixed project files. It skips unrelated checkouts and rejects
-record symlinks. Small limits keep histories and full logs out of session context.
-Missing or inconsistent records produce a short diagnostic. Resume from the
-saved files when the hook cannot supply context.
+The checkpoint advisory runs after a supported edit to `CONTEXT.md` or
+`.project-kickoff/DISCOVERY.md`. It uses the loader's bounded record reader. It
+reports missing short fields, conflicting duplicate fields, unreadable records,
+and oversized records. It checks each edited record by itself, because a
+multi-file change can have a valid temporary mismatch. It does not write a file,
+decide approval, certify semantic freshness, block the completed edit, or create
+a Stop loop.
 
-Set the marker's `enabled` field to `false` when kickoff hands off, an audit-only
-run ends, or you abandon kickoff. The hook then prints nothing. Keep the saved
-records. The `help`, `version`, and `status` actions remain read-only.
+Python 3.9 or later on Linux, macOS, or WSL is needed only for these optional
+hooks. No Python package install is needed. Native Windows retains the normal
+instruction-based workflow. To enable a feature, follow the
+[project hook guide](references/context-hook.md), merge the selected example
+entries into current host settings, and complete the normal host trust review.
+Keep existing settings and hooks. Do not copy an example over a settings file.
+
+The loader still uses `.project-kickoff/context-hook.json`. The guard and
+advisory use `.project-kickoff/hooks.json` with separate Boolean opt-ins and an
+exact planning-file allowlist. An allowlist entry is a project-relative filename,
+not a glob or directory rule. The hook settings and loader marker are always
+protected from tool edits while the guard runs, even if their literal names are
+listed. Use the documented manual maintenance flow to change or disable them.
+
+The `help`, `version`, and `status` actions remain read-only. Hook output does not
+answer a question, approve a stage, start setup, install a dependency, seed a
+tracker, write a lesson, clean a worktree, or declare readiness.
 
 ## Action vocabulary
 
@@ -432,8 +477,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.2.0`. Archives use
-the form `project-kickoff-0.2.0.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.3.0`. Archives use
+the form `project-kickoff-0.3.0.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 

@@ -60,15 +60,17 @@ through normal Git operations. The 0.1.0 release and local archive were preserve
 
 ## Finding 2 — Guard direct edits in the canonical checkout
 
-Decision: approved; queued for the combined implementation after all findings
-have been decided. No implementation has started.
+Decision: approved and implemented for version 0.3.0.
 
-Proposed PreToolUse guard checks supported file-edit destinations, permits
+The PreToolUse guard checks supported file-edit destinations, permits
 approved canonical planning/shared-record changes, and blocks product source
 and application configuration edits in the canonical checkout. Direct the agent
 to an approved worktree. The guard does not create or remove worktrees. Preserve
 the broader instructions: arbitrary shell commands and external processes are
-outside a complete file-edit-hook enforcement claim.
+outside a complete file-edit-hook enforcement claim. It uses exact
+project-relative planning paths, resolves lexical and symlink destinations plus
+linked-worktree boundaries, and parses Add, Delete, Update, and Move patch
+destinations. See [the implementation checks](hook-guard-checks.md).
 
 ## Finding 3 — One-question interview and approval interpretation
 
@@ -82,8 +84,8 @@ the user. No hook conversion is proposed for this finding.
 
 ## Finding 4 — Validate checkpoint structure after edits
 
-Decision: approved; queued for the combined implementation after all findings
-have been decided. Add an opt-in read-only PostToolUse check after supported
+Decision: approved and implemented for version 0.3.0. The opt-in read-only
+PostToolUse check runs after supported
 edits to CONTEXT.md or .project-kickoff/DISCOVERY.md. Reuse the
 existing bounded checkpoint-reading logic where practical. Check the edited
 record for missing expected phase/pending-question/next-action fields,
@@ -94,12 +96,14 @@ approval validity, block waiting for the user, or force continuation through a
 Stop hook. Treat temporarily inconsistent records during a multi-file update as
 unconfirmed; avoid claiming that an intermediate state is a final defect. Keep
 manual validation for unsupported edit paths and adapted formats. This checks
-structure, not semantic freshness or truth. No implementation has started.
+structure, not semantic freshness or truth. It reuses the loader's bounded
+reader and field parser and does not compare temporary cross-file state. See
+[the implementation checks](hook-guard-checks.md).
 
 ## Finding 5 — Protect shared records from subagent edits
 
-Decision: approved; queued for the combined implementation after all findings
-have been decided. Extend the finding 2 PreToolUse guard to
+Decision: approved and implemented for version 0.3.0. The finding 2 PreToolUse
+guard rejects
 reject supported direct edits by positively identified subagents to canonical
 MISTAKES.md, CONTEXT.md, TASKS.md (when selected), and .agent-team/TEAMS.md.
 Allow their assigned context or handoff paths under the existing ownership
@@ -112,8 +116,10 @@ shared session_id alone cannot distinguish the writer; do not infer identity
 from cwd, branch names, missing fields, or transcript heuristics. Enable actor
 checks only where the selected host supplies a verified identity signal.
 Otherwise retain the single-writer instructions and report the coverage limit.
-Arbitrary shell writes and external processes remain outside this claim.
-No implementation has started.
+Arbitrary shell writes and external processes remain outside this claim. The
+implementation uses Claude Code's positive `agent_id`. Codex keeps the
+single-writer instruction because no verified actor field is available on its
+edit events. See [the implementation checks](hook-guard-checks.md).
 
 ## Finding 6 — Keep cleanup tied to verified integration
 
@@ -245,9 +251,9 @@ implementation of findings 2, 4, and 5 is authorized.
 
 ## Combined implementation scope
 
-All eleven findings are decided. Finding 1 shipped in 0.2.0; findings 2, 4,
-and 5 will ship together in 0.3.0. Findings 3 and 6 through 11 remain explicit
-instructions. Retain their behavior and document the hook boundaries.
+All eleven findings are decided. Finding 1 shipped in 0.2.0. Findings 2, 4,
+and 5 are implemented for 0.3.0. Findings 3 and 6 through 11 remain explicit
+instructions, and their hook boundaries are documented.
 
 The user also requested a solid filled-block wordmark like Agent-Team, with the
 loaded skill version and attribution to thebpandey below it, displayed at Skill
