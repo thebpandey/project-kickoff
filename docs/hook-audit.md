@@ -264,3 +264,10 @@ Use a developer task worktree and independent review, then integrate, verify,
 package, and publish to the already authorized private repository. Preserve
 existing releases, licensing, manual workflows, and host trust controls. Do not
 activate hooks in this repository or change global host configuration.
+
+The combined implementation was independently reviewed and published as
+[v0.3.0](https://github.com/thebpandey/project-kickoff/releases/tag/v0.3.0)
+from `6236676060c52bbd66576b2696daaca9f20b95a0`. All 36 integrated tests passed.
+The archive has exactly 31 runtime files. GitHub's uploaded ZIP and checksum
+digests match the local artifacts. See [release evidence](hook-release-checks.md)
+and [independent review](hook-guard-review.md) for coverage and limits.
