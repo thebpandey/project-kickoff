@@ -44,3 +44,13 @@ The optional script needs Python 3.9 or later on Linux, macOS, or WSL. Native
 Windows retains manual resumption. Native CLI hook sessions were not exercised;
 the tests executed event-shaped inputs and the example command definitions.
 No hook was activated in the skill repository or global host configuration.
+
+Published [v0.2.0](https://github.com/thebpandey/project-kickoff/releases/tag/v0.2.0)
+from source `698489791878fd64386a32b34bfb043e3fb81903`. The extracted ZIP has
+exactly 27 runtime files matching that commit; all 14 integrated tests passed.
+GitHub's uploaded ZIP digest matches the local SHA-256:
+`a61331eafeaebe0ac6b02df92de3a93df1550c3ee25ac8f02d8a480d608f602b`.
+The repository remains private. Remote main and the peeled release tag matched
+the release source. The uploaded checksum file's digest also matches its local
+copy. The three clean, integrated task worktrees and branches were removed
+through normal Git operations. The 0.1.0 release and local archive were preserved.
