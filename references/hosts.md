@@ -64,9 +64,10 @@ If delegation is unavailable, finish planning and ask for that capability or an
 explicit exception before writing scaffold or product code on the canonical
 integration branch.
 
-## Optional session hook
+## Optional project hooks
 
-Read [the context hook guide](context-hook.md) before project activation. Separate
-Codex and Claude Code examples are included. Merge the selected entry into the
-existing project settings and complete normal host trust review. Installing or
-upgrading this Skill alone does not activate the hook.
+Read [the project hook guide](context-hook.md) before activation. Separate Codex
+and Claude Code examples include the context loader, direct-edit guard, and
+checkpoint advisory. Merge only approved entries into existing project settings
+and complete normal host trust review. Installing or upgrading this Skill alone
+does not activate a hook.
