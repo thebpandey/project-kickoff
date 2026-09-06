@@ -28,7 +28,9 @@ flowchart TD
     R -->|help, version, or status| RO["Return read-only information"]
     RO --> ROSTOP["Stop without interview or setup"]
 
-    R -->|start idea| NP["Confirm the new project path and Git boundary"]
+    R -->|start idea| MODE{"Does meaningful project content exist outside installed skills?"}
+    MODE -->|No| NP["Confirm the new project path and Git boundary"]
+    MODE -->|Yes| EP
     R -->|audit path| EP["Inspect the existing project without changes"]
     R -->|audit-only path| EPO["Inspect the existing project without changes"]
     R -->|resume path| RS["Read checkpoint, approvals, version, and setup receipt"]
@@ -240,11 +242,11 @@ binaries. Do not type `$project-kickoff` into a shell.
 
 | Action | Result | State change |
 | --- | --- | --- |
-| `start <idea>` | Starts a new-project kickoff and asks the first unresolved question. | Writes records only after the project path is confirmed. |
+| `start <idea>` | Starts a kickoff. It audits first when meaningful project content exists. Otherwise it starts the new-project questions. | Writes records only after the project path is confirmed. |
 | `audit [path]` | Inspects an existing project, produces `AUDIT.md`, and continues to guided retain/change decisions and setup. | Audit starts with inspection. Later writes follow user decisions and approvals. |
 | `audit-only [path]` | Inspects an existing project and stops after `AUDIT.md`. | Does not start guided setup or remediation. |
 | `resume [path]` | Restores saved decisions, approvals, pending question, version, tracker, and next action. | Continues only the recorded authorized workflow. |
-| `status [path]` | Reports version, project, revision, phase, last approval, pending question, blockers, and next action. | Read-only. It does not write checkpoints or initialize tools. |
+| `status [path]` | Reports version, project, revision, phase, last approval, pending question, blockers, and next action. | Read-only. It does not write checkpoints, replay questions, initialize tools, or run tests. |
 | `help` | Lists supported actions and host syntax. | Read-only. It does not inspect a project. |
 | `version` | Reports the loaded Skill version, path, and CHANGELOG entry. | Read-only. It does not start an interview. |
 
@@ -320,6 +322,10 @@ nonempty.
 Installed host skill folders under `.agents/skills/` or `.claude/skills/` do not
 make an otherwise empty project an existing application. The audit does not
 inspect private skill-package source as the user's product.
+
+The `start` action also uses this test. It does not bypass the audit when an
+existing application is present. The `audit-only` action always stops after the
+evidence report.
 
 ## Setup, tracking, and recovery
 

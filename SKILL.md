@@ -13,9 +13,12 @@ Move the project through four explicit states: `discovery`, `approved planning`,
 ## Route the requested action
 
 Treat these as actions supplied after the host invokes the Skill. They are not
-shell commands.
+shell commands. Route the action before you restore a pending question or enter
+project discovery. A read-only action must not fall through to another route.
 
-- `start <idea>` starts a new-project kickoff. Continue with **Start or resume**.
+- `start <idea>` starts a kickoff. Detect the project mode first. If meaningful
+  project content exists, audit it before guided decisions. Otherwise start the
+  new-project flow.
 - `audit [path]` inspects an existing project, writes the approved audit records,
   and then continues through guided retain/change decisions and setup.
 - `audit-only [path]` performs the same bounded audit and stops after the report.
@@ -24,7 +27,7 @@ shell commands.
 - `status [path]` is read-only. Report the loaded Skill version, resolved project
   and revision, current phase, last approval, pending question, blockers, and
   next action. Do not write a checkpoint, ask an interview question, run setup,
-  or initialize a dependency.
+  initialize a dependency, replay the pending question, or run project tests.
 - `help` is read-only. Show these actions, their arguments, and the current host's
   invocation syntax. Do not inspect or change a project.
 - `version` is read-only. Report `metadata.version`, the loaded Skill path when
