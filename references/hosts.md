@@ -33,7 +33,7 @@ Official source: https://code.claude.com/docs/en/skills
 
 Both hosts support skill directories with referenced files and symlinked skill
 folders. Install the complete package, including `LICENSE`, `CHANGELOG.md`, `agents/`,
-`references/`, and `assets/`. Preserve the private-use license. Keep a
+`references/`, `assets/`, and `scripts/`. Preserve the private-use license. Keep a
 project-local proprietary installation out of generated project deliverables and
 public source control unless that repository is authorized to contain the Skill.
 
@@ -63,3 +63,10 @@ use its actual help output and record it. Preparing the command does not run it.
 If delegation is unavailable, finish planning and ask for that capability or an
 explicit exception before writing scaffold or product code on the canonical
 integration branch.
+
+## Optional session hook
+
+Read [the context hook guide](context-hook.md) before project activation. Separate
+Codex and Claude Code examples are included. Merge the selected entry into the
+existing project settings and complete normal host trust review. Installing or
+upgrading this Skill alone does not activate the hook.

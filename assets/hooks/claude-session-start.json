@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "^(startup|resume|clear|compact)$",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/ABSOLUTE/PYTHON3' '/ABSOLUTE/SKILL/PATH/scripts/load_context.py' --project-root '/ABSOLUTE/PROJECT/ROOT'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

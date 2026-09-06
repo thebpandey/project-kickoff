@@ -1,4 +1,7 @@
 <!--
+- The optional context hook reads existing short fields and section labels. Keep
+  each phase, status, pending question, and next action value on one line after
+  adaptation. Do not add a duplicate hook summary or store secrets in these fields.
 TEMPLATE INSTRUCTIONS — copy to .project-kickoff/DISCOVERY.md, then remove this
 comment after adapting the document.
 - Write this checkpoint from the first question. Ask and record only one pending

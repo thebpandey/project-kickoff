@@ -1,4 +1,7 @@
 <!--
+- The optional context hook reads existing short fields and section labels. Keep
+  each phase, status, pending question, and next action value on one line after
+  adaptation. Do not add a duplicate hook summary or store secrets in these fields.
 TEMPLATE INSTRUCTIONS — remove this comment after adapting the document.
 - Keep this checkpoint short, current, and normally under 600 words. Replace
   stale notes instead of appending a diary.

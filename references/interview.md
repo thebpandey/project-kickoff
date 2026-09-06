@@ -79,6 +79,11 @@ Use stable records:
 - One pending question with its stage, exact text, options, and asked date.
 - Explicit open assumptions and blockers; do not convert them into facts.
 
+An approved [session context hook](context-hook.md) can load the existing short
+checkpoint fields. Do not duplicate them in a separate summary. Keep their
+labels and one-line values clear. A missing hook or unknown record format does
+not prevent manual resume.
+
 On resume, inspect actual files before trusting the checkpoint. Continue the
 pending question if it still applies. If the user changes `DEC-###`, mark the old
 value superseded, identify the dependency edges, invalidate affected `APR-###`
@@ -98,5 +103,7 @@ Propose only the compatibility work that affects this project and wait for its
 approval.
 
 During discovery, limit writes to `.project-kickoff/DISCOVERY.md`, `CONTEXT.md`,
-and other user-approved planning notes. Do not initialize dependencies, generate
+the explicitly approved `.project-kickoff/context-hook.json` activation marker,
+and other user-approved planning notes. Hook configuration follows its separate
+project-scoped approval and worktree procedure. Do not initialize dependencies, generate
 a scaffold, seed a tracker, or select defaults while a dependent choice is open.
