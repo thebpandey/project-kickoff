@@ -105,11 +105,11 @@ above preserves that validation limit.
 **Consumes:** Verified integration revision and user-approved private destination.
 **Produces:** Private GitHub repository, release archive, clean canonical main.
 
-- [ ] Create an archive from an explicit package-file allowlist; exclude docs
+- [x] Create an archive from an explicit package-file allowlist; exclude docs
   used only for development, worktrees, runtime state, and dependency copies.
-- [ ] Inspect archive contents and verify the extracted skill package.
-- [ ] Update canonical main to the verified integration revision.
-- [ ] Verify branch integration, preserve validation evidence, and remove only
+- [x] Inspect archive contents and verify the extracted skill package.
+- [x] Update canonical main to the verified integration revision.
+- [x] Verify branch integration, preserve validation evidence, and remove only
   eligible task-owned worktrees and branches.
-- [ ] Create or reuse the intended GitHub repo, verify it is private, then push.
-- [ ] Verify remote main matches local main; report repository and archive paths.
+- [x] Create or reuse the intended GitHub repo, verify it is private, then push.
+- [x] Verify remote main matches local main; report repository and archive paths.

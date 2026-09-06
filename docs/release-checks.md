@@ -45,3 +45,35 @@ These checks validate package construction, metadata, references, and source
 identity. Behavioral, CLI, diagram, and installation evidence is in the other
 development reports. No Git tag, push, GitHub release, remote visibility check,
 or remote asset check occurred here.
+
+## Published release verification
+
+The orchestrator published the private release on 2026-09-06 after the checks
+above. The final source commit and peeled `v0.1.0` tag are
+`d4c8a128e5f04040f3b739c0eeee6cb36f18b40e`. The final archive was rebuilt from
+that commit and passed the same extracted-package checks. The documentation
+commit changed no runtime package file.
+
+- Repository: https://github.com/thebpandey/project-kickoff
+- Release: https://github.com/thebpandey/project-kickoff/releases/tag/v0.1.0
+- GitHub reports the repository as private, with default branch `main`.
+- Remote `main` and the peeled release tag matched the final source commit at
+  publication. Later documentation-only completion records do not move the tag.
+- Both release assets report state `uploaded`; the release is not a draft.
+- ZIP size: 65,415 bytes. Its local SHA-256 equals GitHub's asset digest:
+  `eac29b031619b279fd6165d7f3480e79e84e4af5d00499d7cccfc0f2b6707d4c`.
+- `SHA256SUMS` size: 92 bytes. Its local SHA-256 equals GitHub's asset digest:
+  `b67fef7f86c80be5da4b22deb0c11dcd49dbfa7a4814f0d8bc6e4ff288c3f761`.
+
+The local ZIP and checksum remain in the ignored root `dist/` directory.
+No live host installation or complete real-user interview is claimed.
+
+## Completed resource cleanup
+
+Verified that all five task branches were ancestors of canonical `main`. All
+five task worktrees were clean, including untracked and ignored content, before
+normal `git worktree remove` and `git branch -d` operations. The behavior,
+templates, verification, workflow, and integration worktrees and branches were
+removed. The empty `.worktrees/` directory was removed. Only canonical `main`
+remains. Workers confirmed their disposable fixtures and task processes were
+cleaned, with durable evidence preserved in this repository.
