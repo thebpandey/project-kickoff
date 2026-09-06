@@ -111,6 +111,40 @@ class ContextHookTests(unittest.TestCase):
         (self.root / ".project-kickoff/DISCOVERY.md").write_text(summary)
         self.assertIn("truncated", self.run_hook())
 
+    def test_closing_fence_is_not_the_next_action(self):
+        (self.root / "CONTEXT.md").write_text(
+            "## Next action\n```text\nNot checkpoint data\n```\nWait for OQ-102.\n")
+        output = self.run_hook()
+        self.assertIn("Wait for OQ-102.", output)
+        self.assertNotIn("Not checkpoint data", output)
+
+    def test_serialized_unicode_fields_stay_within_output_limit(self):
+        full = SUMMARY
+        for value in ("Discovery stage 2", "Awaiting answer", "OQ-002",
+                      "Wait for OQ-002; do no dependent work."):
+            full = full.replace(value, "😀" * 240)
+        (self.root / "CONTEXT.md").write_text(full)
+        (self.root / ".project-kickoff/DISCOVERY.md").write_text(full)
+        self.assertIn("truncated", self.run_hook())
+
+    def test_example_commands_produce_both_host_envelopes(self):
+        import shlex
+        package = SCRIPT.parents[1]
+        for host in ("codex", "claude"):
+            example = json.loads((package / f"assets/hooks/{host}-session-start.json").read_text())
+            group = example["hooks"]["SessionStart"][0]
+            self.assertEqual(group["matcher"], "^(startup|resume|clear|compact)$")
+            command = group["hooks"][0]["command"]
+            for before, after in (("'/ABSOLUTE/PYTHON3'", shlex.quote(sys.executable)),
+                                  ("'/ABSOLUTE/SKILL/PATH/scripts/load_context.py'", shlex.quote(str(SCRIPT))),
+                                  ("'/ABSOLUTE/PROJECT/ROOT'", shlex.quote(str(self.root)))):
+                command = command.replace(before, after)
+            result = subprocess.run(command, shell=True, text=True, capture_output=True,
+                                    input=json.dumps({"hook_event_name": "SessionStart", "source": "startup", "cwd": str(self.root)}), timeout=3)
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(result.stderr, "")
+            self.assertIn("OQ-002", json.loads(result.stdout)["hookSpecificOutput"]["additionalContext"])
+
     def test_symlinks_and_nonregular_files_not_read(self):
         context = self.root / "CONTEXT.md"
         external = Path(self.temp.name) / "secret"

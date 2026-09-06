@@ -90,3 +90,7 @@ suitable delegated worker. If dependencies, credentials, or services are missing
 report the limit and continue independent inspection. Do not repair or refactor
 product code during kickoff. Keep current and target architecture visible until
 the approved transition is implemented and verified.
+
+At completed audit-only scope, disable an active kickoff context hook marker
+under [the hook lifecycle](context-hook.md). Preserve its records and all
+unrelated host hooks. A guided kickoff can keep its approved hook active.

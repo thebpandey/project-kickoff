@@ -1,6 +1,6 @@
 # Project Kickoff
 
-Current version: **0.1.0**
+Current version: **0.2.0**
 
 Project Kickoff is a skill for Codex and Claude Code. It turns a software idea
 into an approved product definition, design direction, technical blueprint, and
@@ -128,7 +128,7 @@ authorization. If one tool is unavailable, it continues independent work.
 
 You need written permission from the licensors. You also need authenticated
 access to the private GitHub repository. The examples use GitHub CLI and the
-verified `v0.1.0` release tag.
+verified `v0.2.0` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -158,8 +158,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.1.0 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.2.0 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -191,8 +191,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.1.0 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.2.0 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -219,7 +219,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.1.0.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.2.0.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -233,12 +233,18 @@ project-kickoff/
 ├── references/
 │   ├── artifacts.md
 │   ├── communication.md
+│   ├── context-hook.md
 │   ├── existing-projects.md
 │   ├── handoff.md
 │   ├── hosts.md
 │   ├── interview.md
 │   └── setup.md
+├── scripts/
+│   └── load_context.py
 └── assets/
+    ├── hooks/
+    │   ├── codex-session-start.json
+    │   └── claude-session-start.json
     └── templates/
         ├── AGENTS.md
         ├── AUDIT.md
@@ -256,6 +262,35 @@ project-kickoff/
 Do not install only `SKILL.md`. The workflow needs its references and templates.
 Check a published archive against its release checksum when one is supplied.
 Do not mix files from different release tags.
+
+## Optional saved-context hook
+
+Version 0.2.0 includes a small `SessionStart` hook for Codex and Claude Code.
+It loads a short checkpoint when a session starts, resumes, clears, or compacts.
+It reads the phase, status, pending question, approval references, and next action.
+It does not answer questions or start setup. The agent must still check the files.
+
+The hook is off until you approve it for a specific project. Installing or
+upgrading the Skill does not change host settings. Python 3.9 or later on Linux,
+macOS, or WSL is needed only for this optional feature. No Python package install
+is needed. Native Windows users can use the normal resume instructions.
+
+To enable it, follow [the context hook guide](references/context-hook.md). Select
+the example for your host, set the absolute interpreter, Skill, and project paths,
+and merge its one entry into the existing project hook settings. Complete normal
+host trust review. Then set `.project-kickoff/context-hook.json` to
+`{"enabled": true}` in that project. Preserve any other fields in an existing
+marker. Do not copy an example over an existing settings file.
+
+The loader is read-only. It has no network, install, subprocess, or write action.
+It reads only three fixed project files. It skips unrelated checkouts and rejects
+record symlinks. Small limits keep histories and full logs out of session context.
+Missing or inconsistent records produce a short diagnostic. Resume from the
+saved files when the hook cannot supply context.
+
+Set the marker's `enabled` field to `false` when kickoff hands off, an audit-only
+run ends, or you abandon kickoff. The hook then prints nothing. Keep the saved
+records. The `help`, `version`, and `status` actions remain read-only.
 
 ## Action vocabulary
 
@@ -397,8 +432,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.1.0`. Archives use
-the form `project-kickoff-0.1.0.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.2.0`. Archives use
+the form `project-kickoff-0.2.0.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 
