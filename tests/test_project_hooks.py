@@ -3,6 +3,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shlex
 import subprocess
 import sys
@@ -401,7 +402,10 @@ Phase: Setup
                         "file_path": "CONTEXT.md",
                     }), "additionalContext"),
                 ):
-                    command = example["hooks"][event_name][0]["hooks"][0]["command"]
+                    group = example["hooks"][event_name][0]
+                    for tool_name in ("Write", "Edit", "apply_patch"):
+                        self.assertIsNotNone(re.fullmatch(group["matcher"], tool_name))
+                    command = group["hooks"][0]["command"]
                     for before, after in replacements:
                         command = command.replace(before, after)
                     result = subprocess.run(
