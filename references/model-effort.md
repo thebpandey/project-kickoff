@@ -84,7 +84,8 @@ Look for a saved selection first:
 1. The action supplies a project path. Read `.project-kickoff/DISCOVERY.md` at
    that path.
 2. The action supplies no path, and the host exposes a working directory. Look
-   for `.project-kickoff/DISCOVERY.md` under that directory.
+   for `.project-kickoff/DISCOVERY.md` at that directory. Open only that one
+   path. Do not search ancestors, and do not search subdirectories.
 3. The host exposes no working directory. Go to the built-in profile below.
 
 For branch 1 and branch 2, read the decision register of the record that you
