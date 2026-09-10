@@ -3,6 +3,34 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.0] - 2026-09-10
+
+### Added
+
+- A first-invocation question that lets the user select the model and the
+  reasoning effort for planning work and for delegated work.
+- `references/model-effort.md` with the question shape, the named profiles, the
+  record location, and the honest limits.
+- Host controls for the selection in `references/hosts.md`, including the
+  documented Claude Code model identifiers and the Codex capability lookup.
+- A package manifest test that checks version consistency across `SKILL.md`,
+  `CHANGELOG.md`, the README, and the handoff template, and that checks both
+  README `kickoff_required_files` allowlists against the package files.
+- `docs/model-effort-checks.md` with the instruction-level check steps.
+
+### Compatibility
+
+- The selection is recorded as a `DEC-###` decision in
+  `.project-kickoff/DISCOVERY.md`. No new state file is added and the discovery
+  write limit is unchanged.
+- A Skill cannot change the model or the reasoning effort of its parent session.
+  Project Kickoff reports the planning selection and names the host control. It
+  never claims that it switched the parent model.
+- `status`, `help`, and `version` stay read-only. They do not ask the new
+  question and they do not write its record.
+- Install the complete package, including the new `references/model-effort.md`.
+  Existing checkpoints, decisions, approvals, and trackers stay valid.
+
 ## [0.3.1] - 2026-09-09
 
 ### Added

@@ -1,6 +1,6 @@
 # Project Kickoff
 
-Current version: **0.3.1**
+Current version: **0.4.0**
 
 ```text
 ██████   ██████     ████   ████████ ████████   ██████ ████████
@@ -18,7 +18,7 @@ Current version: **0.3.1**
 ██    ██ ████████   ██████ ██    ██   ████   ██       ██
 ```
 
-Project Kickoff v0.3.1
+Project Kickoff v0.4.0
 
 Created by thebpandey.
 
@@ -99,6 +99,43 @@ Each stage uses the same question loop. A timeout is not an answer. A direct use
 decision is an answer. The Skill does not ask the user to approve the same
 decision again. It asks only for the next unresolved consequence or stage bundle.
 
+## Model and reasoning effort
+
+On the first invocation in a conversation, the Skill asks one question. You pick
+the model and the reasoning effort for two kinds of work:
+
+- **Planning:** the guided interview and the approved artifacts. This work runs
+  in your main session.
+- **Delegated work:** the scaffold and check agents that go to task worktrees.
+
+The question offers three named profiles. The recommended profile comes first. A
+free-text answer is always valid. A timeout or silence is not an answer.
+
+The Skill records your answer as a `DEC-###` decision in
+`.project-kickoff/DISCOVERY.md`. Before it asks, it looks for that record at the
+path you supplied, or under the current working directory when you supplied no
+path. If it finds a previous selection, it offers those values back as the
+recommendation and names the path they came from, so you can see at once if it is
+the wrong project. If it finds nothing readable, it offers its built-in
+recommendation. That lookup does not confirm the project root; the Skill still
+confirms the intended directory in its normal start sequence. The Skill has no
+session identifier. "First invocation" means only that the current conversation
+has not resolved a selection yet.
+
+A Skill cannot change the model of the session that runs it. The Skill reports
+your planning selection and names the host control that applies it. In Claude
+Code, that control is `/model`. In Codex, the Skill reads the current host
+capability and names the control that Codex exposes. The Skill never claims that
+it switched your session model. It never calls a recorded selection active.
+
+For delegated work, the Skill sets the model and the effort on each dispatched
+agent when the host exposes those fields. When it cannot, it stops before the
+dispatch, names the setting that would apply instead, and asks one question. It
+never runs delegated work at another tier without your answer.
+
+The `status`, `help`, and `version` actions never ask this question. They never
+write its record.
+
 ## Dependencies
 
 The Skill checks these six dependencies. It records the selected path, source,
@@ -156,7 +193,7 @@ Agent-Team, but it is not a compatible Agent-Team 7.0.2 handoff target.
 
 You need written permission from the licensors. The Skill is proprietary and
 licensed under the Project Kickoff Private Use License. The GitHub repository
-is public. The examples use GitHub CLI and the verified `v0.3.1` release tag.
+is public. The examples use GitHub CLI and the verified `v0.4.0` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -186,8 +223,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.1 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.4.0 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -219,8 +256,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.1 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.4.0 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -247,7 +284,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.3.1.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.4.0.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -266,6 +303,7 @@ project-kickoff/
 │   ├── handoff.md
 │   ├── hosts.md
 │   ├── interview.md
+│   ├── model-effort.md
 │   ├── setup.md
 │   └── wordmark.md
 ├── scripts/
@@ -299,7 +337,7 @@ Do not mix files from different release tags.
 
 ## Optional project hooks
 
-Version 0.3.1 keeps the read-only `SessionStart` context loader from version
+Version 0.4.0 keeps the read-only `SessionStart` context loader from version
 0.2.0. It also adds an optional direct-edit guard and checkpoint advisory for
 Codex and Claude Code. Each feature is off until you approve it for one project.
 Installing or upgrading the Skill does not change host settings or activate a
@@ -519,8 +557,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.3.1`. Archives use
-the form `project-kickoff-0.3.1.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.4.0`. Archives use
+the form `project-kickoff-0.4.0.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 

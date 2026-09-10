@@ -38,6 +38,9 @@ Evidence reports identify the exact draft or integrated revision they checked.
 - [Package checks](package-checks.md): metadata, version, local links, exact
   runtime allowlist, and patch hygiene. README install and action checks are
   recorded with the source revision they checked.
+- [Model and effort checks](model-effort-checks.md): the automated package
+  manifest and version tests with their red evidence, plus the instruction-level
+  check steps for the first-invocation model and effort selection.
 - [Diagram checks](diagram-checks.md): both README Mermaid diagrams rendered
   locally. The main workflow is tall; native SVG supports close inspection.
 

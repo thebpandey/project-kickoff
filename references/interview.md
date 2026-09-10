@@ -51,6 +51,12 @@ are always valid. Record the question as pending before asking it. Do not ask th
 next question, write a dependent decision, activate a fallback, or start setup
 until the answer arrives.
 
+The first question of a conversation can be the model and reasoning effort
+selection. Read [the model and effort selection](model-effort.md) for its timing,
+its profiles, and its record. It uses this same shape and this same closing line.
+It is not a stage question and it needs no stage approval. Do not write it into
+the single pending-question record. That slot keeps the restored stage question.
+
 For research-dependent decisions, first inspect relevant project evidence and
 current primary sources. Present alternatives, their material trade-offs, source
 links, and the check date. Recommend one based on confirmed constraints. The user
