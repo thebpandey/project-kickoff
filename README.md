@@ -154,9 +154,9 @@ Agent-Team, but it is not a compatible Agent-Team 7.0.2 handoff target.
 
 ## Requirements before installation
 
-You need written permission from the licensors. You also need authenticated
-access to the private GitHub repository. The examples use GitHub CLI and the
-verified `v0.3.1` release tag.
+You need written permission from the licensors. The Skill is proprietary and
+licensed under the Project Kickoff Private Use License. The GitHub repository
+is public. The examples use GitHub CLI and the verified `v0.3.1` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
