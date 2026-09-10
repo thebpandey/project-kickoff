@@ -17,6 +17,8 @@ shell binaries. Route them through `SKILL.md` before loading the workflow.
 - Use the exposed native user-input tool for one recommended-choice question.
 - Use Codex collaboration controls for delegated work only when available and
   authorized. Resolve models and reasoning effort from current host capability.
+- Keep no Codex model list and no Codex effort list in this Skill. Read the
+  current host capability at each selection.
 
 Official source: https://learn.chatgpt.com/docs/build-skills
 
@@ -28,6 +30,10 @@ Official source: https://learn.chatgpt.com/docs/build-skills
 - Use Claude Code's exposed native question and subagent controls when present.
 - A same-named personal skill can shadow a project skill. Verify the loaded
   source before relying on project-specific content.
+- The documented Anthropic model identifiers are `claude-fable-5-1`,
+  `claude-opus-5`, `claude-sonnet-5`, and `claude-haiku-4-5-20251001`. The
+  documented effort levels include `high` and `xhigh`. Use an identifier or a
+  level only when the current session exposes it.
 
 Official source: https://code.claude.com/docs/en/skills
 
@@ -46,11 +52,35 @@ project-specific effect and keep the current pinned installation unless the user
 approved an upgrade. Preserve stable IDs, evidence, valid approvals, and project
 outputs through an approved migration.
 
-Project Kickoff 0.3.1 handoffs are tested against Agent-Team 7.0.2.
+Project Kickoff 0.4.0 handoffs are tested against Agent-Team 7.0.2.
 The handoff checker converts `.project-kickoff/AGENT_TEAM_HANDOFF.json` into the
 request accepted by Agent-Team's `project-initialize` helper after the runtime
 identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
 runtime state. Do not pre-populate that runtime receipt during kickoff.
+
+## Model and reasoning effort
+
+Read [the model and effort selection](model-effort.md) for the question, its
+timing, and its record. This section gives the host controls only.
+
+A Skill cannot change the model or the reasoning effort of its own parent
+session. The planning selection applies to that parent session. Report the
+selection and give the user the control below. Never claim that the Skill made
+the change.
+
+| Host | How the user applies the planning selection |
+| --- | --- |
+| Codex | Use the model and reasoning-effort control that the current Codex session exposes. Read the host's own help output for its exact name before you quote it. |
+| Claude Code | Use the session model control, `/model`. Read the host's own help output for the current effort control before you quote it. |
+
+For delegated work, use the host's native subagent controls. In Claude Code, set
+the model and the effort on each dispatched agent when the session exposes those
+fields. In Codex, use the collaboration controls only when they are available and
+authorized. Record the model and the effort that the host accepted.
+
+If the current host does not expose the selected model or the selected effort
+level, report that limit to the user. Do not move the work to a weaker tier
+without a new answer.
 
 ## Instructions and handoff
 

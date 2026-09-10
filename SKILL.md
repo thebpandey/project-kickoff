@@ -2,7 +2,7 @@
 name: project-kickoff
 description: Define new software projects and audit or re-plan existing projects, producing approved product, experience, technical, scaffold, and Agent-Team handoff artifacts. Use for project kickoff, ordinary existing-project audits, or major project revisions before feature implementation.
 metadata:
-  version: "0.3.1"
+  version: "0.4.0"
 ---
 
 # Project Kickoff
@@ -36,6 +36,12 @@ project discovery. A read-only action must not fall through to another route.
   invocation syntax. Do not inspect or change a project.
 - `version` is read-only. Report `metadata.version`, the loaded Skill path when
   available, and the matching CHANGELOG entry. Do not start or resume a kickoff.
+
+On the first invocation in a conversation, and only for a state-changing action,
+ask the user to select the model and the reasoning effort. Read
+[the model and effort selection](references/model-effort.md). Ask that one
+question before the first product question and before setup. `status`, `help`,
+and `version` never ask it and never write its record.
 
 Accept clear natural-language equivalents. For a read-only action with an
 ambiguous or missing project path, report the limit and show how to supply the
@@ -77,6 +83,10 @@ the one-question protocol and the approval boundaries below.
 - Give recommended choices with useful trade-offs. A timeout or silence is not
   an answer. Do not make an unresolved stack, tracker, product, or design choice
   for the user.
+- A Skill cannot change the model or the reasoning effort of its parent session.
+  Report the planning selection and give the host's supported control. Never
+  claim that the Skill changed the parent model or the parent effort. Never call
+  a recorded selection active.
 - Ask for approval of each stage as its own question. A changed decision
   invalidates only affected approvals and derived artifacts.
 - During discovery, write only the checkpoint and planning records. Create
