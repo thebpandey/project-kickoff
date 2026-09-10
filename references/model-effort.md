@@ -76,23 +76,39 @@ Reply with a number or your own answer.
 
 ## Saved values
 
-The question never waits for a resolved project path. Ask it at the first
-invocation, with a path or without one.
+The question never waits for a resolved project path. Every branch below ends in
+an offered profile.
 
-If the action supplies a project path, and `.project-kickoff/DISCOVERY.md` is
-readable at that path, read its decision register first. If the register holds a
-previous model and effort selection, offer those values back as the recommended
-profile. Label them as the saved values. The user confirms them with one reply or
-selects another profile.
+Look for a saved selection first:
 
-In every other case, offer the built-in recommended profile. This covers
-`start <idea>`, a bare `resume`, an unreadable record, and a record that holds no
-selection. Never report a saved value that you did not read.
+1. The action supplies a project path. Read `.project-kickoff/DISCOVERY.md` at
+   that path.
+2. The action supplies no path, and the host exposes a working directory. Look
+   for `.project-kickoff/DISCOVERY.md` under that directory.
+3. The host exposes no working directory. Go to the built-in profile below.
 
-After the path is confirmed, write the record. If the discovery record already
-holds a different selection, mark that older `DEC-###` superseded and tell the
-user which values it held. The answer from this conversation is the current
-selection.
+For branch 1 and branch 2, read the decision register of the record that you
+found. If the register holds a previous model and effort selection, offer those
+values back as the recommended profile. Label them as the saved values and name
+the exact path that they came from. The user then sees at once when the path is
+the wrong project. The user confirms the values with one reply, or selects
+another profile.
+
+In every other case, offer the built-in recommended profile. This covers a
+missing record, an unreadable record, and a record that holds no selection. Never
+report a saved value that you did not read.
+
+This read is a lookup. It does not confirm the project root. Continue to resolve
+and confirm the intended project directory through the normal `SKILL.md` start
+sequence. Do not adopt the directory of the record that you read.
+
+Write the record after the project directory is confirmed. If the confirmed
+project is the project that you read, and its register holds a different
+selection, mark that older `DEC-###` superseded. Name the values that it held.
+The answer from this conversation is the current selection. If the confirmed
+project is not the project that you read, the values that you offered belong to
+another project. Tell the user. Write a new `DEC-###` in the confirmed project
+and supersede nothing there.
 
 ## Where to record the selection
 

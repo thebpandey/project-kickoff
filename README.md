@@ -112,10 +112,13 @@ The question offers three named profiles. The recommended profile comes first. A
 free-text answer is always valid. A timeout or silence is not an answer.
 
 The Skill records your answer as a `DEC-###` decision in
-`.project-kickoff/DISCOVERY.md`. When a later invocation names a project path, the
-Skill reads that record and offers the saved values back as the recommendation.
-When the invocation names no path yet, the Skill offers its built-in
-recommendation and writes the record after you confirm the path. The Skill has no
+`.project-kickoff/DISCOVERY.md`. Before it asks, it looks for that record at the
+path you supplied, or under the current working directory when you supplied no
+path. If it finds a previous selection, it offers those values back as the
+recommendation and names the path they came from, so you can see at once if it is
+the wrong project. If it finds nothing readable, it offers its built-in
+recommendation. That lookup does not confirm the project root; the Skill still
+confirms the intended directory in its normal start sequence. The Skill has no
 session identifier. "First invocation" means only that the current conversation
 has not resolved a selection yet.
 
