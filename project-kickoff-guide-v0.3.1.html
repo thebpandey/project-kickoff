@@ -136,7 +136,7 @@
       <div class="hero-copy">
         <span class="version">Version 0.3.1</span>
         <h1 id="title">Turn one idea into an approved plan.</h1>
-        <p class="lede">Project Kickoff is a skill for Codex and Claude Code. It asks one question at a time. It records your decisions and your stage approvals. It writes the approved product, design, technical, and plan records, then prepares the Agent-Team handoff.</p>
+        <p class="lede">Project Kickoff is a skill for Codex and Claude Code. It asks one unresolved question at a time and records your answer. It writes the approved product, design, technical, and plan records, then prepares the Agent-Team handoff.</p>
         <p class="note"><strong>Important:</strong> Project Kickoff actions are chat messages. They are not shell commands. You type them into Codex or Claude Code, and the Skill never writes product feature code.</p>
       </div>
       <figure class="hero-art">
@@ -164,16 +164,16 @@
           <aside class="sketch-note"><strong>Short version:</strong><br>Answer one question.<br>Approve each stage.<br>Get approved records.<br>Hand the approved plan to Agent-Team.</aside>
         </div>
         <ul class="roles">
-          <li><strong>It asks</strong>One unresolved question per turn, with recommended choices and their trade-offs.</li>
-          <li><strong>It records</strong>Stable decision, requirement, and task IDs in the approved project documents.</li>
-          <li><strong>It prepares</strong>One live tracker, a minimal scaffold, and a validated handoff file.</li>
+          <li><strong>Questions</strong>One unresolved question per turn, with recommended choices and their trade-offs.</li>
+          <li><strong>Records</strong>Stable decision, requirement, and task IDs in the approved project documents.</li>
+          <li><strong>Preparation</strong>One live tracker, a minimal scaffold, and a validated handoff file.</li>
         </ul>
         <p>Project Kickoff supports new and existing web, mobile, desktop, API, CLI, and library projects. For an existing project it audits first, then asks you to retain, change, or defer each finding. It does not repair or refactor product code, and it does not choose an unresolved stack, tracker, product, or design for you.</p>
       </section>
 
       <section class="section" id="install">
         <h2>Install the complete package</h2>
-        <p class="intro">Project Kickoff is a private package. You need written permission from the licensors. You also need authenticated access to the private GitHub repository. Choose one host and one scope before you install.</p>
+        <p class="intro">Project Kickoff ships under a proprietary Private Use License. You need written permission from the licensors before you install it. The install examples use the GitHub CLI and the verified <code>v0.3.1</code> release tag. Choose one host and one scope before you install.</p>
         <table>
           <thead><tr><th>Scope</th><th>Codex</th><th>Claude Code</th></tr></thead>
           <tbody>
@@ -182,9 +182,9 @@
           </tbody>
         </table>
         <ol class="steps">
-          <li><h3>Check your access</h3><p>Sign in to the GitHub CLI with an account that can read the private repository. Use <code>gh auth status</code> to check that access. Never paste a token into chat.</p></li>
-          <li><h3>Open the intended project root</h3><p>Install the Skill into the repository where you will use it. Do not install it into an unrelated ancestor repository. For an empty new directory, create the repository with <code>git init -b main</code> first.</p></li>
-          <li><h3>Ask the agent to install it</h3><div class="command"><div class="command-head"><span>Recommended install prompt</span><button class="copy" type="button">Copy</button></div><pre>Install the complete Project Kickoff package from https://github.com/thebpandey/project-kickoff. Use release tag v0.3.1 and my authorized GitHub access. Inspect the source, license, exact revision, and any existing installation first. Install it at the skill path for this actual host. Use project scope unless I name user scope. Keep the private Skill out of the project's committed files. Check the package, then tell me which reload steps remain.</pre></div></li>
+          <li><h3>Check your access</h3><p>Get written permission from the licensors first. Sign in to the GitHub CLI with the account you will use. Use <code>gh auth status</code> to check that access. Never paste a token into chat.</p></li>
+          <li><h3>Open the intended project root</h3><p>Install the Skill into the repository where you will use it. Do not install it into an unrelated ancestor repository. The install block stops when an existing Git root does not match the current directory. For an empty new directory, the block creates the repository with a <code>main</code> branch.</p><p>A nonempty directory without Git stops the block with <code>Confirm and initialize this nonempty project first.</code> Inspect the content. Confirm the intended root. Run <code>git init -b main</code> yourself. Then run the install block again.</p></li>
+          <li><h3>Ask the agent to install it</h3><div class="command"><div class="command-head"><span>Recommended install prompt</span><button class="copy" type="button">Copy</button></div><pre>Install the complete Project Kickoff package from https://github.com/thebpandey/project-kickoff. Use release tag v0.3.1 and my authorized GitHub access. Inspect the source, license, exact revision, and any existing installation first. Install it at the skill path for this actual host. Use project scope unless I name user scope. Keep the licensed Skill package out of the project's committed files. Check the package, then tell me which reload steps remain.</pre></div></li>
           <li><h3>Check the package contents</h3><p>The workflow reads its references and templates at run time. Do not install <code>SKILL.md</code> alone. Check that <code>LICENSE</code>, <code>CHANGELOG.md</code>, <code>agents/openai.yaml</code>, <code>references/</code>, <code>assets/templates/</code>, <code>assets/hooks/</code>, and <code>scripts/</code> all arrived. Do not mix files from different release tags.</p></li>
           <li><h3>Reload the host</h3><p>Codex reads repository skills under <code>.agents/skills/</code>. Claude Code reads them under <code>.claude/skills/</code>. Restart or refresh the host if the Skill does not appear. In Claude Code, a personal skill with the same name can shadow the project skill, so check the loaded source.</p></li>
         </ol>
@@ -259,24 +259,33 @@
           <article class="sheet optional"><h3><code>audit-only</code></h3><p>Performs the same bounded audit and stops after the report. Use it when you want evidence before you decide anything.</p><div class="command"><div class="command-head"><span>Codex</span><button class="copy" type="button">Copy</button></div><pre>$project-kickoff audit-only /absolute/path/to/project</pre></div></article>
         </div>
         <h3>What the audit will not do</h3>
-        <p>During the audit the Skill does not initialize Git, rename an existing branch, replace project files, select a new tracker, install dependencies, or run mutating setup. It preserves all user work and all existing branches. It never overwrites, renumbers, closes, reopens, migrates, or duplicates tracker items. If the project evidence does not identify the canonical integration branch, the Skill asks you which existing branch it is.</p>
+        <p>During the audit the Skill does not initialize Git, rename an existing branch, or replace project files. It also does not select a new tracker, install dependencies, or run mutating setup. It preserves all user work and all existing branches. It never overwrites, renumbers, closes, reopens, migrates, or duplicates tracker items. If the project evidence does not identify the canonical integration branch, the Skill asks you which existing branch it is.</p>
         <h3>What the report contains</h3>
-        <p>Each finding gets a stable <code>AUD-###</code> ID with severity, the evidence path or revision, the observed condition, impact, confidence, the evidence gap, and a recommended decision. The Skill creates or merges root <code>AUDIT.md</code> and preserves existing findings and IDs. It reports every check as one of four states: run and passed, run and failed, blocked, or not run. Historical CI output and a README command are prior evidence. They are not a test result from this audit.</p>
+        <p>Each finding gets a stable <code>AUD-###</code> ID with severity, the evidence path or revision, and the observed condition. The finding also records impact, confidence, the evidence gap, and a recommended decision. The Skill creates or merges root <code>AUDIT.md</code> and preserves existing findings and IDs. It reports every check as one of four states: run and passed, run and failed, blocked, or not run. Historical CI output and a README command are prior evidence. They are not a test result from this audit.</p>
         <div class="callout"><strong>Worked example</strong><p>You run <code>audit</code> on a two-year-old API project. The Skill records that the documented architecture names a message queue, and that the code calls the database directly. It files that gap as <code>AUD-004</code> with the file path and the inspected revision. It then asks one question: keep the current direct calls, change to the documented queue, or defer the decision. The audit itself approves no remediation.</p></div>
       </section>
 
       <section class="section" id="questions">
         <h2>One question at a time</h2>
         <p class="intro">This is the behavior that separates Project Kickoff from a document generator. The Skill asks exactly one unresolved question per turn. It records that question as pending before it asks. It then ends its turn and waits.</p>
-        <div class="command"><div class="command-head"><span>Example question shape in a host without a native choice control</span><button class="copy" type="button">Copy</button></div><pre>Which tracker do you want as the one live tracker?
+        <p>If the host has no native choice control, the Skill sends exactly this plain-text shape and ends the turn.</p>
+        <div class="command"><div class="command-head"><span>The plain-text question shape</span><button class="copy" type="button">Copy</button></div><pre>&lt;One question&gt;
 
-1. Beads (Recommended). It adds dependency-aware task records and works with an Agent-Team handoff.
-2. Root TASKS.md. It is a simple single-writer file without Beads automation.
+1. &lt;Choice&gt; (Recommended) — &lt;effect or trade-off&gt;
+2. &lt;Choice&gt; — &lt;effect or trade-off&gt;
+3. &lt;Choice&gt; — &lt;effect or trade-off&gt;
 
 Reply with a number or your own answer.</pre></div>
-        <p>When the host exposes a native choice control, the Skill uses it. In Codex that is the exposed user-input tool with one question, two or three mutually exclusive choices, the recommended choice first, and <code>(Recommended)</code> in its label. The host supplies the free-text choice, so the Skill does not add a duplicate one. Free-text answers are always valid.</p>
+        <p>Two choices are enough when there are only two real options. A filled question looks like this.</p>
+        <div class="command"><div class="command-head"><span>The same shape with a real question</span><button class="copy" type="button">Copy</button></div><pre>Which tracker do you want as the one live tracker?
+
+1. Beads (Recommended) — dependency-aware task records that suit an Agent-Team handoff
+2. Root TASKS.md — a simple single-writer file without Beads automation
+
+Reply with a number or your own answer.</pre></div>
+        <p>When the host exposes a native choice control, the Skill uses it. In Codex that is the exposed user-input tool. It carries one question, two or three mutually exclusive choices, and the recommended choice first. Its label contains <code>(Recommended)</code>. The host supplies the free-text choice, so the Skill does not add a duplicate one. Free-text answers are always valid.</p>
         <div class="grid">
-          <article class="sheet required"><h3>Silence is not consent</h3><p>A timeout or silence is not an answer. The Skill does not ask the next question, write a dependent decision, activate a fallback, or start setup until your answer arrives.</p></article>
+          <article class="sheet required"><h3>Silence is not an answer</h3><p>A timeout or silence is not an answer. The Skill does not ask the next question, write a dependent decision, activate a fallback, or start setup until your answer arrives.</p></article>
           <article class="sheet required"><h3>Five separate approvals</h3><p>The five stages are product definition, first-release scope, experience and design, technical blueprint, and execution and handoff. Each stage ends with its own approval question, recorded as <code>APR-001</code> through <code>APR-005</code>.</p></article>
           <article class="sheet required"><h3>Decisions carry sources</h3><p>Each material decision gets a <code>DEC-###</code> record with its source, date, status, rationale, and affected artifacts. Open assumptions and blockers stay marked as open. The Skill does not convert them into facts.</p></article>
           <article class="sheet required"><h3>A change is an answer</h3><p>An explicit change from you is recorded as the answer and the decision source. The Skill does not ask you to confirm that same decision again. It asks only for the next unresolved consequence.</p></article>
@@ -302,32 +311,32 @@ Reply with a number or your own answer.</pre></div>
             <tr><td><code>README.md</code></td><td>A short project orientation and handoff note.</td><td>After its dependent decisions are approved.</td></tr>
             <tr><td><code>TASKS.md</code></td><td>A single-writer Markdown tracker.</td><td>Only after you select root <code>TASKS.md</code> as the tracker.</td></tr>
             <tr><td><code>.project-kickoff/setup.json</code></td><td>Host and project identity, tracker mode and path, each dependency's source and verification evidence, and every plan-ID to tracker-ID mapping.</td><td>During setup.</td></tr>
-            <tr><td><code>.project-kickoff/AGENT_TEAM_HANDOFF.json</code></td><td>The machine-readable handoff: approved revision, integration branch tip, tracker task IDs, and verification commands.</td><td>Before the Agent-Team handoff.</td></tr>
+            <tr><td><code>.project-kickoff/AGENT_TEAM_HANDOFF.json</code></td><td>The machine-readable handoff: approved revision, integration branch tip, tracker task IDs, release acceptance conditions, verification commands, and owned paths.</td><td>Before the Agent-Team handoff.</td></tr>
           </tbody>
         </table>
         <p>Stable IDs never change when a title or an order changes, and a retired ID is never reused for a new meaning. An existing project keeps its established IDs; the Skill does not renumber them to its own convention. Epics and stories stay in <code>PLAN.md</code> as <code>EPIC-###</code> and <code>STORY-###</code> summaries. They are not seeded as runnable tracker rows.</p>
-        <div class="callout"><strong>Discovery writes very little.</strong> While a dependent choice is open, the Skill limits its writes to <code>.project-kickoff/DISCOVERY.md</code>, <code>CONTEXT.md</code>, the explicitly approved <code>.project-kickoff/context-hook.json</code> activation marker, and other planning notes you approved. It does not store credentials, raw sensitive data, or private reasoning in any checkpoint.</div>
+        <div class="callout"><strong>Discovery writes very little.</strong> While a dependent choice is open, the Skill limits its writes to <code>.project-kickoff/DISCOVERY.md</code> and <code>CONTEXT.md</code>. It also writes the explicitly approved <code>.project-kickoff/context-hook.json</code> activation marker and other planning notes you approved. It does not store credentials, raw sensitive data, or private reasoning in any checkpoint.</div>
       </section>
 
       <section class="section" id="setup">
         <h2>Setup and the minimal scaffold</h2>
         <p class="intro">Setup runs after the dependent product, scope, design, and technical decisions are approved. It changes only the selected project.</p>
         <h3>The six dependencies</h3>
-        <p>The Skill presents these six every time, even when some are already ready. For each one it shows the purpose, a Ready, Missing, or Cannot use status, the selected executable or skill path, the source, the version or exact revision, the install scope and location, the license or access terms, and the verification result.</p>
+        <p>The Skill presents these six every time, even when some are already ready. For each one it shows the purpose and a Ready, Missing, or Cannot use status. It also shows the selected executable or skill path, the source, and the version or exact revision. It ends with the install scope and location, the license or access terms, and the verification result.</p>
         <table>
           <thead><tr><th>Dependency</th><th>Purpose</th><th>Authoritative source</th></tr></thead>
           <tbody>
-            <tr><td>Ponytail</td><td>Minimal implementation and YAGNI guidance.</td><td>https://github.com/DietrichGebert/ponytail</td></tr>
-            <tr><td>Using-Superpowers</td><td>Planning, debugging, testing, and review procedures.</td><td>https://github.com/obra/superpowers</td></tr>
-            <tr><td>Beads</td><td>Dependency-aware implementation tracker.</td><td>https://github.com/gastownhall/beads</td></tr>
-            <tr><td>Agent-Team</td><td>Delegated implementation, integration, and coordination.</td><td>The authorized package source recorded for the installed copy.</td></tr>
-            <tr><td>Impeccable</td><td>Product and interface design workflow.</td><td>https://github.com/pbakaus/impeccable</td></tr>
-            <tr><td>UI UX Pro Max Skill</td><td>UI and UX patterns, data, and search tools.</td><td>https://github.com/nextlevelbuilder/ui-ux-pro-max-skill</td></tr>
+            <tr><td>Ponytail</td><td>Minimal implementation and YAGNI guidance.</td><td><a href="https://github.com/DietrichGebert/ponytail">github.com/DietrichGebert/ponytail</a></td></tr>
+            <tr><td>Using-Superpowers</td><td>Existing planning, debugging, testing, and review procedures.</td><td><a href="https://github.com/obra/superpowers">github.com/obra/superpowers</a></td></tr>
+            <tr><td>Beads</td><td>Dependency-aware implementation tracker.</td><td><a href="https://github.com/gastownhall/beads">github.com/gastownhall/beads</a></td></tr>
+            <tr><td>Agent-Team</td><td>Delegated implementation, integration, and coordination.</td><td>The authorized package source recorded for the installed proprietary copy.</td></tr>
+            <tr><td>Impeccable</td><td>Product and interface design workflow.</td><td><a href="https://github.com/pbakaus/impeccable">github.com/pbakaus/impeccable</a></td></tr>
+            <tr><td>UI UX Pro Max Skill</td><td>UI and UX patterns, data, and search tools.</td><td><a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill">github.com/nextlevelbuilder/ui-ux-pro-max-skill</a></td></tr>
           </tbody>
         </table>
         <ol class="steps">
           <li><h3>Resolve the Git boundary</h3><p>The Skill inspects the top level, status, remotes, branches, and worktrees. A new repository uses <code>main</code> as its canonical branch. An existing repository keeps its branch names, and the Skill records the branch that you designate.</p></li>
-          <li><h3>Check each tool for real</h3><p>A directory, a download, or a successful installer exit is not proof that a tool works. The Skill uses the selected executable's version or help output and a small functional check. It prefers project scope and reuses a compatible installation.</p></li>
+          <li><h3>Check that each tool runs</h3><p>A directory, a download, or a successful installer exit is not proof that a tool works. The Skill uses the selected executable's version or help output and a small functional check. It prefers project scope and reuses a compatible installation.</p></li>
           <li><h3>Select one tracker</h3><p>If Beads is unavailable, the Skill researches current free or open-source alternatives, includes root <code>TASKS.md</code> as one choice, and asks one question. It does not create, write, or call any fallback tracker before you select it.</p></li>
           <li><h3>Seed the tracker once</h3><p>Seeding starts only after <code>PLAN.md</code> is approved. The Skill resolves each executable task from the saved mapping, creates a tracker item only when none exists, and persists each new mapping immediately. A failed run leaves a valid partial seed that the next run continues. It never deletes and recreates the tracker to recover.</p></li>
           <li><h3>Build the minimal scaffold in a worktree</h3><p>The Skill keeps the canonical checkout for planning and shared records. It creates a task branch and worktree from the verified integration revision, and delegates all scaffold code, configuration, builds, and tests to that worktree. It combines the work in one integration worktree, verifies it, and then updates the canonical branch.</p></li>
@@ -338,7 +347,7 @@ Reply with a number or your own answer.</pre></div>
 
       <section class="section" id="handoff">
         <h2>Hand off to Agent-Team</h2>
-        <p class="intro">Project Kickoff 0.3.1 handoffs are tested against Agent-Team 7.0.2. Kickoff supplies the approved documents, the selected tracker and its mapping, the setup receipt, the project instructions, the first ready task, and the validated handoff file.</p>
+        <p class="intro">Project Kickoff 0.3.1 handoffs are tested against Agent-Team 7.0.2. Kickoff supplies the approved documents, the selected tracker and its mapping, and the setup receipt. It also supplies the project instructions, the first ready task, and the validated handoff file.</p>
         <ol class="steps">
           <li><h3>Meet the readiness gate</h3><p>The Skill declares <code>ready for handoff</code> only when every condition below is true. A failed install is not ready, and a deferred optional tool is reported separately.</p>
             <details><summary>The readiness conditions</summary><div>
@@ -365,7 +374,8 @@ Reply with a number or your own answer.</pre></div>
           </li>
         </ol>
         <h3>The limits the checker enforces</h3>
-        <p>The tracker must be Beads or Markdown at root <code>TASKS.md</code> or <code>.agent-team/TASKS.md</code>. The file holds at most 500 implementation task records and stays at or below 250 KiB, so Agent-Team can wrap it in its initialization request. Task IDs must be unique, safe, and an exact match for every row in the selected tracker. The handoff lists task IDs only; titles, status, dependencies, and acceptance details stay in the tracker and the approved plan. The approved plan revision must exist on the named integration branch, and the recorded project revision must equal the current branch tip. At least one dependency-ready task must exist while implementation work remains.</p>
+        <p>The tracker must be Beads or Markdown at root <code>TASKS.md</code> or <code>.agent-team/TASKS.md</code>. The file holds at most 500 implementation task records and stays at or below 250 KiB, so Agent-Team can wrap it in its initialization request. Task IDs must be unique, safe, and an exact match for every row in the selected tracker. The task list holds only tracker task IDs.</p>
+        <p>Titles, status, and dependencies stay in the tracker and the approved plan. The file itself also carries the approved scope, the release acceptance conditions, the verification commands, and the owned paths. The approved plan revision must exist on the named integration branch, and the recorded project revision must equal the current branch tip. At least one dependency-ready task must exist while implementation work remains.</p>
         <div class="callout"><strong>Project Kickoff prepares the command. It does not run it.</strong> The Skill never creates or edits <code>.agent-team/setup.json</code>. Agent-Team owns that runtime receipt and creates it during project initialization. Project Kickoff can read an existing one for audit or resume, and treats it as read-only.</div>
         <p>After verified integration into the canonical integration branch, the Skill cleans the eligible task branches, worktrees, and task-owned processes. It checks each worktree by ancestry, or by exact patch identity for a squashed integration. It removes only clean, fully integrated worktrees through normal Git worktree commands, and it never forces a removal. Unknown files, local data, secrets, and unfinished changes are retained and reported. This cleanup does not wait for a production deployment.</p>
       </section>

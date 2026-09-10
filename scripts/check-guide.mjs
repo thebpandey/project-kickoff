@@ -17,11 +17,17 @@ import { readFileSync } from "node:fs";
 import { argv, exit } from "node:process";
 
 const DEFAULT_GUIDE = "project-kickoff-guide-v0.3.1.html";
-const IMAGE_PLACEHOLDERS = ["IMAGE_HERO_PLACEHOLDER", "IMAGE_FLOW_PLACEHOLDER"];
+const GUIDE_IMAGES = [
+  ["overview-image", "IMAGE_HERO_PLACEHOLDER"],
+  ["flowchart-image", "IMAGE_FLOW_PLACEHOLDER"],
+];
 const FORBIDDEN_TEXT = ["Agent-Team field guide", "agent-team-guide-v7.0.2", "Morpheus"];
 
 const guidePath = argv[2] ?? DEFAULT_GUIDE;
 const html = readFileSync(guidePath, "utf8");
+
+// A <pre> block quotes an official format verbatim. The prose rules do not apply inside one.
+const prose = html.replace(/<pre>[\s\S]*?<\/pre>/g, "");
 
 const results = [];
 
@@ -34,28 +40,49 @@ function matchAll(pattern) {
   return [...html.matchAll(pattern)];
 }
 
-function countOccurrences(needle) {
-  return html.split(needle).length - 1;
+function countOccurrences(haystack, needle) {
+  return haystack.split(needle).length - 1;
 }
 
-check("internal links resolve", () => {
-  const ids = new Set(matchAll(/\sid="([^"]+)"/g).map((m) => m[1]));
+check("ids are unique and internal links resolve", () => {
+  const ids = matchAll(/\sid="([^"]+)"/g).map((m) => m[1]);
+  const problems = [];
+
+  const seen = new Set();
+  const duplicates = new Set();
+  for (const id of ids) {
+    if (seen.has(id)) duplicates.add(id);
+    seen.add(id);
+  }
+  if (ids.length !== seen.size) {
+    for (const id of duplicates) problems.push(`id "${id}" is used more than once`);
+  }
+
   const targets = matchAll(/href="#([^"]+)"/g).map((m) => m[1]);
-  const missing = [...new Set(targets.filter((target) => !ids.has(target)))];
-  return missing.map((target) => `no element has id "${target}"`);
+  for (const target of new Set(targets)) {
+    if (!seen.has(target)) problems.push(`no element has id "${target}"`);
+  }
+
+  return problems;
 });
 
-check("image placeholders appear exactly once", () =>
-  IMAGE_PLACEHOLDERS.flatMap((placeholder) => {
-    const count = countOccurrences(placeholder);
-    return count === 1 ? [] : [`${placeholder} appears ${count} times`];
+// The orchestrator swaps each placeholder for a PNG data URI at integration.
+// This check must hold before and after that swap, and must still fail if an
+// image loses its source entirely.
+check("both guide images have a usable source", () =>
+  GUIDE_IMAGES.flatMap(([id, placeholder]) => {
+    const tag = html.match(new RegExp(`<img[^>]*\\sid="${id}"[^>]*>`));
+    if (!tag) return [`no img element has id "${id}"`];
+    const src = (tag[0].match(/\ssrc="([^"]*)"/) || [])[1] || "";
+    if (src === placeholder || src.startsWith("data:image/")) return [];
+    return [`${id} src is neither ${placeholder} nor a data:image URI`];
   }));
 
-check("no em dash and no en dash", () => {
+check("no em dash and no en dash in prose", () => {
   const problems = [];
   for (const [label, character] of [["em dash", "—"], ["en dash", "–"]]) {
-    const count = countOccurrences(character);
-    if (count > 0) problems.push(`${label} appears ${count} times`);
+    const count = countOccurrences(prose, character);
+    if (count > 0) problems.push(`${label} appears ${count} time(s) outside pre blocks`);
   }
   return problems;
 });
