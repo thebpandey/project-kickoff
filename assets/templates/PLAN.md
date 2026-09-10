@@ -116,9 +116,11 @@ clear. Resolve cycles and missing prerequisites before approval.
 
 ## Tracker initialization
 
-- Selected tracker: {{Beads | root TASKS.md | user-approved alternative | Pending}}
+- Selected tracker: {{Beads | root TASKS.md | .agent-team/TASKS.md | user-approved non-Agent-Team alternative | Pending}}
 - Canonical location / identity: {{absolute path, database identity, or Pending}}
-- Setup receipt: {{.agent-team/setup.json path}}
+- Project Kickoff setup receipt: {{.project-kickoff/setup.json path}}
+- Agent-Team input: {{.project-kickoff/AGENT_TEAM_HANDOFF.json path or Not applicable}}
+- Handoff validation: {{check_agent_team_handoff.py result or Pending}}
 - Writer / concurrency rule: {{project orchestrator only, or verified backend rule}}
 - ID mapping: {{PLAN task ID -> tracker ID, populated during seeding}}
 - First actionable task: {{TASK ID, or Blocked by OQ/decision ID}}

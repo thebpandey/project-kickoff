@@ -102,6 +102,10 @@ the one-question protocol and the approval boundaries below.
 - A minimal scaffold contains only approved structure and basic tooling. State
   when it has no runnable application. Prepare the Agent-Team invocation, but do
   not start it as a side effect.
+- Keep Project Kickoff state in `.project-kickoff/`. Never create or edit
+  `.agent-team/setup.json`; Agent-Team owns that initialization receipt and its
+  other runtime state. Before an Agent-Team handoff, generate and validate
+  `.project-kickoff/AGENT_TEAM_HANDOFF.json` from the approved plan and tracker.
 - After verified integration into the canonical integration branch, clean
   eligible task branches, worktrees, and task-owned processes. This cleanup does
   not depend on production deployment.

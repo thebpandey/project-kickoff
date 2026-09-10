@@ -2,6 +2,10 @@
 
 Current version: **0.3.0**
 
+The current `main` branch also contains unreleased compatibility updates for
+Agent-Team 7.0.2. The published installation examples below remain pinned to the
+verified `v0.3.0` release until a new Project Kickoff release is published.
+
 ```text
 ██████   ██████     ████   ████████ ████████   ██████ ████████
 ██    ██ ██    ██ ██    ██     ██   ██       ██         ████
@@ -79,17 +83,20 @@ flowchart TD
     APPROVE -->|All five stages approved| PLAN["Finalize PRD.md, DESIGN.md, and PLAN.md"]
     PLAN --> SETUP["Inspect six dependencies and project setup"]
     SETUP --> TRACKER{"Is the selected tracker ready?"}
-    TRACKER -->|Yes| SEED["Seed stable plan IDs once and verify hierarchy"]
+    TRACKER -->|Yes| SEED["Seed implementation task IDs once and verify dependencies"]
     TRACKER -->|No| ALT["Research free or open-source choices"]
     ALT --> CHOOSE["Ask the user to choose a fallback"]
-    CHOOSE --> WAIT2["Wait; do not activate a temporary tracker"]
-    WAIT2 --> SEED
+    CHOOSE --> COMPAT{"Compatible with Agent-Team 7.0.2?"}
+    COMPAT -->|Yes| SEED
+    COMPAT -->|No| OTHER["Prepare the selected non-Agent-Team handoff"]
     SEED --> DOCS["Finalize agent rules, context, receipts, and one live tracker"]
     DOCS --> WT["Delegate minimal scaffold work in a task worktree"]
     WT --> INT["Verify in one integration worktree"]
     INT --> CLEAN["Update the canonical branch and clean verified integrated work"]
-    CLEAN --> READY["Prepare the exact Agent-Team handoff"]
+    CLEAN --> CONTRACT["Write and validate the bounded Agent-Team handoff"]
+    CONTRACT --> READY["Prepare the exact Agent-Team invocation"]
     READY --> NOAUTO["Stop; do not start Agent-Team automatically"]
+    OTHER --> NOAUTO
 ```
 
 Each stage uses the same question loop. A timeout is not an answer. A direct user
@@ -125,8 +132,9 @@ flowchart LR
     B --> BR{"Beads ready?"}
     BR -->|Yes| BT["Use Beads as the only live tracker"]
     BR -->|No| RESEARCH["Research current alternatives"]
-    RESEARCH --> USER["User selects root TASKS.md or another verified option"]
-    USER --> FT["Activate only the selected tracker"]
+    RESEARCH --> USER{"Which verified tracker does the user select?"}
+    USER -->|root TASKS.md| FT["Activate the Agent-Team-compatible fallback"]
+    USER -->|another tracker| NAT["Use it only without Agent-Team 7.0.2"]
 
     I --> VIS{"Visual interface?"}
     UI --> VIS
@@ -143,6 +151,10 @@ flowchart LR
 The Skill prefers compatible project-local installations. It preserves current
 project settings. It does not add global configuration or hooks without matching
 authorization. If one tool is unavailable, it continues independent work.
+
+For Agent-Team 7.0.2, the handoff tracker is Beads or Markdown at `TASKS.md` or
+`.agent-team/TASKS.md`. Another tracker can support a project that does not use
+Agent-Team, but it is not a compatible Agent-Team 7.0.2 handoff target.
 
 ## Requirements before installation
 
@@ -287,6 +299,11 @@ Do not install only `SKILL.md`. The workflow needs its references and templates.
 Check a published archive against its release checksum when one is supplied.
 Do not mix files from different release tags.
 
+The current `main` branch adds
+`assets/templates/AGENT_TEAM_HANDOFF.json`,
+`scripts/check_agent_team_handoff.py`, and their regression tests. These files
+are not part of the published v0.3.0 archive shown above.
+
 ## Optional project hooks
 
 Version 0.3.0 keeps the read-only `SessionStart` context loader from version
@@ -398,7 +415,9 @@ Enter one of these lines in Claude Code chat:
 | `MISTAKES.md` | Stores confirmed lessons under one project-orchestrator writer. It starts empty. |
 | `CONTEXT.md` | Stores a short resumption checkpoint and links to the live tracker. |
 | `README.md` | Orients people to the generated project and verified commands. |
-| `.agent-team/setup.json` | Records host, dependency, version, tracker, and stable ID mappings. It does not store task status or secrets. |
+| `.project-kickoff/setup.json` | Records Project Kickoff dependency, tracker, and stable ID choices. It does not store task status or secrets. |
+| `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Gives Agent-Team 7.0.2 a bounded, validated, machine-readable initialization input. |
+| `.agent-team/setup.json` | Agent-Team creates this runtime receipt later. Project Kickoff treats it as read-only. |
 | Selected tracker | Owns live execution status. The Skill activates only one tracker. |
 | Minimal scaffold | Adds only approved folders and basic tooling. It can contain no runnable application yet. |
 
@@ -432,9 +451,10 @@ evidence report.
 ## Setup, tracking, and recovery
 
 The Skill keeps `PLAN.md` as the approved baseline. The selected tracker owns
-live status. It maps stable epic, story, and task plan IDs to tracker IDs. It
-creates parent records before child records when the tracker supports hierarchy.
-It verifies blocker direction separately from parent-child links.
+live status. It maps stable implementation task IDs to tracker IDs. It keeps
+epics and stories in the plan instead of seeding them as tracker rows. This
+prevents Agent-Team 7.0.2 from claiming an open summary record as implementation
+work. It verifies blocker direction separately from hierarchy.
 
 After an interrupted seed, the Skill reads the tracker and saved mappings. It
 reuses exact matches. It creates only missing records. It stores each mapping
@@ -444,6 +464,34 @@ If Beads is unavailable, the Skill explains the failure. It offers root
 `TASKS.md` and researched current alternatives. It waits for the user's choice.
 It does not use `TASKS.md` as a temporary tracker. It does not switch back to
 Beads automatically if Beads becomes available later.
+
+Before an Agent-Team handoff, the Skill writes
+`.project-kickoff/AGENT_TEAM_HANDOFF.json` and runs
+`scripts/check_agent_team_handoff.py`. The checker enforces the 7.0.2 boundary:
+
+- The file is at most 250 KiB.
+- It contains no more than 500 implementation tasks.
+- Its task IDs exactly match all rows in the selected tracker.
+- Task titles, statuses, dependencies, and acceptance details stay in the
+  approved plan and tracker instead of being copied into the handoff.
+- Task IDs are unique and dependencies have no missing IDs or cycles.
+- The approved plan revision exists on the selected integration branch.
+- The recorded project revision equals the current integration branch tip.
+- At least one task is actionable when implementation remains.
+- The tracker is Beads, root `TASKS.md`, or `.agent-team/TASKS.md`.
+- Owned paths are project-relative and cannot traverse outside the project.
+
+Beads validation uses the same five-second read window as Agent-Team 7.0.2. A
+read that needs more than the former 1.5-second limit does not fail early.
+
+During the later Agent-Team session, the same checker can emit the direct
+`project-initialize` request. The caller supplies the actual registered owner
+session, a unique operation ID, and the current setup version. Project Kickoff
+does not guess these runtime identities.
+
+Kickoff does not write `.agent-team/setup.json`. Agent-Team creates that file
+atomically with its team registry, state, and operation cache during project
+initialization.
 
 On resume, the Skill checks the actual files, Git revision, recorded version,
 approved decisions, active tracker, and pending question. A version mismatch does
@@ -463,9 +511,10 @@ untracked, and ignored files. It removes only clean, fully integrated task
 worktrees and branches. It keeps uncertain or unfinished work. This cleanup does
 not wait for production deployment.
 
-The final handoff gives the user the exact Agent-Team invocation for the active
-host. Preparing the handoff does not run Agent-Team. The user starts the next
-workflow when ready.
+The final handoff gives the user the validated input path and exact Agent-Team
+invocation for the active host. Agent-Team controls runtime workers, worktrees,
+scopes, and operation identities after it initializes the project. Preparing the
+handoff does not run Agent-Team. The user starts the next workflow when ready.
 
 ## Optional targeted skills
 

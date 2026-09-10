@@ -2,7 +2,8 @@
 
 Status: Approved by the user on 2026-09-06, including the implementation design
 and LICENSE. Build, validation, packaging, and private GitHub publication are
-authorized.
+authorized. The Agent-Team 7.0.2 compatibility amendment was authorized on
+2026-09-09.
 
 ## Purpose
 
@@ -118,14 +119,14 @@ On resume, restore that state and continue with the pending decision.
 
 - The installed Agent-Team supports a local `TASKS.md` tracker and requires one
   authoritative tracker. Its default path is `.agent-team/TASKS.md`, but it can
-  use a user-designated path. Offer root `TASKS.md` as the requested fallback
-  and record its canonical location in the Agent-Team setup receipt.
+  also use root `TASKS.md`. Offer root `TASKS.md` as the requested fallback and
+  record its canonical location in `.project-kickoff/setup.json` and the
+  validated handoff.
 - Agent-Team keeps shared mistakes under one orchestrator writer and uses
   per-agent context notes. Reuse its compact lesson fields and context fields.
   Start MISTAKES.md with instructions and an empty index, not invented lessons.
-- Agent-Team's current cleanup procedure is tied to production verification.
-  This project's requested rule is cleanup after verified integration into
-  main. State that project rule explicitly in generated instructions.
+- Agent-Team 7.0.2 separates cleanup from production deployment. Keep the same
+  cleanup-after-verified-integration rule in generated project instructions.
 - The installed Impeccable expects product context as well as `DESIGN.md`.
   Generate a compact derived `PRODUCT.md` only when the selected Impeccable
   version requires it. Identify PRD.md as its source, record that revision, and
@@ -205,8 +206,16 @@ project-orchestrator writer.
 Keep detailed interview answers and stage approval records in
 `.project-kickoff/DISCOVERY.md`, referenced by CONTEXT.md. Record source, date,
 status, and affected artifact for each material decision. Keep credentials and
-raw sensitive data out of both files. Store dependency setup choices in the
-canonical `.agent-team/setup.json` where compatible, preserving unrelated fields.
+raw sensitive data out of both files. Store Project Kickoff dependency and
+tracker choices in `.project-kickoff/setup.json`. Do not create or edit
+Agent-Team's `.agent-team/setup.json` runtime receipt.
+
+For Agent-Team 7.0.2, generate and validate
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`. Use Beads or a supported Markdown
+tracker. Include at most 500 implementation tasks. Match all selected tracker
+IDs, statuses, and dependencies. Keep the file at or below 250 KiB. The handoff
+checker supplies the later runtime identity fields and emits Agent-Team's direct
+`project-initialize` request.
 
 Provide a short project README for orientation and handoff. Add an appropriate
 `.gitignore` and example environment variable names only when the chosen tooling

@@ -40,7 +40,8 @@ retrofit mapping. Recommendations in the audit are not implemented changes.
 - [`AGENTS.md`](AGENTS.md) — common project policy for coding agents.
 - [`MISTAKES.md`](MISTAKES.md) — canonical shared lessons, initially empty.
 - {{selected tracker link}} — live task state. The selection and canonical
-  location are recorded in `.agent-team/setup.json`.
+  location are recorded in `.project-kickoff/setup.json` and the validated
+  `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
 
 ## Repository structure
 
@@ -57,7 +58,7 @@ kickoff | Runnable component and verified command below}}.
 
 | Dependency / access | Purpose | Required now? | Verified version / state | Setup source / receipt |
 | --- | --- | --- | --- | --- |
-| {{tool, runtime, account, or service}} | {{purpose}} | {{Yes / Later / Optional}} | {{version/state actually checked or Pending}} | {{official docs and .agent-team/setup.json pointer}} |
+| {{tool, runtime, account, or service}} | {{purpose}} | {{Yes / Later / Optional}} | {{version/state actually checked or Pending}} | {{official docs and .project-kickoff/setup.json pointer}} |
 
 Use project-scoped installation and configuration. Do not include credentials in
 this repository. Required environment variable names, if any: {{names only or
@@ -82,7 +83,9 @@ do not infer it from another project or package manager.
 
 - Plan approval: {{APR ID, source, date, PLAN version}}
 - Active tracker: {{mode and canonical absolute path or identity}}
-- Tracker setup receipt: {{absolute `.agent-team/setup.json` path}}
+- Project Kickoff setup receipt: {{absolute `.project-kickoff/setup.json` path}}
+- Validated Agent-Team input: {{absolute `.project-kickoff/AGENT_TEAM_HANDOFF.json` path}}
+- Agent-Team initialization receipt: {{absolute `.agent-team/setup.json` path or Not initialized; Agent-Team-owned}}
 - First actionable task: {{TASK ID -> tracker ID and intended outcome}}
 - Current blocker / pending question: {{OQ/F ID or None}}
 - Shared-record writer: {{project orchestrator identity}}
@@ -90,8 +93,10 @@ do not infer it from another project or package manager.
 - Integration worktree: {{absolute path or Create when first needed}}
 - Required lessons: {{M-IDs or None}}
 - Exact invocation for this host: `{{verified Codex or Claude Code invocation}}`
+- Initialization request: {{checker command with the actual Agent-Team owner session, operation ID, and current setup version}}
 
-The handoff prepares agent-team; it does not start implementation. Product code,
+The handoff is tested with Agent-Team 7.0.2. It prepares Agent-Team; it does not
+create Agent-Team runtime state or start implementation. Product code,
 package installation, scaffold execution, builds, and tests run later through
 complexity-appropriate subagents in isolated worktrees under `AGENTS.md`.
 

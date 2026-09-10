@@ -75,6 +75,10 @@ history.
 - Adapt [README.md](../assets/templates/README.md) as a short project orientation and handoff.
 - Adapt [TASKS.md](../assets/templates/TASKS.md) only after the user selects root `TASKS.md`
   as the tracker fallback. It is not an automatic or temporary tracker.
+- Adapt [AGENT_TEAM_HANDOFF.json](../assets/templates/AGENT_TEAM_HANDOFF.json) as
+  `.project-kickoff/AGENT_TEAM_HANDOFF.json` before an Agent-Team handoff. Keep it
+  machine-readable and run `scripts/check_agent_team_handoff.py` against it. The
+  file describes approved inputs; it is not Agent-Team runtime state.
 
 Use [DISCOVERY.md](../assets/templates/DISCOVERY.md) for the detailed interview
 record. Use its decision and approval IDs as sources for derived artifacts.
@@ -92,3 +96,20 @@ Add `.gitignore` entries and example environment variable names only when the
 approved tooling needs them. Never include secret values. List commands only for
 tools that were created and verified. State clearly if the minimal scaffold does
 not yet run an application.
+
+## Agent-Team 7.0.2 boundary
+
+The handoff supports Agent-Team 7.0.2. Use only a selected Beads tracker or a
+Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
+500 implementation task records, keep the JSON at or below 250 KiB, use unique safe
+task IDs, and provide at least one dependency-ready task when implementation
+remains. The handoff lists only task IDs. They must exactly match all rows in the
+selected tracker. The checker reads status and dependencies from that tracker;
+the handoff must not duplicate canonical task content. The approved plan
+revision must exist on the named integration branch. The recorded project
+revision must equal the current branch tip.
+
+Keep epics and stories in `PLAN.md`. Do not seed them as tracker rows. This
+prevents an open or ready summary record from becoming runnable Agent-Team work.
+Agent-Team controls runtime assignments, worktrees, scopes, and correlation IDs
+after it initializes the project.

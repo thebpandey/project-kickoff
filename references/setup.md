@@ -70,7 +70,7 @@ Superpowers procedures rather than adding competing workflow packages.
 
 ## Record setup
 
-Use the canonical `.agent-team/setup.json` when it is compatible. Preserve
+Use `.project-kickoff/setup.json` for Project Kickoff's setup receipt. Preserve
 unrelated fields. Keep it in the canonical planning checkout and record:
 
 - host and project identity;
@@ -79,11 +79,16 @@ unrelated fields. Keep it in the canonical planning checkout and record:
 - each dependency's source, version/revision, license/access condition, scope,
   selected path, status, verification evidence, and check date;
 - declined, deferred, failed, and superseded choices;
-- every stable epic, story, and task plan-ID to tracker-ID mapping, plus the last
-  seeded plan revision.
+- every implementation task plan-ID to tracker-ID mapping and the last seeded
+  plan revision. Keep epic and story hierarchy in `PLAN.md`.
 
 Do not store credentials or task status there. The receipt records choices; it
 does not grant new permission.
+
+Do not create or edit `.agent-team/setup.json`. Agent-Team owns that file and
+creates it atomically with its runtime state during project initialization.
+Project Kickoff may read an existing Agent-Team receipt to resume or audit, but
+must treat it as read-only.
 
 Initialize and seed the selected tracker as project-orchestrator planning-record
 operations in the canonical checkout. This keeps the shared database or task file
@@ -99,6 +104,11 @@ capability, research current free or open-source alternatives from authoritative
 sources. Compare the needed capability, gaps, maintenance, host support, source,
 and verified license. Do not describe an unverified or paid product as a free
 equivalent.
+
+For an Agent-Team 7.0.2 handoff, the selected tracker must be Beads or Markdown
+at root `TASKS.md` or `.agent-team/TASKS.md`. Other researched trackers remain
+valid for projects that will not use Agent-Team, but are not compatible handoff
+targets for this version.
 
 If Beads is unavailable, include root `TASKS.md` as one choice and explain that
 it is a simple single-writer file without Beads automation. Present researched
@@ -123,3 +133,39 @@ examples, Git files, and instructions needed for the approved first release.
 Delegate scaffold code and configuration to a task-specific worktree as described
 in [handoff](handoff.md). Do not implement product features. Verify only commands
 that actually exist, and state when no runnable application exists yet.
+
+## Prepare the Agent-Team input
+
+After the plan, tracker, and scaffold are verified, adapt
+`assets/templates/AGENT_TEAM_HANDOFF.json` to
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`. Put only the ID of each implementation
+task in its task list. Include every selected tracker row exactly once. Do not
+copy titles, status, dependencies, or acceptance details into this list. The
+selected tracker and approved plan own that content. Limit the list to 500 tasks
+and the file to 250 KiB so Agent-Team can wrap it in its
+256 KiB initialization request. Validate it with:
+
+```bash
+python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \
+  --handoff .project-kickoff/AGENT_TEAM_HANDOFF.json
+```
+
+Resolve `<project-kickoff-skill-path>` to the loaded Skill directory. Do not
+start Agent-Team or pre-create its runtime receipt as part of this check.
+
+At the later Agent-Team initialization step, use the actual registered project
+owner session, a new operation ID, and the freshly observed Agent-Team setup
+version. Emit the direct request that `project-initialize` accepts:
+
+```bash
+python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \
+  --handoff .project-kickoff/AGENT_TEAM_HANDOFF.json \
+  --emit-request \
+  --actor-session-id <actual-project-owner-session> \
+  --operation-id <new-unique-operation-id> \
+  --expected-version <current-agent-team-setup-version>
+```
+
+Save that output to a bounded temporary JSON file. Then give it to Agent-Team's
+`project-initialize --project <absolute-project-root> --request <file>` helper.
+Project Kickoff must not invent the actor, operation, or expected version.

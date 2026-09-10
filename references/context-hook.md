@@ -133,6 +133,11 @@ not supply a verified actor identity on these edit events. Do not infer one from
 the shared `session_id`, `cwd`, branch name, missing fields, or transcript data.
 Keep the single-writer instructions active on Codex.
 
+When the user approves those exact records, the main project orchestrator may
+include `.project-kickoff/setup.json` and
+`.project-kickoff/AGENT_TEAM_HANDOFF.json` in the exact-path allowlist. Never add
+`.agent-team/setup.json` for Project Kickoff edits; Agent-Team owns it.
+
 This is a direct-edit guard, not a universal filesystem sandbox. Its sample
 matcher does not cover shell commands. Bash, external processes, unsupported
 tools, native host sessions that do not run the hook, and changes made after a

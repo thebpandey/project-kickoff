@@ -3,6 +3,32 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [Unreleased]
+
+### Added
+
+- Machine-readable `.project-kickoff/AGENT_TEAM_HANDOFF.json` template for
+  Agent-Team 7.0.2 initialization.
+- A bounded handoff checker and cross-repository integration test against the
+  real Agent-Team 7.0.2 command-line harness.
+
+### Fixed
+
+- Project Kickoff now keeps its setup receipt in
+  `.project-kickoff/setup.json`. It no longer creates or edits Agent-Team's
+  `.agent-team/setup.json` runtime receipt.
+- Markdown tracker examples now seed the first executable task as `ready`
+  instead of the unsupported `planned` state.
+- Agent-Team handoffs now limit the tracker to Beads or supported Markdown
+  paths, limit the request to 500 implementation tasks and 250 KiB, and reject
+  unsafe paths, duplicate IDs, broken dependencies, and non-actionable plans.
+- Handoff task entries contain canonical tracker IDs only. Task content remains
+  in the tracker and approved plan, which prevents a conflicting duplicate.
+- Beads handoff validation uses the Agent-Team 7.0.2 five-second read window
+  instead of the former 1.5-second limit.
+- Epic and story summaries remain in `PLAN.md` instead of being exposed as
+  runnable Agent-Team tracker work.
+
 ## [0.3.0] - 2026-09-06
 
 ### Added

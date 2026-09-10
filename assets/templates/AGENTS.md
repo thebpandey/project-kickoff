@@ -69,8 +69,10 @@ named dependency is not proof that it is installed or relevant.
 | UI quality | {{Impeccable / built-in UI guidance / skipped}} | {{only projects/tasks with a relevant visual UI}} | {{actual source/version/path or Unavailable}} | {{setup.json field}} |
 | UI/UX reference | {{UI UX Pro Max Skill / selected alternative / skipped}} | {{only concrete visual UI/UX research or design tasks}} | {{actual source/version/path or Unavailable}} | {{setup.json field}} |
 
-Follow the selected mode in this table and `.agent-team/setup.json`. Use enabled
-dependencies when they are relevant to the assigned task. If the two records
+Before Agent-Team initializes the project, follow the selected mode in this
+table, `.project-kickoff/setup.json`, and the validated
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`. After initialization, Agent-Team owns
+`.agent-team/setup.json`; treat it as the runtime receipt. If the records
 disagree, stop dependent work and have the project orchestrator reconcile them
 from the user's recorded choice.
 
@@ -90,7 +92,8 @@ from the user's recorded choice.
   before adopting a substitute. Never report an unavailable or failed install
   as ready.
 - Keep one authoritative task tracker. Use the choice recorded in
-  `.agent-team/setup.json`; do not switch automatically if another tool appears.
+  `.project-kickoff/setup.json` before initialization and the Agent-Team runtime
+  receipt afterward. Do not switch automatically if another tool appears.
 
 Do not store or print credentials. Use example environment-variable names only
 when selected tooling needs them.
@@ -146,7 +149,8 @@ credentials, caches, or other external resources.
 ## Tracking and shared records
 
 `PLAN.md` owns the approved task definitions and stable `TASK-###` IDs. The
-tracker recorded in `.agent-team/setup.json` owns claims, dependencies, current
+tracker selected in `.project-kickoff/setup.json`, then recorded by Agent-Team
+in `.agent-team/setup.json`, owns claims, dependencies, current
 status, failure attempts, evidence, releases, and cleanup. Seed or reconcile by
 stable ID; repeated setup must not create duplicate tasks. Future roadmap ideas
 must not become active tasks without approved scope and plan changes.
@@ -225,6 +229,7 @@ Each implementation handoff includes:
 - owned processes, previews, worktrees, or other resources needing cleanup.
 
 The final project handoff reconciles every first-release requirement to evidence,
-states tracker and setup locations, names the first actionable task or blocker,
-and gives the exact host invocation. Preparing a handoff does not start an
-agent-team run.
+states tracker and setup locations, names the validated
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`, identifies the first actionable task
+or blocker, and gives the exact host invocation. Preparing a handoff does not
+create `.agent-team/setup.json` or start an Agent-Team run.

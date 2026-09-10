@@ -1,7 +1,8 @@
 <!--
 TEMPLATE INSTRUCTIONS — remove this comment after adapting the document.
 - Use this root TASKS.md only when the user selected it as the fallback tracker.
-  Record that choice and this absolute path in `.agent-team/setup.json`.
+  Record that choice and this absolute path in `.project-kickoff/setup.json` and
+  `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
 - The project orchestrator is the only writer. Teammates send structured updates.
 - PLAN.md owns the approved baseline; this file owns live execution state. Seed
   by immutable PLAN TASK- IDs and never maintain a second writable tracker.
@@ -20,10 +21,12 @@ Kickoff baseline: project-kickoff {{semantic version}}
 
 ## Status rules
 
-Use `planned`, `in_progress`, `blocked`, `verified`, `deployed`, or `deferred`.
+Use `ready`, `in_progress`, `blocked`, `verified`, `deployed`, or `deferred`.
 `verified` can be terminal when deployment is outside scope. Integration,
 deployment, and production verification are separate facts. Only the project
 orchestrator changes status, dependencies, ownership, or task closure.
+Agent-Team can claim only `ready`, `open`, `todo`, or `pending` tasks. Use
+`ready` for a new task whose dependencies are complete.
 
 ## Plan-to-tracker mapping
 
@@ -39,7 +42,7 @@ must not create duplicates. Do not seed future-roadmap ideas.
 
 | ID | Plan ID / requirements | Intended outcome / acceptance pointer | Owner | Depends on | Status | Revision / evidence | Next action |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| AT-001 | TASK-001 / REQ-001 | {{PLAN.md task link or concise criterion}} | {{unassigned or one owner}} | {{AT IDs or None}} | {{planned}} | {{None yet}} | {{one actionable step}} |
+| AT-001 | TASK-001 / REQ-001 | {{PLAN.md task link or concise criterion}} | {{unassigned or one owner}} | {{AT IDs or None}} | {{ready}} | {{None yet}} | {{one actionable step}} |
 
 Dependencies point from a task to its prerequisites. Check for missing IDs and
 cycles before claims. A blocked task names the blocker and the independent work,
@@ -91,7 +94,7 @@ record source revision and diff evidence rather than relying on ancestry.
 
 | Requirement ID | Plan tasks | Final status | Evidence | Approved deferral / unresolved issue |
 | --- | --- | --- | --- | --- |
-| REQ-001 | TASK-001 / AT-001 | {{planned / verified / deployed / deferred / blocked}} | {{pointer}} | {{approval ID / failure ID / None}} |
+| REQ-001 | TASK-001 / AT-001 | {{ready / verified / deployed / deferred / blocked}} | {{pointer}} | {{approval ID / failure ID / None}} |
 
 At handoff, reconcile every first-release requirement, identify the first ready
 task, and save the tracker location and mode in each agent assignment. When

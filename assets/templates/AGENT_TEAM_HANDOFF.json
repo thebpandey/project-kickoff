@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "kind": "project-kickoff-agent-team-handoff",
+  "status": "approved",
+  "projectKickoff": {
+    "version": "0.3.0",
+    "approvalId": "{{stage 5 APR-###}}",
+    "approvedRevision": "{{full Git revision containing the approved PLAN.md baseline}}"
+  },
+  "agentTeam": {
+    "testedVersion": "7.0.2",
+    "initializationSource": "existing"
+  },
+  "project": {
+    "id": "{{stable project ID}}",
+    "root": "{{absolute canonical project root}}",
+    "branch": "{{canonical integration branch}}",
+    "revision": "{{full current integration branch tip used for handoff}}"
+  },
+  "tracker": {
+    "kind": "{{markdown or beads}}",
+    "path": "{{TASKS.md or .agent-team/TASKS.md; remove for Beads}}",
+    "executable": "{{absolute selected bd path; remove for Markdown}}"
+  },
+  "plan": {
+    "scope": "{{approved implementation scope}}",
+    "acceptance": [
+      "{{observable release acceptance condition}}"
+    ],
+    "verification": [
+      "{{exact verification command or check}}"
+    ],
+    "branch": "{{same canonical integration branch as project.branch}}",
+    "authority": {
+      "ownedPaths": [
+        "{{project-relative owned path or glob}}"
+      ],
+      "externalActions": []
+    },
+    "tasks": [
+      {
+        "id": "{{exact selected tracker ID}}"
+      }
+    ]
+  }
+}

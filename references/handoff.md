@@ -9,22 +9,24 @@ for the approved task definitions and acceptance criteria.
 1. Read the approved plan revision and every stable plan ID. New plans use
    `EPIC-###`, `STORY-###`, and `TASK-###`; existing projects keep their
    established IDs and prefixes. Read the active tracker and
-   `.agent-team/setup.json`. Inspect existing tracker records before any create.
-2. For each plan ID, resolve a tracker item from the saved mapping or the
+   `.project-kickoff/setup.json`. If `.agent-team/setup.json` already exists,
+   read it for compatibility evidence only; Agent-Team owns it. Inspect existing
+   tracker records before any create.
+2. For each executable task plan ID, resolve a tracker item from the saved mapping or the
    tracker's stored plan-ID field. If exactly one exists, update its definition
    only when needed. If more than one exists, stop that item and reconcile the
-   duplicate. If none exists, create one. Create parents before their children
-   when the tracker supports hierarchy. Otherwise keep explicit parent mappings.
-3. After each successful create, immediately persist that epic, story, or task's
+   duplicate. If none exists, create one. Keep epic and story summaries in the
+   plan. Do not seed them as tracker rows; Agent-Team 7.0.2 can otherwise treat
+   an open summary record as executable work.
+3. After each successful create, immediately persist that task's
    stable plan ID to tracker-ID mapping. A failure leaves a valid partial seed
    that the next run resumes.
-4. After all nodes exist, add or verify parent-child relationships. Then add or
-   verify blocker edges separately. Do not use hierarchy as a blocker, reverse
-   blocker direction, or create self-links or cycles.
-5. Verify every runnable first-release plan node maps exactly once, every
-   requirement has coverage, each story and task has the intended parent, and
-   roadmap-only ideas are absent from the runnable queue. Record the seeded plan
-   revision.
+4. Add or verify blocker edges between executable tasks. Keep plan hierarchy
+   separate from blockers. Do not reverse blocker direction or create self-links
+   or cycles.
+5. Verify every runnable first-release task maps exactly once, every requirement
+   has coverage, tracker task relationships agree with the plan, and roadmap-only
+   ideas are absent from the runnable queue. Record the seeded plan revision.
 
 Never delete and recreate the tracker to recover from partial setup. Never use a
 second tracker as a staging ledger. Preserve unknown items and user changes. If
@@ -32,9 +34,10 @@ the selected tracker becomes unavailable, record the blocker and ask the user to
 select a researched fallback before activation.
 
 When the selected Beads version provides external references, metadata, or spec
-IDs, store each stable epic, story, and task plan identity there and in the setup
-receipt. Preserve existing project IDs even when their prefixes differ from this
-Skill's convention. Discover the installed dependency command's argument
+IDs, store each stable implementation task plan identity there and in the setup
+receipt. Keep epic and story identities in `PLAN.md`. Preserve existing project
+IDs even when their prefixes differ from this Skill's convention. Discover the
+installed dependency command's argument
 direction before adding each edge; do not infer it from prose. Use the selected
 executable's absolute path during setup when more than one `bd` is installed.
 
@@ -60,10 +63,18 @@ integration branch without renaming it. After the approved planning commit exist
 Use installed Agent-Team procedures for the subsequent implementation run.
 Kickoff supplies the approved documents, selected tracker and mapping, setup
 receipt, project instructions, first ready task when implementation remains, and
-exact host invocation. For a healthy completed existing project, it can instead
-supply evidence that no implementation work remains. It also records the
-generating `project-kickoff` metadata version and any resolved compatibility note.
-It does not start Agent-Team or implement the first feature.
+the validated `.project-kickoff/AGENT_TEAM_HANDOFF.json`. The handoff identifies
+the exact approved revision, current integration branch tip, tracker task IDs,
+acceptance criteria, verification commands, and safe owned paths. The selected
+tracker remains authoritative for task titles, status, and dependencies.
+Agent-Team controls runtime worker identities, assignments, worktrees, scopes,
+and correlation IDs after it initializes the project. The checker can combine the approved facts
+with the actual Agent-Team owner session, operation ID, and setup version to emit
+the direct `project-initialize` request. For a healthy completed existing project,
+Kickoff can instead supply evidence that no implementation work remains. It also
+records the generating `project-kickoff` metadata version and any resolved
+compatibility note. It does not create `.agent-team/setup.json`, start
+Agent-Team, or implement the first feature.
 
 ## Readiness gate
 
@@ -78,6 +89,10 @@ Declare `ready for handoff` only when:
 - exactly one tracker is active, mappings are complete, dependencies are acyclic,
   and the first actionable task is known, or audit evidence establishes that no
   implementation work remains;
+- when Agent-Team 7.0.2 is selected and implementation remains, its handoff is
+  at most 250 KiB, contains at most 500 implementation task IDs, exactly matches
+  the selected tracker, records the current branch tip, names only a supported tracker, and passes
+  `check_agent_team_handoff.py`;
 - AGENTS, CLAUDE, MISTAKES, CONTEXT, discovery, and tracker ownership agree;
 - no roadmap item was activated and no feature implementation began.
 

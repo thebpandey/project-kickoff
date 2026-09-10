@@ -34,7 +34,9 @@ Phase status: {{In progress | Awaiting answer | Approved | Complete | Blocked}}
 - Approved baselines: {{PRD/DESIGN/PLAN paths and versions}}
 - Existing-project audit: {{absolute AUDIT.md path/version or Not applicable — new project}}
 - Active tracker: {{mode and absolute path or identity}}
-- Tracker setup receipt: {{absolute .agent-team/setup.json path}}
+- Project Kickoff setup receipt: {{absolute .project-kickoff/setup.json path}}
+- Agent-Team handoff input: {{absolute .project-kickoff/AGENT_TEAM_HANDOFF.json path or Not prepared}}
+- Agent-Team initialization receipt: {{absolute .agent-team/setup.json path or Not initialized; Agent-Team-owned}}
 - Shared lessons: {{absolute MISTAKES.md path, revision, relevant M-IDs or None}}
 - Team registry / handoffs: {{paths or Not initialized}}
 

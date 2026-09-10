@@ -195,7 +195,7 @@ references or tracker records.
 
 | Dependency | Availability / checked source | Version / revision | Purpose | Scope | License / access note | User choice | Receipt status |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| {{dependency}} | {{installed, missing, unusable; authoritative source/date}} | {{version or Unknown}} | {{concrete capability}} | {{project/user/external}} | {{verified current condition}} | {{reuse/install/skip/alternative/Pending}} | {{.agent-team/setup.json pointer or Pending}} |
+| {{dependency}} | {{installed, missing, unusable; authoritative source/date}} | {{version or Unknown}} | {{concrete capability}} | {{project/user/external}} | {{verified current condition}} | {{reuse/install/skip/alternative/Pending}} | {{.project-kickoff/setup.json pointer or Pending}} |
 
 Missing dependencies do not erase independent progress. Offer verified
 alternatives and wait for the user's explicit selection before adoption. Keep
