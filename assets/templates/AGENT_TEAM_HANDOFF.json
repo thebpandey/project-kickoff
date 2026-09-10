@@ -3,7 +3,7 @@
   "kind": "project-kickoff-agent-team-handoff",
   "status": "approved",
   "projectKickoff": {
-    "version": "0.3.0",
+    "version": "0.3.1",
     "approvalId": "{{stage 5 APR-###}}",
     "approvedRevision": "{{full Git revision containing the approved PLAN.md baseline}}"
   },

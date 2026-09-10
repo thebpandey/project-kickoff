@@ -24,7 +24,7 @@ def valid_handoff(root):
         "kind": "project-kickoff-agent-team-handoff",
         "status": "approved",
         "projectKickoff": {
-            "version": "0.3.0",
+            "version": "0.3.1",
             "approvalId": "APR-005",
             "approvedRevision": revision,
         },

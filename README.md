@@ -1,10 +1,6 @@
 # Project Kickoff
 
-Current version: **0.3.0**
-
-The current `main` branch also contains unreleased compatibility updates for
-Agent-Team 7.0.2. The published installation examples below remain pinned to the
-verified `v0.3.0` release until a new Project Kickoff release is published.
+Current version: **0.3.1**
 
 ```text
 ██████   ██████     ████   ████████ ████████   ██████ ████████
@@ -22,7 +18,7 @@ verified `v0.3.0` release until a new Project Kickoff release is published.
 ██    ██ ████████   ██████ ██    ██   ████   ██       ██
 ```
 
-Project Kickoff v0.3.0
+Project Kickoff v0.3.1
 
 Created by thebpandey.
 
@@ -160,7 +156,7 @@ Agent-Team, but it is not a compatible Agent-Team 7.0.2 handoff target.
 
 You need written permission from the licensors. You also need authenticated
 access to the private GitHub repository. The examples use GitHub CLI and the
-verified `v0.3.0` release tag.
+verified `v0.3.1` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -190,8 +186,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.0 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.1 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -223,8 +219,8 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.0 --single-branch
-kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.3.1 --single-branch
+kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
 done
@@ -251,7 +247,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.3.0.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.3.1.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -273,6 +269,7 @@ project-kickoff/
 │   ├── setup.md
 │   └── wordmark.md
 ├── scripts/
+│   ├── check_agent_team_handoff.py
 │   ├── check_checkpoint.py
 │   ├── guard_edits.py
 │   ├── hook_utils.py
@@ -283,6 +280,7 @@ project-kickoff/
     │   └── claude-session-start.json
     └── templates/
         ├── AGENTS.md
+        ├── AGENT_TEAM_HANDOFF.json
         ├── AUDIT.md
         ├── CLAUDE.md
         ├── CONTEXT.md
@@ -299,14 +297,9 @@ Do not install only `SKILL.md`. The workflow needs its references and templates.
 Check a published archive against its release checksum when one is supplied.
 Do not mix files from different release tags.
 
-The current `main` branch adds
-`assets/templates/AGENT_TEAM_HANDOFF.json`,
-`scripts/check_agent_team_handoff.py`, and their regression tests. These files
-are not part of the published v0.3.0 archive shown above.
-
 ## Optional project hooks
 
-Version 0.3.0 keeps the read-only `SessionStart` context loader from version
+Version 0.3.1 keeps the read-only `SessionStart` context loader from version
 0.2.0. It also adds an optional direct-edit guard and checkpoint advisory for
 Codex and Claude Code. Each feature is off until you approve it for one project.
 Installing or upgrading the Skill does not change host settings or activate a
@@ -526,8 +519,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.3.0`. Archives use
-the form `project-kickoff-0.3.0.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.3.1`. Archives use
+the form `project-kickoff-0.3.1.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 

@@ -3,7 +3,7 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.3.1] - 2026-09-09
 
 ### Added
 

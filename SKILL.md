@@ -2,7 +2,7 @@
 name: project-kickoff
 description: Define new software projects and audit or re-plan existing projects, producing approved product, experience, technical, scaffold, and Agent-Team handoff artifacts. Use for project kickoff, ordinary existing-project audits, or major project revisions before feature implementation.
 metadata:
-  version: "0.3.0"
+  version: "0.3.1"
 ---
 
 # Project Kickoff

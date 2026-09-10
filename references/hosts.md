@@ -46,7 +46,7 @@ project-specific effect and keep the current pinned installation unless the user
 approved an upgrade. Preserve stable IDs, evidence, valid approvals, and project
 outputs through an approved migration.
 
-Project Kickoff 0.3.0 current-main handoffs are tested against Agent-Team 7.0.2.
+Project Kickoff 0.3.1 handoffs are tested against Agent-Team 7.0.2.
 The handoff checker converts `.project-kickoff/AGENT_TEAM_HANDOFF.json` into the
 request accepted by Agent-Team's `project-initialize` helper after the runtime
 identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
