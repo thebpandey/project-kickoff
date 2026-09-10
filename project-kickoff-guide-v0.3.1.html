@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A simple guide to Project Kickoff 0.3.1 for Codex and Claude Code, covering the four states, the one-question protocol, the approved artifacts, and the Agent-Team handoff.">
+  <link rel="canonical" href="https://thebpandey.github.io/project-kickoff/project-kickoff-guide-v0.3.1.html">
+  <!-- Guide artwork is embedded as image data so this page remains portable. -->
+  <title>Project Kickoff 0.3.1 Field Guide</title>
+  <style>
+    :root {
+      --canvas:#f5f7fa; --surface:#ffffff; --surface-alt:#f0f4f8; --ink:#14212b; --muted:#526170;
+      --blue:#1d4ed8; --blue-dark:#173b8f; --blue-soft:#e8efff; --orange:#c65a24; --orange-soft:#fff1e9;
+      --green:#25734a; --line:#d5dde5; --line-strong:#aeb9c4; --shadow:0 18px 45px rgba(20,33,43,.09);
+      --sans:Inter,ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+    }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; color:var(--ink); background:var(--canvas); font:400 1rem/1.65 var(--sans); }
+    a { color:var(--blue); text-underline-offset:.2em; }
+    a:hover { color:var(--blue-dark); }
+    a:focus-visible,button:focus-visible,summary:focus-visible { outline:3px solid #f09a63; outline-offset:3px; }
+    code,pre { font-family:var(--mono); }
+    code { padding:.12em .35em; background:var(--blue-soft); border-radius:4px; font-size:.92em; }
+    img { display:block; max-width:100%; height:auto; }
+    p,li { max-width:72ch; }
+    .skip { position:fixed; top:-5rem; left:1rem; z-index:100; padding:.7rem 1rem; color:white; background:var(--ink); border-radius:6px; }
+    .skip:focus { top:1rem; }
+    .page { width:min(1180px,calc(100% - 3rem)); margin:0 auto; }
+    .site-head { display:flex; gap:1.5rem; align-items:center; justify-content:space-between; min-height:72px; border-bottom:1px solid var(--line); }
+    .brand { color:var(--ink); font-weight:750; font-size:1.05rem; letter-spacing:-.01em; text-decoration:none; }
+    .site-head nav { display:flex; flex-wrap:wrap; gap:.25rem 1.3rem; }
+    .site-head nav a { min-height:44px; display:inline-flex; align-items:center; color:var(--muted); font-size:.93rem; font-weight:600; text-decoration:none; }
+    .site-head nav a:hover { color:var(--blue); }
+    .hero { padding:clamp(3rem,7vw,5.5rem) 0 4rem; }
+    .hero-copy { max-width:760px; margin-bottom:2.25rem; }
+    .version { display:inline-flex; align-items:center; padding:.32rem .7rem; border:1px solid #b9c9f9; border-radius:999px; color:var(--blue-dark); background:var(--blue-soft); font-size:.82rem; font-weight:700; }
+    h1,h2,h3 { color:var(--ink); font-family:var(--sans); line-height:1.15; letter-spacing:-.03em; }
+    h1 { max-width:17ch; margin:1rem 0 1.25rem; font-size:clamp(2.5rem,6vw,4rem); font-weight:780; }
+    h2 { margin:0 0 .85rem; font-size:clamp(1.85rem,3vw,2.6rem); font-weight:750; }
+    h3 { margin:0 0 .5rem; font-size:1.2rem; font-weight:720; letter-spacing:-.015em; }
+    .lede { margin:0; color:var(--muted); font-size:clamp(1.08rem,2vw,1.25rem); line-height:1.7; }
+    figure { margin:0; }
+    .hero-art,.flow-chart { overflow:hidden; border:1px solid var(--line); border-radius:14px; background:var(--surface); box-shadow:var(--shadow); }
+    figcaption { padding:.8rem 1rem; border-top:1px solid var(--line); color:var(--muted); font-size:.92rem; }
+    .note,.callout { margin:1.4rem 0 0; padding:1rem 1.15rem; border:1px solid #f2c4aa; border-left:4px solid var(--orange); border-radius:8px; background:var(--orange-soft); }
+    .note strong,.callout strong { color:#7f3515; }
+    .layout { display:grid; grid-template-columns:210px minmax(0,1fr); gap:clamp(2.5rem,6vw,5rem); }
+    .rail { align-self:start; position:sticky; top:1.5rem; padding:1rem 0; }
+    .rail strong { display:block; margin:0 0 .65rem .75rem; color:var(--muted); font-size:.78rem; font-weight:750; letter-spacing:.06em; text-transform:uppercase; }
+    .rail a { display:block; min-height:40px; padding:.42rem .75rem; border-left:2px solid var(--line); color:var(--muted); font-size:.92rem; text-decoration:none; }
+    .rail a:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-soft); }
+    main { min-width:0; padding-bottom:6rem; }
+    .section { padding:clamp(3rem,7vw,5rem) 0; border-top:1px solid var(--line); }
+    .section:first-child { border-top:0; }
+    .intro { color:var(--muted); font-size:1.08rem; }
+    .analogy { display:grid; grid-template-columns:minmax(0,1.2fr) minmax(250px,.8fr); gap:1.5rem; align-items:start; }
+    .sketch-note { padding:1.2rem; border:1px solid var(--line); border-radius:10px; color:var(--muted); background:var(--surface-alt); }
+    .roles,.steps { margin:1.6rem 0 0; padding:0; list-style:none; }
+    .roles { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; }
+    .roles li { padding:1.1rem; border:1px solid var(--line); border-radius:10px; background:var(--surface); }
+    .roles strong { display:block; margin-bottom:.2rem; color:var(--ink); font-size:1rem; }
+    .steps { counter-reset:step; }
+    .steps>li { position:relative; padding:0 0 2rem 4rem; counter-increment:step; }
+    .steps>li::before { content:counter(step); position:absolute; top:-.1rem; left:0; display:grid; width:2.65rem; height:2.65rem; place-items:center; border-radius:8px; color:white; background:var(--blue); font-weight:750; }
+    .steps>li:not(:last-child)::after { content:""; position:absolute; top:2.75rem; bottom:.3rem; left:1.28rem; border-left:1px solid var(--line-strong); }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1rem; margin-top:1.25rem; }
+    .sheet { padding:1.25rem; border:1px solid var(--line); border-radius:10px; background:var(--surface); box-shadow:0 5px 18px rgba(20,33,43,.035); }
+    .sheet.required { border-top:4px solid var(--blue); }
+    .sheet.optional { border-top:4px solid var(--orange); }
+    .sheet ul { padding-left:1.25rem; }
+    .sheet li+li { margin-top:.45rem; }
+    .command { margin:1rem 0; overflow:hidden; border:1px solid #273849; border-radius:9px; background:#17222d; }
+    .command-head { display:flex; gap:1rem; align-items:center; justify-content:space-between; min-height:48px; padding:.45rem .65rem .45rem 1rem; color:#314355; background:#e8edf2; font-size:.9rem; font-weight:700; }
+    pre { margin:0; padding:1rem; overflow:auto; color:#eef4fa; white-space:pre-wrap; font-size:.88rem; line-height:1.65; }
+    .copy { min-height:36px; padding:.45rem .75rem; border:1px solid #aab6c2; border-radius:6px; color:var(--ink); background:white; cursor:pointer; font:700 .85rem/1 var(--sans); }
+    .copy:hover { border-color:var(--blue); color:var(--blue); background:var(--blue-soft); }
+    table { width:100%; margin:1.25rem 0; border-collapse:collapse; border:1px solid var(--line); background:var(--surface); }
+    th,td { padding:.85rem; border-bottom:1px solid var(--line); text-align:left; vertical-align:top; }
+    th { color:#344556; background:var(--surface-alt); font-size:.9rem; }
+    details { margin:.9rem 0; overflow:hidden; border:1px solid var(--line); border-radius:9px; background:var(--surface); }
+    summary { min-height:52px; padding:.78rem 1rem; cursor:pointer; font-weight:700; }
+    details>div { padding:0 1rem 1rem; }
+    .flow-wrap { margin-top:1.5rem; }
+    .flow-chart { width:min(100%,880px); margin:0 auto 2rem; }
+    .image-open { display:block; width:100%; padding:0; border:0; color:inherit; background:white; cursor:zoom-in; font:inherit; text-align:left; }
+    .image-open img { width:100%; }
+    .image-open-hint { display:flex; align-items:center; justify-content:center; gap:.45rem; min-height:46px; border-top:1px solid var(--line); color:var(--blue); background:var(--surface-alt); font-size:.9rem; font-weight:700; }
+    .logic { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:.75rem 1.5rem; margin:0; padding-left:1.35rem; }
+    .logic li { padding-right:.6rem; }
+    .logic li+li { margin-top:0; }
+    dialog { width:auto; max-width:none; max-height:none; margin:auto; padding:0; border:0; background:transparent; overflow:visible; }
+    dialog::backdrop { background:rgba(8,15,23,.88); backdrop-filter:blur(5px); }
+    .modal-shell { position:relative; width:fit-content; max-width:96vw; margin:auto; }
+    .modal-image { max-width:92vw; max-height:92vh; width:auto; height:auto; border-radius:6px; box-shadow:0 25px 80px rgba(0,0,0,.45); }
+    .modal-close { position:absolute; top:.75rem; right:.75rem; display:grid; width:44px; height:44px; place-items:center; border:0; border-radius:50%; color:white; background:rgba(12,22,32,.82); cursor:pointer; font:400 1.7rem/1 var(--sans); }
+    .modal-close:hover { background:#000; }
+    footer { padding:2.5rem 0 3.5rem; border-top:1px solid var(--line); background:var(--surface); }
+    .footer-inner { display:flex; gap:1rem; justify-content:space-between; align-items:flex-start; }
+    footer p { margin:0; }
+    .credit { font-weight:700; }
+    @media (max-width:860px) {
+      .layout { grid-template-columns:1fr; }
+      .rail { position:static; display:flex; gap:.25rem; overflow-x:auto; padding:.75rem 0 1rem; }
+      .rail strong { display:none; }
+      .rail a { flex:0 0 auto; border:0; border-bottom:2px solid var(--line); }
+      .analogy { grid-template-columns:1fr; }
+      .logic { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (max-width:640px) {
+      .page { width:min(100% - 1.25rem,1180px); }
+      .site-head { min-height:62px; }
+      .site-head nav { display:none; }
+      .hero { padding:2.5rem 0 3rem; }
+      .roles,.grid,.logic { grid-template-columns:1fr; }
+      h1 { font-size:clamp(2.25rem,11vw,3.25rem); }
+      .steps>li { padding-left:3.6rem; }
+      .footer-inner { display:block; }
+      .credit { margin-bottom:.8rem; }
+      .modal-image { max-width:96vw; max-height:90vh; }
+    }
+    @media print { .rail,.copy,.skip,.image-open-hint,dialog { display:none; } .layout { display:block; } body { background:white; } .section { break-inside:avoid; } }
+    @media (prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#main">Skip to the guide</a>
+  <header class="page site-head">
+    <a class="brand" href="#top">Project Kickoff field guide</a>
+    <nav aria-label="Quick links"><a href="#install">Install</a><a href="#invoke">Invoke</a><a href="#states">States</a><a href="#questions">Questions</a><a href="#handoff">Handoff</a></nav>
+  </header>
+
+  <div class="page" id="top">
+    <section class="hero" aria-labelledby="title">
+      <div class="hero-copy">
+        <span class="version">Version 0.3.1</span>
+        <h1 id="title">Turn one idea into an approved plan.</h1>
+        <p class="lede">Project Kickoff is a skill for Codex and Claude Code. It asks one question at a time. It records your decisions and your stage approvals. It writes the approved product, design, technical, and plan records, then prepares the Agent-Team handoff.</p>
+        <p class="note"><strong>Important:</strong> Project Kickoff actions are chat messages. They are not shell commands. You type them into Codex or Claude Code, and the Skill never writes product feature code.</p>
+      </div>
+      <figure class="hero-art">
+        <button class="image-open" type="button" aria-haspopup="dialog" aria-controls="image-dialog">
+          <img id="overview-image" src="IMAGE_HERO_PLACEHOLDER" width="1672" height="941" alt="Blueprint-style poster of the four Project Kickoff states. The discovery panel shows one open question and a checkpoint file. The approved planning panel shows five stage approvals and the approved product, design, and plan records. The setup panel shows one live tracker, a dependency check, and a minimal scaffold. The ready for handoff panel shows a validated Agent-Team handoff file at a closed gate.">
+          <span class="image-open-hint" aria-hidden="true">Click to expand the infographic</span>
+        </button>
+        <figcaption>The four states run in order: discovery, approved planning, setup, and ready for handoff. Each stage gets its own approval question.</figcaption>
+      </figure>
+    </section>
+  </div>
+
+  <div class="page layout">
+    <aside class="rail" aria-label="Guide sections">
+      <strong>On this page</strong>
+      <a href="#what">What it does</a><a href="#install">Install</a><a href="#invoke">Invoke</a>
+      <a href="#states">The four states</a><a href="#start">Start a project</a><a href="#audit">Audit a project</a>
+      <a href="#questions">Questions and approvals</a><a href="#artifacts">What it writes</a><a href="#setup">Setup and scaffold</a><a href="#handoff">Handoff</a>
+    </aside>
+
+    <main id="main">
+      <section class="section" id="what">
+        <div class="analogy">
+          <div><h2>What Project Kickoff does</h2><p class="intro">Think about a building permit office. You describe the building you want. The office asks one question at a time. It records each approved answer. You get approved drawings before anyone pours concrete. Project Kickoff works the same way for software.</p></div>
+          <aside class="sketch-note"><strong>Short version:</strong><br>Answer one question.<br>Approve each stage.<br>Get approved records.<br>Hand the approved plan to Agent-Team.</aside>
+        </div>
+        <ul class="roles">
+          <li><strong>It asks</strong>One unresolved question per turn, with recommended choices and their trade-offs.</li>
+          <li><strong>It records</strong>Stable decision, requirement, and task IDs in the approved project documents.</li>
+          <li><strong>It prepares</strong>One live tracker, a minimal scaffold, and a validated handoff file.</li>
+        </ul>
+        <p>Project Kickoff supports new and existing web, mobile, desktop, API, CLI, and library projects. For an existing project it audits first, then asks you to retain, change, or defer each finding. It does not repair or refactor product code, and it does not choose an unresolved stack, tracker, product, or design for you.</p>
+      </section>
+
+      <section class="section" id="install">
+        <h2>Install the complete package</h2>
+        <p class="intro">Project Kickoff is a private package. You need written permission from the licensors. You also need authenticated access to the private GitHub repository. Choose one host and one scope before you install.</p>
+        <table>
+          <thead><tr><th>Scope</th><th>Codex</th><th>Claude Code</th></tr></thead>
+          <tbody>
+            <tr><td>User</td><td><code>~/.agents/skills/project-kickoff</code></td><td><code>~/.claude/skills/project-kickoff</code></td></tr>
+            <tr><td>Project</td><td><code>.agents/skills/project-kickoff</code></td><td><code>.claude/skills/project-kickoff</code></td></tr>
+          </tbody>
+        </table>
+        <ol class="steps">
+          <li><h3>Check your access</h3><p>Sign in to the GitHub CLI with an account that can read the private repository. Use <code>gh auth status</code> to check that access. Never paste a token into chat.</p></li>
+          <li><h3>Open the intended project root</h3><p>Install the Skill into the repository where you will use it. Do not install it into an unrelated ancestor repository. For an empty new directory, create the repository with <code>git init -b main</code> first.</p></li>
+          <li><h3>Ask the agent to install it</h3><div class="command"><div class="command-head"><span>Recommended install prompt</span><button class="copy" type="button">Copy</button></div><pre>Install the complete Project Kickoff package from https://github.com/thebpandey/project-kickoff. Use release tag v0.3.1 and my authorized GitHub access. Inspect the source, license, exact revision, and any existing installation first. Install it at the skill path for this actual host. Use project scope unless I name user scope. Keep the private Skill out of the project's committed files. Check the package, then tell me which reload steps remain.</pre></div></li>
+          <li><h3>Check the package contents</h3><p>The workflow reads its references and templates at run time. Do not install <code>SKILL.md</code> alone. Check that <code>LICENSE</code>, <code>CHANGELOG.md</code>, <code>agents/openai.yaml</code>, <code>references/</code>, <code>assets/templates/</code>, <code>assets/hooks/</code>, and <code>scripts/</code> all arrived. Do not mix files from different release tags.</p></li>
+          <li><h3>Reload the host</h3><p>Codex reads repository skills under <code>.agents/skills/</code>. Claude Code reads them under <code>.claude/skills/</code>. Restart or refresh the host if the Skill does not appear. In Claude Code, a personal skill with the same name can shadow the project skill, so check the loaded source.</p></li>
+        </ol>
+        <details><summary>Release archive and optional hooks</summary><div>
+          <p>The release archive is <code>project-kickoff-0.3.1.zip</code>. Install the complete extracted directory at one native host path. Check the archive against its release checksum when one is supplied.</p>
+          <p>Version 0.3.1 ships three optional hook scripts: a read-only session context loader, a direct-edit guard, and a read-only checkpoint advisory. Each one stays off until you approve and configure it for one project. Installing or upgrading the Skill does not change host settings and does not activate a hook. The hooks need Python 3.9 or later on a POSIX host. They use no third-party module.</p>
+        </div></details>
+      </section>
+
+      <section class="section" id="invoke">
+        <h2>Invoke the skill in your host</h2>
+        <p class="intro">Use the prefix for your host. Type the action into the Codex or Claude Code chat. Do not run it in a shell.</p>
+        <div class="grid">
+          <article class="sheet"><h3>Codex</h3><div class="command"><div class="command-head"><span>Help</span><button class="copy" type="button">Copy</button></div><pre>$project-kickoff help</pre></div></article>
+          <article class="sheet"><h3>Claude Code</h3><div class="command"><div class="command-head"><span>Help</span><button class="copy" type="button">Copy</button></div><pre>/project-kickoff help</pre></div></article>
+        </div>
+        <p>The Skill accepts seven actions: <code>start &lt;idea&gt;</code>, <code>audit [path]</code>, <code>audit-only [path]</code>, <code>resume [path]</code>, <code>status [path]</code>, <code>help</code>, and <code>version</code>. It also accepts clear plain language. For example: <q>Project Kickoff, show the status for this project.</q></p>
+        <details><summary>Resume, status, help, and version</summary><div>
+          <p><code>resume</code> restores the recorded Skill version, decisions, approvals, the pending question, the setup receipt, and the next action. It inspects the real files before it trusts the checkpoint.</p>
+          <div class="command"><div class="command-head"><span>Continue a saved kickoff</span><button class="copy" type="button">Copy</button></div><pre>$project-kickoff resume /absolute/path/to/project</pre></div>
+          <p><code>status</code> is read-only. It reports the loaded Skill version, the resolved project and revision, the current phase, the last approval, the pending question, blockers, and the next action. It does not write a checkpoint, replay the pending question, run setup, or run project tests.</p>
+          <div class="command"><div class="command-head"><span>Read the current phase</span><button class="copy" type="button">Copy</button></div><pre>/project-kickoff status /absolute/path/to/project</pre></div>
+          <p><code>version</code> is read-only. It reports the package version, the loaded Skill path when that is available, and the matching CHANGELOG entry.</p>
+          <div class="command"><div class="command-head"><span>Check the loaded release</span><button class="copy" type="button">Copy</button></div><pre>/project-kickoff version</pre></div>
+          <p>If a read-only action gets an ambiguous or missing project path, the Skill reports the limit and shows how to supply the path. It does not turn the request into discovery.</p>
+        </div></details>
+      </section>
+
+      <section class="section" id="states">
+        <h2>The four states</h2>
+        <p class="intro">A project moves through <code>discovery</code>, <code>approved planning</code>, <code>setup</code>, and <code>ready for handoff</code>. The Skill routes your action word before it enters any of them.</p>
+        <div class="flow-wrap">
+          <figure class="flow-chart">
+            <button class="image-open" type="button" aria-haspopup="dialog" aria-controls="image-dialog">
+              <img id="flowchart-image" src="IMAGE_FLOW_PLACEHOLDER" width="1086" height="1448" alt="Hand-drawn Project Kickoff flowchart. It starts at a typed action, splits on a new project or existing project decision, runs the read-only audit for an existing project, enters the one-question interview loop, passes a stage approval gate, writes the approved artifacts, runs setup and the minimal scaffold, seeds one tracker, validates the handoff file, and stops at the Agent-Team handoff gate.">
+              <span class="image-open-hint" aria-hidden="true">Click to expand the flowchart</span>
+            </button>
+            <figcaption>A revision answer keeps the stage open and returns to the question loop. The run stops at the handoff gate. It does not start Agent-Team.</figcaption>
+          </figure>
+          <div>
+            <ol class="logic">
+              <li><strong>Route the action.</strong> The Skill reads the action word first. A read-only action returns its report and stops there.</li>
+              <li><strong>Detect the mode.</strong> <code>start</code> checks for real product content. Installed skill folders and empty Git metadata do not count.</li>
+              <li><strong>Discovery.</strong> The Skill creates the checkpoint records and asks one unresolved question per turn.</li>
+              <li><strong>Approved planning.</strong> You approve each of the five stages on its own. The Skill then writes the approved documents.</li>
+              <li><strong>Setup.</strong> The Skill checks dependencies, activates one tracker, seeds the task IDs once, and delegates the minimal scaffold.</li>
+              <li><strong>Ready for handoff.</strong> The Skill validates the handoff file and prepares the exact Agent-Team invocation for your host.</li>
+            </ol>
+            <div class="callout"><strong>A changed decision does not restart the project.</strong> The Skill marks the old decision superseded, finds the dependency edges, and invalidates only the affected approvals and derived sections. Unrelated approvals stay valid. It refreshes the affected artifacts after renewed approval.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="start">
+        <h2>Start a new project</h2>
+        <p class="intro">Use <code>start</code> with one plain sentence about the idea. Name the intended project directory in the same turn or in your answer to the first question.</p>
+        <div class="command"><div class="command-head"><span>New project in Codex</span><button class="copy" type="button">Copy</button></div><pre>$project-kickoff start Build a study planner for high-school students.</pre></div>
+        <ol class="steps">
+          <li><h3>Confirm the project boundary</h3><p>The Skill resolves the intended project path and the actual Git root. If the two differ, it reports the relationship and waits. It does not adopt an ancestor repository without your choice, and it does not write a checkpoint into an ambient parent repository.</p></li>
+          <li><h3>Let it detect the project mode</h3><p>Meaningful product content sends the request to the audit route. The Skill ignores its own installed folder under <code>.agents/skills/</code> or <code>.claude/skills/</code>, empty Git metadata, and install-only housekeeping. An otherwise empty directory stays a new project.</p></li>
+          <li><h3>Answer the first question</h3><p>After the path is confirmed, the Skill creates <code>.project-kickoff/DISCOVERY.md</code> and keeps <code>CONTEXT.md</code> as the short resumption pointer. It then asks one question and waits for your answer.</p></li>
+          <li><h3>Approve each stage</h3><p>At the end of each stage, the Skill summarizes the confirmed decisions, assumptions, evidence, and open items. It then asks one separate approval question.</p></li>
+        </ol>
+        <div class="callout"><strong>Worked example</strong><p>You type <code>$project-kickoff start Build a study planner for high-school students.</code> The Skill confirms the project directory, creates <code>.project-kickoff/DISCOVERY.md</code>, and asks one product question, such as which student group the first release serves. It records your answer as <code>DEC-001</code> with its source and date. It then asks the next unresolved question. It does not pick the stack, the design direction, or the tracker while a dependent choice is open.</p></div>
+      </section>
+
+      <section class="section" id="audit">
+        <h2>Audit an existing project</h2>
+        <p class="intro">Use the audit route when the directory already holds product code, project documents, configuration, a tracker, or real Git history. The audit starts read-only.</p>
+        <div class="grid">
+          <article class="sheet required"><h3><code>audit</code></h3><p>Inspects the project, writes the approved audit records, and then continues through guided retain, change, and defer decisions into setup. This is the default.</p><div class="command"><div class="command-head"><span>Claude Code</span><button class="copy" type="button">Copy</button></div><pre>/project-kickoff audit /absolute/path/to/project</pre></div></article>
+          <article class="sheet optional"><h3><code>audit-only</code></h3><p>Performs the same bounded audit and stops after the report. Use it when you want evidence before you decide anything.</p><div class="command"><div class="command-head"><span>Codex</span><button class="copy" type="button">Copy</button></div><pre>$project-kickoff audit-only /absolute/path/to/project</pre></div></article>
+        </div>
+        <h3>What the audit will not do</h3>
+        <p>During the audit the Skill does not initialize Git, rename an existing branch, replace project files, select a new tracker, install dependencies, or run mutating setup. It preserves all user work and all existing branches. It never overwrites, renumbers, closes, reopens, migrates, or duplicates tracker items. If the project evidence does not identify the canonical integration branch, the Skill asks you which existing branch it is.</p>
+        <h3>What the report contains</h3>
+        <p>Each finding gets a stable <code>AUD-###</code> ID with severity, the evidence path or revision, the observed condition, impact, confidence, the evidence gap, and a recommended decision. The Skill creates or merges root <code>AUDIT.md</code> and preserves existing findings and IDs. It reports every check as one of four states: run and passed, run and failed, blocked, or not run. Historical CI output and a README command are prior evidence. They are not a test result from this audit.</p>
+        <div class="callout"><strong>Worked example</strong><p>You run <code>audit</code> on a two-year-old API project. The Skill records that the documented architecture names a message queue, and that the code calls the database directly. It files that gap as <code>AUD-004</code> with the file path and the inspected revision. It then asks one question: keep the current direct calls, change to the documented queue, or defer the decision. The audit itself approves no remediation.</p></div>
+      </section>
+
+      <section class="section" id="questions">
+        <h2>One question at a time</h2>
+        <p class="intro">This is the behavior that separates Project Kickoff from a document generator. The Skill asks exactly one unresolved question per turn. It records that question as pending before it asks. It then ends its turn and waits.</p>
+        <div class="command"><div class="command-head"><span>Example question shape in a host without a native choice control</span><button class="copy" type="button">Copy</button></div><pre>Which tracker do you want as the one live tracker?
+
+1. Beads (Recommended). It adds dependency-aware task records and works with an Agent-Team handoff.
+2. Root TASKS.md. It is a simple single-writer file without Beads automation.
+
+Reply with a number or your own answer.</pre></div>
+        <p>When the host exposes a native choice control, the Skill uses it. In Codex that is the exposed user-input tool with one question, two or three mutually exclusive choices, the recommended choice first, and <code>(Recommended)</code> in its label. The host supplies the free-text choice, so the Skill does not add a duplicate one. Free-text answers are always valid.</p>
+        <div class="grid">
+          <article class="sheet required"><h3>Silence is not consent</h3><p>A timeout or silence is not an answer. The Skill does not ask the next question, write a dependent decision, activate a fallback, or start setup until your answer arrives.</p></article>
+          <article class="sheet required"><h3>Five separate approvals</h3><p>The five stages are product definition, first-release scope, experience and design, technical blueprint, and execution and handoff. Each stage ends with its own approval question, recorded as <code>APR-001</code> through <code>APR-005</code>.</p></article>
+          <article class="sheet required"><h3>Decisions carry sources</h3><p>Each material decision gets a <code>DEC-###</code> record with its source, date, status, rationale, and affected artifacts. Open assumptions and blockers stay marked as open. The Skill does not convert them into facts.</p></article>
+          <article class="sheet required"><h3>A change is an answer</h3><p>An explicit change from you is recorded as the answer and the decision source. The Skill does not ask you to confirm that same decision again. It asks only for the next unresolved consequence.</p></article>
+        </div>
+        <div class="callout"><strong>Research-dependent choices.</strong> For a stack, architecture, or tracker question, the Skill first inspects the project evidence and current primary sources. It presents the alternatives, their material trade-offs, source links, and the check date. It recommends one choice based on your confirmed constraints. You select the answer.</div>
+      </section>
+
+      <section class="section" id="artifacts">
+        <h2>What Project Kickoff writes</h2>
+        <p class="intro">The Skill adapts the templates in <code>assets/templates/</code>. It does not overwrite an existing file. It inspects the file, keeps your content, and merges the approved additions. Each derived artifact records its source decision IDs, the generating Skill version, and the approved revision.</p>
+        <table>
+          <thead><tr><th>File</th><th>What it holds</th><th>When it is created</th></tr></thead>
+          <tbody>
+            <tr><td><code>.project-kickoff/DISCOVERY.md</code></td><td>The detailed interview record, <code>DEC-###</code> decisions, <code>APR-###</code> approvals, and the one pending question.</td><td>At the start of discovery, after the project path is confirmed.</td></tr>
+            <tr><td><code>CONTEXT.md</code></td><td>Current phase, canonical paths, approved decisions and sources, blockers, the pending question, evidence, and the next action.</td><td>At the start of discovery.</td></tr>
+            <tr><td><code>AUDIT.md</code></td><td>Stable <code>AUD-###</code> findings with severity, evidence, impact, confidence, evidence gaps, and dispositions.</td><td>During an existing-project audit.</td></tr>
+            <tr><td><code>PRD.md</code></td><td>Users and problem, first-release boundary and non-goals, <code>REQ-###</code> acceptance criteria, approved architecture, the selected stack, and the intended folder tree.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>DESIGN.md</code></td><td>Audience, voice, interaction principles, information structure, flows, accessibility, errors, and content conventions.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>PLAN.md</code></td><td>The approved first release in full detail, each <code>TASK-###</code> with its links, steps, acceptance criteria, verification, and estimate. Later roadmap ideas stay in a non-runnable section.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>AGENTS.md</code></td><td>The common project policy for every agent that works on the project.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>CLAUDE.md</code></td><td>A small Claude Code adapter. It tells the agent to read <code>AGENTS.md</code> and adds only real host differences.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>MISTAKES.md</code></td><td>Instructions and an empty lesson index. The project orchestrator is its sole writer.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>README.md</code></td><td>A short project orientation and handoff note.</td><td>After its dependent decisions are approved.</td></tr>
+            <tr><td><code>TASKS.md</code></td><td>A single-writer Markdown tracker.</td><td>Only after you select root <code>TASKS.md</code> as the tracker.</td></tr>
+            <tr><td><code>.project-kickoff/setup.json</code></td><td>Host and project identity, tracker mode and path, each dependency's source and verification evidence, and every plan-ID to tracker-ID mapping.</td><td>During setup.</td></tr>
+            <tr><td><code>.project-kickoff/AGENT_TEAM_HANDOFF.json</code></td><td>The machine-readable handoff: approved revision, integration branch tip, tracker task IDs, and verification commands.</td><td>Before the Agent-Team handoff.</td></tr>
+          </tbody>
+        </table>
+        <p>Stable IDs never change when a title or an order changes, and a retired ID is never reused for a new meaning. An existing project keeps its established IDs; the Skill does not renumber them to its own convention. Epics and stories stay in <code>PLAN.md</code> as <code>EPIC-###</code> and <code>STORY-###</code> summaries. They are not seeded as runnable tracker rows.</p>
+        <div class="callout"><strong>Discovery writes very little.</strong> While a dependent choice is open, the Skill limits its writes to <code>.project-kickoff/DISCOVERY.md</code>, <code>CONTEXT.md</code>, the explicitly approved <code>.project-kickoff/context-hook.json</code> activation marker, and other planning notes you approved. It does not store credentials, raw sensitive data, or private reasoning in any checkpoint.</div>
+      </section>
+
+      <section class="section" id="setup">
+        <h2>Setup and the minimal scaffold</h2>
+        <p class="intro">Setup runs after the dependent product, scope, design, and technical decisions are approved. It changes only the selected project.</p>
+        <h3>The six dependencies</h3>
+        <p>The Skill presents these six every time, even when some are already ready. For each one it shows the purpose, a Ready, Missing, or Cannot use status, the selected executable or skill path, the source, the version or exact revision, the install scope and location, the license or access terms, and the verification result.</p>
+        <table>
+          <thead><tr><th>Dependency</th><th>Purpose</th><th>Authoritative source</th></tr></thead>
+          <tbody>
+            <tr><td>Ponytail</td><td>Minimal implementation and YAGNI guidance.</td><td>https://github.com/DietrichGebert/ponytail</td></tr>
+            <tr><td>Using-Superpowers</td><td>Planning, debugging, testing, and review procedures.</td><td>https://github.com/obra/superpowers</td></tr>
+            <tr><td>Beads</td><td>Dependency-aware implementation tracker.</td><td>https://github.com/gastownhall/beads</td></tr>
+            <tr><td>Agent-Team</td><td>Delegated implementation, integration, and coordination.</td><td>The authorized package source recorded for the installed copy.</td></tr>
+            <tr><td>Impeccable</td><td>Product and interface design workflow.</td><td>https://github.com/pbakaus/impeccable</td></tr>
+            <tr><td>UI UX Pro Max Skill</td><td>UI and UX patterns, data, and search tools.</td><td>https://github.com/nextlevelbuilder/ui-ux-pro-max-skill</td></tr>
+          </tbody>
+        </table>
+        <ol class="steps">
+          <li><h3>Resolve the Git boundary</h3><p>The Skill inspects the top level, status, remotes, branches, and worktrees. A new repository uses <code>main</code> as its canonical branch. An existing repository keeps its branch names, and the Skill records the branch that you designate.</p></li>
+          <li><h3>Check each tool for real</h3><p>A directory, a download, or a successful installer exit is not proof that a tool works. The Skill uses the selected executable's version or help output and a small functional check. It prefers project scope and reuses a compatible installation.</p></li>
+          <li><h3>Select one tracker</h3><p>If Beads is unavailable, the Skill researches current free or open-source alternatives, includes root <code>TASKS.md</code> as one choice, and asks one question. It does not create, write, or call any fallback tracker before you select it.</p></li>
+          <li><h3>Seed the tracker once</h3><p>Seeding starts only after <code>PLAN.md</code> is approved. The Skill resolves each executable task from the saved mapping, creates a tracker item only when none exists, and persists each new mapping immediately. A failed run leaves a valid partial seed that the next run continues. It never deletes and recreates the tracker to recover.</p></li>
+          <li><h3>Build the minimal scaffold in a worktree</h3><p>The Skill keeps the canonical checkout for planning and shared records. It creates a task branch and worktree from the verified integration revision, and delegates all scaffold code, configuration, builds, and tests to that worktree. It combines the work in one integration worktree, verifies it, and then updates the canonical branch.</p></li>
+        </ol>
+        <div class="callout"><strong>The scaffold is not an application.</strong> A minimal scaffold holds only the approved structure and basic tooling. The Skill lists commands only for tools that were created and verified, and it states plainly when no runnable application exists yet. It does not implement product features during kickoff.</div>
+        <p>Setup never changes global configuration, installs global hooks, or overwrites existing instructions without matching authority. It records every declined, deferred, failed, and superseded choice in <code>.project-kickoff/setup.json</code>. That receipt records choices. It grants no new permission.</p>
+      </section>
+
+      <section class="section" id="handoff">
+        <h2>Hand off to Agent-Team</h2>
+        <p class="intro">Project Kickoff 0.3.1 handoffs are tested against Agent-Team 7.0.2. Kickoff supplies the approved documents, the selected tracker and its mapping, the setup receipt, the project instructions, the first ready task, and the validated handoff file.</p>
+        <ol class="steps">
+          <li><h3>Meet the readiness gate</h3><p>The Skill declares <code>ready for handoff</code> only when every condition below is true. A failed install is not ready, and a deferred optional tool is reported separately.</p>
+            <details><summary>The readiness conditions</summary><div>
+              <ul>
+                <li>All five stage approvals are current, and no implementation-blocking decision is unresolved.</li>
+                <li><code>PRD.md</code>, <code>DESIGN.md</code>, and <code>PLAN.md</code> agree on first-release scope, stack, architecture, requirement IDs, and acceptance criteria.</li>
+                <li>The scaffold matches the approved scope, and its actual checks pass.</li>
+                <li>Dependency receipt statuses are factual, and the required capabilities are ready.</li>
+                <li>Exactly one tracker is active, the mappings are complete, the dependencies are acyclic, and the first actionable task is known. An audit can instead establish that no implementation work remains.</li>
+                <li><code>AGENTS.md</code>, <code>CLAUDE.md</code>, <code>MISTAKES.md</code>, <code>CONTEXT.md</code>, discovery, and tracker ownership agree.</li>
+                <li>No roadmap item was activated, and no feature implementation began.</li>
+              </ul>
+            </div></details>
+          </li>
+          <li><h3>Write and validate the handoff file</h3><p>The Skill adapts the template to <code>.project-kickoff/AGENT_TEAM_HANDOFF.json</code> and runs the bundled checker against it. Resolve <code>&lt;project-kickoff-skill-path&gt;</code> to the loaded Skill directory. This one is a real shell command.</p>
+            <div class="command"><div class="command-head"><span>Validate the handoff in a shell</span><button class="copy" type="button">Copy</button></div><pre>python3 &lt;project-kickoff-skill-path&gt;/scripts/check_agent_team_handoff.py \
+  --handoff .project-kickoff/AGENT_TEAM_HANDOFF.json</pre></div>
+          </li>
+          <li><h3>Start Agent-Team yourself</h3><p>The Skill prepares the exact invocation for the detected host. You send it.</p>
+            <div class="grid">
+              <div class="command"><div class="command-head"><span>Codex</span><button class="copy" type="button">Copy</button></div><pre>$agent-team start</pre></div>
+              <div class="command"><div class="command-head"><span>Claude Code</span><button class="copy" type="button">Copy</button></div><pre>/agent-team start</pre></div>
+            </div>
+          </li>
+        </ol>
+        <h3>The limits the checker enforces</h3>
+        <p>The tracker must be Beads or Markdown at root <code>TASKS.md</code> or <code>.agent-team/TASKS.md</code>. The file holds at most 500 implementation task records and stays at or below 250 KiB, so Agent-Team can wrap it in its initialization request. Task IDs must be unique, safe, and an exact match for every row in the selected tracker. The handoff lists task IDs only; titles, status, dependencies, and acceptance details stay in the tracker and the approved plan. The approved plan revision must exist on the named integration branch, and the recorded project revision must equal the current branch tip. At least one dependency-ready task must exist while implementation work remains.</p>
+        <div class="callout"><strong>Project Kickoff prepares the command. It does not run it.</strong> The Skill never creates or edits <code>.agent-team/setup.json</code>. Agent-Team owns that runtime receipt and creates it during project initialization. Project Kickoff can read an existing one for audit or resume, and treats it as read-only.</div>
+        <p>After verified integration into the canonical integration branch, the Skill cleans the eligible task branches, worktrees, and task-owned processes. It checks each worktree by ancestry, or by exact patch identity for a squashed integration. It removes only clean, fully integrated worktrees through normal Git worktree commands, and it never forces a removal. Unknown files, local data, secrets, and unfinished changes are retained and reported. This cleanup does not wait for a production deployment.</p>
+      </section>
+    </main>
+  </div>
+
+  <dialog id="image-dialog" aria-label="Expanded guide image">
+    <div class="modal-shell">
+      <img class="modal-image" id="modal-image" alt="">
+      <button class="modal-close" id="image-close" type="button" aria-label="Close expanded image">&times;</button>
+    </div>
+  </dialog>
+
+  <footer><div class="page footer-inner">
+    <p class="credit">Created by <a href="https://github.com/thebpandey">thebpandey</a>.</p>
+    <p><a href="https://github.com/thebpandey/project-kickoff">Project Kickoff on GitHub</a><br><a href="https://github.com/thebpandey/agent-team">Agent-Team on GitHub</a></p>
+  </div></footer>
+
+  <script>
+    document.querySelectorAll(".copy").forEach((button) => {
+      button.addEventListener("click", async () => {
+        const text = button.closest(".command").querySelector("pre").innerText;
+        try {
+          await navigator.clipboard.writeText(text);
+          const oldLabel = button.textContent;
+          button.textContent = "Copied";
+          window.setTimeout(() => { button.textContent = oldLabel; }, 1500);
+        } catch {
+          button.textContent = "Select text";
+        }
+      });
+    });
+
+    const imageDialog = document.querySelector("#image-dialog");
+    const modalImage = document.querySelector("#modal-image");
+    const imageClose = document.querySelector("#image-close");
+    let lastImageTrigger = null;
+
+    document.querySelectorAll(".image-open").forEach((button) => {
+      button.addEventListener("click", () => {
+        const sourceImage = button.querySelector("img");
+        lastImageTrigger = button;
+        modalImage.src = sourceImage.src;
+        modalImage.alt = `Expanded: ${sourceImage.alt}`;
+        modalImage.width = sourceImage.naturalWidth;
+        modalImage.height = sourceImage.naturalHeight;
+        imageDialog.showModal();
+      });
+    });
+    imageClose.addEventListener("click", () => imageDialog.close());
+    imageDialog.addEventListener("click", (event) => {
+      if (event.target === imageDialog) imageDialog.close();
+    });
+    imageDialog.addEventListener("close", () => {
+      modalImage.removeAttribute("src");
+      lastImageTrigger?.focus();
+    });
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && imageDialog.open) {
+        event.preventDefault();
+        imageDialog.close();
+      }
+    });
+  </script>
+</body>
+</html>
