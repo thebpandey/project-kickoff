@@ -46,9 +46,33 @@ def readme_allowlists(text):
     return re.findall(r"kickoff_required_files='([^']*)'", text)
 
 
-def release_tree(text):
+TREE_ENTRY = re.compile(r"^((?:│   |    )*)(?:├── |└── )(.+)$")
+
+
+def release_tree_paths(text):
+    """Return the full path of every file in the README release tree block.
+
+    A basename comparison is too weak. `README.md`, `CLAUDE.md`, and
+    `AGENT_TEAM_HANDOFF.json` each occur at more than one path in the package, so
+    a dropped nested line stays hidden behind the top-level name.
+    """
     match = re.search(r"```text\n(project-kickoff/\n.*?)```", text, re.S)
-    return match.group(1) if match else ""
+    if not match:
+        return None
+    paths = set()
+    parents = []
+    for line in match.group(1).splitlines()[1:]:
+        entry = TREE_ENTRY.match(line)
+        if not entry:
+            continue
+        depth = len(entry.group(1)) // 4
+        name = entry.group(2).strip()
+        del parents[depth:]
+        if name.endswith("/"):
+            parents.append(name[:-1])
+        else:
+            paths.add("/".join(parents + [name]))
+    return paths
 
 
 def skill_version(text):
@@ -86,12 +110,14 @@ class PackageManifestTest(unittest.TestCase):
                     "README allowlist does not match the package files",
                 )
 
-    def test_release_tree_names_every_package_file(self):
-        tree = release_tree(self.readme)
-        self.assertTrue(tree, "README must hold the release tree block")
-        for path in sorted(self.files):
-            with self.subTest(path=path):
-                self.assertIn(Path(path).name, tree)
+    def test_release_tree_holds_every_package_path(self):
+        tree = release_tree_paths(self.readme)
+        self.assertIsNotNone(tree, "README must hold the release tree block")
+        self.assertEqual(
+            tree,
+            self.files,
+            "the README release tree must hold every package path and no other",
+        )
 
     def test_package_version_is_consistent(self):
         version = skill_version(SKILL.read_text(encoding="utf-8"))

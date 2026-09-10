@@ -78,9 +78,8 @@ the model and the effort on each dispatched agent when the session exposes those
 fields. In Codex, use the collaboration controls only when they are available and
 authorized. Record the model and the effort that the host accepted.
 
-If the current host does not expose the selected model or the selected effort
-level, report that limit to the user. Do not move the work to a weaker tier
-without a new answer.
+When the host cannot apply the selection, follow the single stop-and-ask rule in
+[the model and effort selection](model-effort.md).
 
 ## Instructions and handoff
 

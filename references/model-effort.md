@@ -31,6 +31,12 @@ A timeout or silence is not an answer. Do not select a profile for the user. Do
 not start the interview, write an artifact, or dispatch an agent while this
 question is open.
 
+Do not put this question in the single pending-question record. That record holds
+one stage question with its stage, its exact text, its options, and its asked
+date. Keep the model and effort question in the conversation. On `resume`, the
+restored pending stage question stays in that record. Ask the model and effort
+question first, then continue the restored stage question.
+
 ## The question
 
 Use the plain-text shape in [the interview workflow](interview.md), or the host's
@@ -46,8 +52,10 @@ Offer three profiles:
 3. A cheaper pairing. It uses a mid-tier model for planning and the fastest
    available model for delegated work.
 
-State the concrete trade-off of each profile. Give depth, cost, and speed in
-parallel terms. A free-text answer is always valid. The user can pair any
+Name one model and one effort level in each half of each profile. A profile that
+leaves an effort level open is not a valid choice, because the record needs both
+values. State the concrete trade-off of each profile. Give depth, cost, and speed
+in parallel terms. A free-text answer is always valid. The user can pair any
 available model with any available effort level.
 
 Name each model and each effort level exactly as the current host reports it.
@@ -61,20 +69,30 @@ Which model and reasoning effort should Project Kickoff use in this session?
 
 1. Balanced: claude-opus-5 at high for planning, claude-sonnet-5 at high for delegated work (Recommended) — Strong interview and artifact quality, lower cost for scaffold and check agents.
 2. Strong for all work: claude-opus-5 at xhigh for planning and for delegated work — The most depth on every step, the highest cost, and the slowest turns.
-3. Lower cost: claude-sonnet-5 at high for planning, claude-haiku-4-5-20251001 for delegated work — The lowest cost and the fastest turns, less depth on hard trade-offs.
+3. Lower cost: claude-sonnet-5 at high for planning, claude-haiku-4-5-20251001 at high for delegated work — The lowest cost and the fastest turns, less depth on hard trade-offs.
 
 Reply with a number or your own answer.
 ```
 
 ## Saved values
 
-Read `.project-kickoff/DISCOVERY.md` for the resolved project before you ask. If
-its decision register holds a previous model and effort selection, offer those
-values back as the recommended profile. Label them as the saved values. The user
-confirms them with one reply or selects another profile.
+The question never waits for a resolved project path. Ask it at the first
+invocation, with a path or without one.
 
-If no discovery record exists, or the record holds no selection, use the standard
-recommended profile. Never report a saved value that you did not read.
+If the action supplies a project path, and `.project-kickoff/DISCOVERY.md` is
+readable at that path, read its decision register first. If the register holds a
+previous model and effort selection, offer those values back as the recommended
+profile. Label them as the saved values. The user confirms them with one reply or
+selects another profile.
+
+In every other case, offer the built-in recommended profile. This covers
+`start <idea>`, a bare `resume`, an unreadable record, and a record that holds no
+selection. Never report a saved value that you did not read.
+
+After the path is confirmed, write the record. If the discovery record already
+holds a different selection, mark that older `DEC-###` superseded and tell the
+user which values it held. The answer from this conversation is the current
+selection.
 
 ## Where to record the selection
 
@@ -83,19 +101,23 @@ Record the answer as a `DEC-###` decision in the decision register of
 for that register. Record the selected planning model, the planning effort, the
 delegated model, the delegated effort, the user's answer source, and the date.
 
+Set the register status to `Approved`. The user's direct answer is the approval
+source. This decision belongs to no stage and it needs no `APR-###` stage
+approval. A later change to it invalidates no stage approval.
+
 The discovery record is a planning record. The discovery write limit in
 `SKILL.md` permits this write. Do not create a separate state file for the
 selection. Do not write `.agent-team/setup.json`. Do not change host settings,
 user settings, or any file outside the project.
 
-If the project path is not confirmed, no discovery record exists yet. Keep the
-answer in the conversation. Write the `DEC-###` record when you create
-`.project-kickoff/DISCOVERY.md`. Tell the user that the selection is not recorded
-until that moment.
+The user can answer before the project path is confirmed. Keep the answer in the
+conversation until that moment. Then write the `DEC-###` record into the existing
+`.project-kickoff/DISCOVERY.md`, or into the record that you create for a new
+project. Tell the user that the selection is not recorded until that moment.
 
 When the user changes the selection later, mark the old `DEC-###` superseded.
-Record the new decision with its source and date. A model or effort change does
-not invalidate a stage approval and does not invalidate a derived artifact.
+Record the new decision with its source and date. A model or effort change
+invalidates no stage approval and no derived artifact.
 
 ## What the Skill can apply
 
@@ -115,9 +137,15 @@ For the delegated selection:
 - Set the model and the effort on each dispatched agent when the host exposes
   that control.
 - Record the model and the effort that the host accepted.
-- If the host exposes no such control, report that limit. Continue the work at
-  the host's own setting and name the setting that applied.
 
-If a selected model or a selected effort level is unavailable, report the
-constraint and ask one question. Never move the work to a weaker tier without the
-user's answer. Never report a lower tier as the selected tier.
+One rule covers every case where the selection cannot run. The host can expose no
+model control, no effort control, or neither. The selected model or the selected
+effort level can be unavailable. In each of these cases:
+
+1. Stop before the dispatch.
+2. Report the exact constraint and name the setting that would apply instead.
+3. Ask one question.
+4. Wait for the user's answer.
+
+Never dispatch delegated work at another tier without that answer. A host default
+is not an answer. Never report a lower tier as the selected tier.

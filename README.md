@@ -112,21 +112,23 @@ The question offers three named profiles. The recommended profile comes first. A
 free-text answer is always valid. A timeout or silence is not an answer.
 
 The Skill records your answer as a `DEC-###` decision in
-`.project-kickoff/DISCOVERY.md`. On the first invocation of a later conversation,
-it reads that record and offers the saved values back as the recommendation. The
-Skill has no session identifier. "First invocation" means only that the current
-conversation has not resolved a selection yet.
+`.project-kickoff/DISCOVERY.md`. When a later invocation names a project path, the
+Skill reads that record and offers the saved values back as the recommendation.
+When the invocation names no path yet, the Skill offers its built-in
+recommendation and writes the record after you confirm the path. The Skill has no
+session identifier. "First invocation" means only that the current conversation
+has not resolved a selection yet.
 
-A skill cannot change the model of the session that runs it. The Skill reports
+A Skill cannot change the model of the session that runs it. The Skill reports
 your planning selection and names the host control that applies it. In Claude
 Code, that control is `/model`. In Codex, the Skill reads the current host
 capability and names the control that Codex exposes. The Skill never claims that
 it switched your session model. It never calls a recorded selection active.
 
 For delegated work, the Skill sets the model and the effort on each dispatched
-agent when the host exposes those fields. If a selected model or effort level is
-unavailable, the Skill reports the limit and asks one question. It does not move
-the work to a weaker tier by itself.
+agent when the host exposes those fields. When it cannot, it stops before the
+dispatch, names the setting that would apply instead, and asks one question. It
+never runs delegated work at another tier without your answer.
 
 The `status`, `help`, and `version` actions never ask this question. They never
 write its record.
