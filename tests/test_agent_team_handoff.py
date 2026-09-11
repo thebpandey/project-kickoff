@@ -250,10 +250,10 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("AGENT_TEAM_ROOT"),
                          "set AGENT_TEAM_ROOT for real Agent-Team qualification")
-    def test_real_agent_team_710_adopts_the_handoff(self):
+    def test_real_agent_team_711_adopts_the_710_handoff(self):
         agent_team = Path(os.environ["AGENT_TEAM_ROOT"]).resolve()
         version = (agent_team / "SKILL.md").read_text()
-        self.assertIn('version: "7.1.0"', version)
+        self.assertIn('version: "7.1.1"', version)
 
         (self.root / "README.md").write_text("Fixture project.\n")
         (self.root / "TASKS.md").write_text(
