@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Check the bounded Project Kickoff handoff consumed by Agent-Team 7.0.2."""
+"""Check the bounded Project Kickoff handoff consumed by Agent-Team 7.1.0."""
 
 import argparse
 import json
@@ -199,8 +199,8 @@ def validate_handoff(value, *, size=None):
     if not is_object(agent_team):
         errors.append("agentTeam must be an object")
     else:
-        if agent_team.get("testedVersion") != "7.0.2":
-            errors.append("agentTeam.testedVersion must be 7.0.2")
+        if agent_team.get("testedVersion") != "7.1.0":
+            errors.append("agentTeam.testedVersion must be 7.1.0")
         if agent_team.get("initializationSource") != "existing":
             errors.append("agentTeam.initializationSource must be existing")
 
@@ -229,7 +229,7 @@ def validate_handoff(value, *, size=None):
         if not text(executable, 4096) or not os.path.isabs(executable):
             errors.append("unsupported tracker: Beads executable must be absolute")
     else:
-        errors.append("unsupported tracker: Agent-Team 7.0.2 accepts only Beads or Markdown")
+        errors.append("unsupported tracker: Agent-Team 7.1.0 accepts only Beads or Markdown")
 
     plan = value.get("plan")
     if not is_object(plan):
@@ -243,6 +243,16 @@ def validate_handoff(value, *, size=None):
         errors.append("plan.branch is invalid")
     elif plan.get("branch") != project.get("branch"):
         errors.append("plan.branch must match project.branch")
+    if "requiredCapabilities" in plan:
+        required_capabilities = plan["requiredCapabilities"]
+        if not isinstance(required_capabilities, list):
+            errors.append("plan.requiredCapabilities must be a bounded unique list of safe capability IDs")
+        elif len(required_capabilities) > MAX_LIST_ITEMS:
+            errors.append(f"{len(required_capabilities)} required capabilities exceeds Agent-Team limit of {MAX_LIST_ITEMS}")
+        elif any(not valid_id(capability) for capability in required_capabilities):
+            errors.append("invalid required capability ID")
+        elif len(set(required_capabilities)) != len(required_capabilities):
+            errors.append("duplicate required capability ID")
 
     if (is_object(kickoff) and re.fullmatch(r"[0-9a-f]{40}", str(kickoff.get("approvedRevision", "")))
             and text(project.get("root"), 4096) and text(project.get("branch"), 256)
@@ -301,7 +311,7 @@ def validate_handoff(value, *, size=None):
             graph = {}
             for row in tracker_rows:
                 if row["status"] not in KNOWN_STATUSES:
-                    errors.append(f"status {row['status']} is not compatible with Agent-Team 7.0.2")
+                    errors.append(f"status {row['status']} is not compatible with Agent-Team 7.1.0")
                 dependencies = row["dependencies"]
                 if (len(set(dependencies)) != len(dependencies)
                         or any(dependency not in id_set or dependency == row["id"]

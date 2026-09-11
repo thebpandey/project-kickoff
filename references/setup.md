@@ -105,7 +105,7 @@ sources. Compare the needed capability, gaps, maintenance, host support, source,
 and verified license. Do not describe an unverified or paid product as a free
 equivalent.
 
-For an Agent-Team 7.0.2 handoff, the selected tracker must be Beads or Markdown
+For an Agent-Team 7.1.0 handoff, the selected tracker must be Beads or Markdown
 at root `TASKS.md` or `.agent-team/TASKS.md`. Other researched trackers remain
 valid for projects that will not use Agent-Team, but are not compatible handoff
 targets for this version.
@@ -152,6 +152,13 @@ python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \
 
 Resolve `<project-kickoff-skill-path>` to the loaded Skill directory. Do not
 start Agent-Team or pre-create its runtime receipt as part of this check.
+
+`plan.requiredCapabilities` is optional. When supplied, use at most 100 unique
+safe capability IDs; the shipped template declares `graphify`. This is a
+declaration only: Project Kickoff must never install, initialize, execute,
+register, or evaluate Graphify or create `graphify-out/`. Agent-Team owns
+preparation and readiness and may block dispatch when a declared capability is
+unavailable.
 
 At the later Agent-Team initialization step, use the actual registered project
 owner session, a new operation ID, and the freshly observed Agent-Team setup

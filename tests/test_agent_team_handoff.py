@@ -24,11 +24,11 @@ def valid_handoff(root):
         "kind": "project-kickoff-agent-team-handoff",
         "status": "approved",
         "projectKickoff": {
-            "version": "0.4.0",
+            "version": "0.4.1",
             "approvalId": "APR-005",
             "approvedRevision": revision,
         },
-        "agentTeam": {"testedVersion": "7.0.2", "initializationSource": "existing"},
+        "agentTeam": {"testedVersion": "7.1.0", "initializationSource": "existing"},
         "project": {
             "id": "fixture-project",
             "root": str(root),
@@ -88,7 +88,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
         template = json.loads(TEMPLATE.read_text())
         self.assertEqual(template["schemaVersion"], 1)
         self.assertEqual(template["kind"], "project-kickoff-agent-team-handoff")
-        self.assertEqual(template["agentTeam"]["testedVersion"], "7.0.2")
+        self.assertEqual(template["agentTeam"]["testedVersion"], "7.1.0")
+        self.assertEqual(template["plan"]["requiredCapabilities"], ["graphify"])
         self.assertIn("tasks", template["plan"])
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
 
@@ -104,12 +105,12 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertIn("| {{ready}} |", tracker)
         self.assertNotIn("| {{planned}} |", tracker)
 
-    def test_checker_accepts_the_702_contract(self):
+    def test_checker_accepts_the_710_contract(self):
         result = self.check(valid_handoff(self.root))
         self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "passed")
-        self.assertEqual(output["agentTeamVersion"], "7.0.2")
+        self.assertEqual(output["agentTeamVersion"], "7.1.0")
         self.assertEqual(output["taskCount"], 1)
 
     def test_checker_emits_a_direct_agent_team_request(self):
@@ -124,6 +125,30 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(request["request"]["source"], "existing")
         self.assertEqual(request["request"]["tracker"], handoff["tracker"])
         self.assertEqual(request["request"]["plan"], handoff["plan"])
+        self.assertNotIn("requiredCapabilities", request["request"]["plan"])
+
+    def test_checker_copies_required_capabilities_to_the_agent_team_request(self):
+        handoff = valid_handoff(self.root)
+        handoff["plan"]["requiredCapabilities"] = ["graphify", "serena"]
+        result = self.emit_request(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        request = json.loads(result.stdout)
+        self.assertEqual(request["request"]["plan"]["requiredCapabilities"], ["graphify", "serena"])
+
+    def test_checker_rejects_invalid_required_capabilities(self):
+        cases = [
+            ("plan.requiredCapabilities must be a bounded unique list of safe capability IDs", "graphify"),
+            ("duplicate required capability ID", ["graphify", "graphify"]),
+            ("invalid required capability ID", ["../graphify"]),
+            ("101 required capabilities", [f"cap-{index}" for index in range(101)]),
+        ]
+        for phrase, required_capabilities in cases:
+            with self.subTest(phrase=phrase):
+                handoff = valid_handoff(self.root)
+                handoff["plan"]["requiredCapabilities"] = required_capabilities
+                result = self.check(handoff)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(phrase, result.stderr)
 
     def test_checker_rejects_limits_and_non_actionable_status(self):
         cases = []
@@ -225,10 +250,10 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("AGENT_TEAM_ROOT"),
                          "set AGENT_TEAM_ROOT for real Agent-Team qualification")
-    def test_real_agent_team_702_adopts_the_handoff(self):
+    def test_real_agent_team_710_adopts_the_handoff(self):
         agent_team = Path(os.environ["AGENT_TEAM_ROOT"]).resolve()
         version = (agent_team / "SKILL.md").read_text()
-        self.assertIn('version: "7.0.2"', version)
+        self.assertIn('version: "7.1.0"', version)
 
         (self.root / "README.md").write_text("Fixture project.\n")
         (self.root / "TASKS.md").write_text(

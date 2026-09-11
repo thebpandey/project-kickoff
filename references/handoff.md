@@ -16,7 +16,7 @@ for the approved task definitions and acceptance criteria.
    tracker's stored plan-ID field. If exactly one exists, update its definition
    only when needed. If more than one exists, stop that item and reconcile the
    duplicate. If none exists, create one. Keep epic and story summaries in the
-   plan. Do not seed them as tracker rows; Agent-Team 7.0.2 can otherwise treat
+   plan. Do not seed them as tracker rows; Agent-Team 7.1.0 can otherwise treat
    an open summary record as executable work.
 3. After each successful create, immediately persist that task's
    stable plan ID to tracker-ID mapping. A failure leaves a valid partial seed
@@ -67,6 +67,10 @@ the validated `.project-kickoff/AGENT_TEAM_HANDOFF.json`. The handoff identifies
 the exact approved revision, current integration branch tip, tracker task IDs,
 acceptance criteria, verification commands, and safe owned paths. The selected
 tracker remains authoritative for task titles, status, and dependencies.
+Optional `plan.requiredCapabilities` declares only capabilities Agent-Team must
+prepare and verify. Project Kickoff never installs, initializes, executes,
+registers, or evaluates Graphify and never creates `graphify-out/`; Agent-Team
+may block dispatch if a declared capability is unavailable.
 Agent-Team controls runtime worker identities, assignments, worktrees, scopes,
 and correlation IDs after it initializes the project. The checker can combine the approved facts
 with the actual Agent-Team owner session, operation ID, and setup version to emit
@@ -89,7 +93,7 @@ Declare `ready for handoff` only when:
 - exactly one tracker is active, mappings are complete, dependencies are acyclic,
   and the first actionable task is known, or audit evidence establishes that no
   implementation work remains;
-- when Agent-Team 7.0.2 is selected and implementation remains, its handoff is
+- when Agent-Team 7.1.0 is selected and implementation remains, its handoff is
   at most 250 KiB, contains at most 500 implementation task IDs, exactly matches
   the selected tracker, records the current branch tip, names only a supported tracker, and passes
   `check_agent_team_handoff.py`;

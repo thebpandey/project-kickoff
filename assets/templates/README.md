@@ -95,10 +95,13 @@ do not infer it from another project or package manager.
 - Exact invocation for this host: `{{verified Codex or Claude Code invocation}}`
 - Initialization request: {{checker command with the actual Agent-Team owner session, operation ID, and current setup version}}
 
-The handoff is tested with Agent-Team 7.0.2. It prepares Agent-Team; it does not
+The handoff is tested with Agent-Team 7.1.0. It prepares Agent-Team; it does not
 create Agent-Team runtime state or start implementation. Product code,
 package installation, scaffold execution, builds, and tests run later through
 complexity-appropriate subagents in isolated worktrees under `AGENTS.md`.
+Required capabilities in the handoff are declarations only. Project Kickoff does
+not install, initialize, execute, register, or evaluate Graphify or create
+`graphify-out/`; Agent-Team owns readiness and can block dispatch if unavailable.
 
 ## Verification and readiness
 
