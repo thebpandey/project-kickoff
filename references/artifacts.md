@@ -78,7 +78,10 @@ history.
 - Adapt [AGENT_TEAM_HANDOFF.json](../assets/templates/AGENT_TEAM_HANDOFF.json) as
   `.project-kickoff/AGENT_TEAM_HANDOFF.json` before an Agent-Team handoff. Keep it
   machine-readable and run `scripts/check_agent_team_handoff.py` against it. The
-  file describes approved inputs; it is not Agent-Team runtime state.
+  file describes approved inputs; it is not Agent-Team runtime state. Its optional
+  `plan.requiredCapabilities` list is bounded to 100 unique safe IDs. Omit it
+  when no optional capability is declared; the shipped template declares
+  `graphify`.
 
 Use [DISCOVERY.md](../assets/templates/DISCOVERY.md) for the detailed interview
 record. Use its decision and approval IDs as sources for derived artifacts.
@@ -97,9 +100,9 @@ approved tooling needs them. Never include secret values. List commands only for
 tools that were created and verified. State clearly if the minimal scaffold does
 not yet run an application.
 
-## Agent-Team 7.0.2 boundary
+## Agent-Team 7.1.0 boundary
 
-The handoff supports Agent-Team 7.0.2. Use only a selected Beads tracker or a
+The handoff supports Agent-Team 7.1.0. Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
 500 implementation task records, keep the JSON at or below 250 KiB, use unique safe
 task IDs, and provide at least one dependency-ready task when implementation
@@ -113,3 +116,8 @@ Keep epics and stories in `PLAN.md`. Do not seed them as tracker rows. This
 prevents an open or ready summary record from becoming runnable Agent-Team work.
 Agent-Team controls runtime assignments, worktrees, scopes, and correlation IDs
 after it initializes the project.
+
+Project Kickoff only declares capabilities in the handoff. It must never
+install, initialize, execute, register, or evaluate Graphify, or create
+`graphify-out/`; Agent-Team owns preparation and readiness and can block
+dispatch when a declared capability is unavailable.

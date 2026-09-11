@@ -2,7 +2,7 @@
 name: project-kickoff
 description: Define new software projects and audit or re-plan existing projects, producing approved product, experience, technical, scaffold, and Agent-Team handoff artifacts. Use for project kickoff, ordinary existing-project audits, or major project revisions before feature implementation.
 metadata:
-  version: "0.4.0"
+  version: "0.4.1"
 ---
 
 # Project Kickoff
@@ -116,6 +116,9 @@ the one-question protocol and the approval boundaries below.
   `.agent-team/setup.json`; Agent-Team owns that initialization receipt and its
   other runtime state. Before an Agent-Team handoff, generate and validate
   `.project-kickoff/AGENT_TEAM_HANDOFF.json` from the approved plan and tracker.
+- Project Kickoff may declare required capabilities in that handoff, but never
+  installs, initializes, executes, registers, or evaluates Graphify or creates
+  `graphify-out/`. Agent-Team owns capability preparation and readiness.
 - After verified integration into the canonical integration branch, clean
   eligible task branches, worktrees, and task-owned processes. This cleanup does
   not depend on production deployment.

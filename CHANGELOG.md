@@ -3,6 +3,25 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.1] - 2026-09-10
+
+### Added
+
+- An optional bounded `plan.requiredCapabilities` handoff contract. Omitted
+  declarations preserve Agent-Team's empty optional-capability behavior; supplied
+  declarations use unique safe IDs. The shipped template declares `graphify`.
+
+### Changed
+
+- Handoffs now target Agent-Team 7.1.0. Project Kickoff only declares required
+  capabilities; Agent-Team prepares and verifies them before dispatch.
+
+### Compatibility
+
+- Project Kickoff never installs, initializes, executes, registers, or evaluates
+  Graphify and never creates `graphify-out/`. Existing handoffs without
+  `requiredCapabilities` remain valid.
+
 ## [0.4.0] - 2026-09-10
 
 ### Added

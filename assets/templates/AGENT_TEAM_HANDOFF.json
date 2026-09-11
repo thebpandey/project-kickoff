@@ -3,12 +3,12 @@
   "kind": "project-kickoff-agent-team-handoff",
   "status": "approved",
   "projectKickoff": {
-    "version": "0.4.0",
+    "version": "0.4.1",
     "approvalId": "{{stage 5 APR-###}}",
     "approvedRevision": "{{full Git revision containing the approved PLAN.md baseline}}"
   },
   "agentTeam": {
-    "testedVersion": "7.0.2",
+    "testedVersion": "7.1.0",
     "initializationSource": "existing"
   },
   "project": {
@@ -31,6 +31,9 @@
       "{{exact verification command or check}}"
     ],
     "branch": "{{same canonical integration branch as project.branch}}",
+    "requiredCapabilities": [
+      "graphify"
+    ],
     "authority": {
       "ownedPaths": [
         "{{project-relative owned path or glob}}"
