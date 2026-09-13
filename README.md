@@ -82,7 +82,7 @@ flowchart TD
     TRACKER -->|Yes| SEED["Seed implementation task IDs once and verify dependencies"]
     TRACKER -->|No| ALT["Research free or open-source choices"]
     ALT --> CHOOSE["Ask the user to choose a fallback"]
-    CHOOSE --> COMPAT{"Compatible with Agent-Team 7.2.3?"}
+    CHOOSE --> COMPAT{"Compatible with Agent-Team 7.2.4?"}
     COMPAT -->|Yes| SEED
     COMPAT -->|No| OTHER["Prepare the selected non-Agent-Team handoff"]
     SEED --> DOCS["Finalize agent rules, context, receipts, and one live tracker"]
@@ -167,7 +167,7 @@ flowchart LR
     BR -->|No| RESEARCH["Research current alternatives"]
     RESEARCH --> USER{"Which verified tracker does the user select?"}
     USER -->|root TASKS.md| FT["Activate the Agent-Team-compatible fallback"]
-    USER -->|another tracker| NAT["Use it only without Agent-Team 7.2.3"]
+    USER -->|another tracker| NAT["Use it only without Agent-Team 7.2.4"]
 
     I --> VIS{"Visual interface?"}
     UI --> VIS
@@ -185,9 +185,9 @@ The Skill prefers compatible project-local installations. It preserves current
 project settings. It does not add global configuration or hooks without matching
 authorization. If one tool is unavailable, it continues independent work.
 
-For Agent-Team 7.2.3, the handoff tracker is Beads or Markdown at `TASKS.md` or
+For Agent-Team 7.2.4, the handoff tracker is Beads or Markdown at `TASKS.md` or
 `.agent-team/TASKS.md`. Another tracker can support a project that does not use
-Agent-Team, but it is not a compatible Agent-Team 7.2.3 handoff target.
+Agent-Team, but it is not a compatible Agent-Team 7.2.4 handoff target.
 
 ## Requirements before installation
 
@@ -447,7 +447,7 @@ Enter one of these lines in Claude Code chat:
 | `CONTEXT.md` | Stores a short resumption checkpoint and links to the live tracker. |
 | `README.md` | Orients people to the generated project and verified commands. |
 | `.project-kickoff/setup.json` | Records Project Kickoff dependency, tracker, and stable ID choices. It does not store task status or secrets. |
-| `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Gives Agent-Team 7.2.3 a bounded, validated, machine-readable initialization input. |
+| `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Gives Agent-Team 7.2.4 a bounded, validated, machine-readable initialization input. |
 | `.agent-team/setup.json` | Agent-Team creates this runtime receipt later. Project Kickoff treats it as read-only. |
 | Selected tracker | Owns live execution status. The Skill activates only one tracker. |
 | Minimal scaffold | Adds only approved folders and basic tooling. It can contain no runnable application yet. |
@@ -484,7 +484,7 @@ evidence report.
 The Skill keeps `PLAN.md` as the approved baseline. The selected tracker owns
 live status. It maps stable implementation task IDs to tracker IDs. It keeps
 epics and stories in the plan instead of seeding them as tracker rows. This
-prevents Agent-Team 7.2.3 from claiming an open summary record as implementation
+prevents Agent-Team 7.2.4 from claiming an open summary record as implementation
 work. It verifies blocker direction separately from hierarchy.
 
 After an interrupted seed, the Skill reads the tracker and saved mappings. It
@@ -498,7 +498,7 @@ Beads automatically if Beads becomes available later.
 
 Before an Agent-Team handoff, the Skill writes
 `.project-kickoff/AGENT_TEAM_HANDOFF.json` and runs
-`scripts/check_agent_team_handoff.py`. The checker enforces the 7.2.3 boundary:
+`scripts/check_agent_team_handoff.py`. The checker enforces the 7.2.4 boundary:
 
 - The file is at most 250 KiB.
 - It contains no more than 500 implementation tasks.
@@ -519,7 +519,7 @@ executes, registers, or evaluates Graphify or creates `graphify-out/`.
 Agent-Team prepares and verifies declared capabilities and may block dispatch if
 one is unavailable.
 
-Beads validation uses the same five-second read window as Agent-Team 7.2.3. A
+Beads validation uses the same five-second read window as Agent-Team 7.2.4. A
 read that needs more than the former 1.5-second limit does not fail early.
 
 During the later Agent-Team session, the same checker can emit the direct
