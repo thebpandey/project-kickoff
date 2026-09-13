@@ -13,8 +13,11 @@ All notable changes to Project Kickoff are recorded here. Versions follow
 
 ### Changed
 
-- Handoffs now target Agent-Team 7.1.0. Project Kickoff only declares required
-  capabilities; Agent-Team prepares and verifies them before dispatch.
+- New handoffs now target Agent-Team 7.2.1, qualified from revision
+  `8aeb7921592b7259df3862419c6bb21e4089ef8a`. Compatibility with the previously
+  supported Agent-Team 7.1.0 and 7.2.0 handoff contracts is retained. Project
+  Kickoff only declares required capabilities; Agent-Team prepares and verifies
+  them before dispatch.
 
 ### Compatibility
 

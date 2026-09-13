@@ -29,7 +29,7 @@ def valid_handoff(root):
             "approvalId": "APR-005",
             "approvedRevision": revision,
         },
-        "agentTeam": {"testedVersion": "7.2.0", "initializationSource": "existing"},
+        "agentTeam": {"testedVersion": "7.2.1", "initializationSource": "existing"},
         "project": {
             "id": "fixture-project",
             "root": str(root),
@@ -98,7 +98,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         template = json.loads(TEMPLATE.read_text())
         self.assertEqual(template["schemaVersion"], 1)
         self.assertEqual(template["kind"], "project-kickoff-agent-team-handoff")
-        self.assertEqual(template["agentTeam"]["testedVersion"], "7.2.0")
+        self.assertEqual(template["agentTeam"]["testedVersion"], "7.2.1")
         self.assertEqual(template["plan"]["requiredCapabilities"], ["graphify"])
         self.assertIn("tasks", template["plan"])
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
@@ -115,12 +115,12 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertIn("| {{ready}} |", tracker)
         self.assertNotIn("| {{planned}} |", tracker)
 
-    def test_checker_accepts_the_720_contract(self):
+    def test_checker_accepts_the_721_contract(self):
         result = self.check(valid_handoff(self.root))
         self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "passed")
-        self.assertEqual(output["agentTeamVersion"], "7.2.0")
+        self.assertEqual(output["agentTeamVersion"], "7.2.1")
         self.assertEqual(output["taskCount"], 1)
 
     def test_checker_emits_a_direct_agent_team_request(self):
@@ -277,6 +277,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
             ("0.4.0", "7.0.2"),
             ("0.4.1", "7.1.0"),
             ("0.4.1", "7.2.0"),
+            ("0.4.1", "7.2.1"),
         ]
         for kickoff, agent_team in supported:
             with self.subTest(pair=(kickoff, agent_team)):
@@ -326,7 +327,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
             "path": "AGENT_TEAM_HANDOFF.json",
             "sha256": hashlib.sha256(source).hexdigest(),
             "generatedBy": {"name": "project-kickoff", "version": "0.4.1"},
-            "testedAgainst": {"name": "agent-team", "version": "7.2.0"},
+            "testedAgainst": {"name": "agent-team", "version": "7.2.1"},
             "generationBaseline": baseline,
             "observedRevision": tip,
         })
@@ -478,10 +479,10 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("AGENT_TEAM_ROOT"),
                          "set AGENT_TEAM_ROOT for preliminary Agent-Team qualification")
-    def test_preliminary_local_agent_team_720_consumes_the_041_handoff(self):
+    def test_preliminary_local_agent_team_721_consumes_the_041_handoff(self):
         agent_team = Path(os.environ["AGENT_TEAM_ROOT"]).resolve()
         version = (agent_team / "SKILL.md").read_text()
-        self.assertIn('version: "7.2.0"', version)
+        self.assertIn('version: "7.2.1"', version)
         expected_revision = os.environ.get("AGENT_TEAM_EXPECTED_REVISION")
         if expected_revision:
             observed_revision = subprocess.check_output(
