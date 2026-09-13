@@ -17,13 +17,14 @@ MAX_HANDOFF_BYTES = 250 * 1024
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_TASKS = 500
 MAX_LIST_ITEMS = 100
-CHECKER_VERSION = "0.4.1"
+CHECKER_VERSION = "0.4.2"
 SUPPORTED_PAIRS = frozenset({
     ("0.3.1", "7.0.2"),
     ("0.4.0", "7.0.2"),
     ("0.4.1", "7.1.0"),
     ("0.4.1", "7.2.0"),
     ("0.4.1", "7.2.1"),
+    ("0.4.2", "7.2.3"),
 })
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}

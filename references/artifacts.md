@@ -100,9 +100,9 @@ approved tooling needs them. Never include secret values. List commands only for
 tools that were created and verified. State clearly if the minimal scaffold does
 not yet run an application.
 
-## Agent-Team 7.2.1 boundary
+## Agent-Team 7.2.3 boundary
 
-The handoff supports Agent-Team 7.2.1. Use only a selected Beads tracker or a
+The handoff supports Agent-Team 7.2.3. Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
 500 implementation task records, keep the JSON at or below 250 KiB, use unique safe
 task IDs, and provide at least one dependency-ready task when implementation

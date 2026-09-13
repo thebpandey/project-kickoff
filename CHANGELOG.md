@@ -3,6 +3,21 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.4.2] - 2026-09-13
+
+### Changed
+
+- New handoffs now target Agent-Team 7.2.3, qualified from revision
+  `0e6dfd774161885084083e2db323633999712668`.
+- The checker retains the historical Project Kickoff 0.3.1/Agent-Team 7.0.2,
+  0.4.0/7.0.2, and 0.4.1/7.1.0–7.2.1 compatibility mappings.
+
+### Compatibility
+
+- Project Kickoff continues to declare `graphify` without installing,
+  initializing, executing, registering, or evaluating Graphify. Agent-Team owns
+  capability preparation and readiness.
+
 ## [0.4.1] - 2026-09-10
 
 ### Added
