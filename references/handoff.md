@@ -16,7 +16,7 @@ for the approved task definitions and acceptance criteria.
    tracker's stored plan-ID field. If exactly one exists, update its definition
    only when needed. If more than one exists, stop that item and reconcile the
    duplicate. If none exists, create one. Keep epic and story summaries in the
-   plan. Do not seed them as tracker rows; Agent-Team 7.2.5 can otherwise treat
+   plan. Do not seed them as tracker rows; Agent-Team 7.2.6 can otherwise treat
    an open summary record as executable work.
 3. After each successful create, immediately persist that task's
    stable plan ID to tracker-ID mapping. A failure leaves a valid partial seed
@@ -93,7 +93,7 @@ Declare `ready for handoff` only when:
 - exactly one tracker is active, mappings are complete, dependencies are acyclic,
   and the first actionable task is known, or audit evidence establishes that no
   implementation work remains;
-- when Agent-Team 7.2.5 is selected and implementation remains, its handoff is
+- when Agent-Team 7.2.6 is selected and implementation remains, its handoff is
   at most 250 KiB, contains at most 500 implementation task IDs, exactly matches
   the selected tracker, records the current branch tip, names only a supported tracker, and passes
   `check_agent_team_handoff.py`;

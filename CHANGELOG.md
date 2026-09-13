@@ -7,10 +7,10 @@ All notable changes to Project Kickoff are recorded here. Versions follow
 
 ### Changed
 
-- New handoffs now target Agent-Team 7.2.5, qualified from revision
-  `1ed30b51f4f1348186f83b1466c29c4a4958ae29`.
+- New handoffs now target Agent-Team 7.2.6, qualified from revision
+  `04fd2be6e0cf5f1c712bae13cbf3feb719ab5dc0`.
 - The checker retains the historical Project Kickoff 0.3.1/Agent-Team 7.0.2,
-  0.4.0/7.0.2, 0.4.1/7.1.0–7.2.1, 0.4.2/7.2.3, and 0.4.2/7.2.4
+  0.4.0/7.0.2, 0.4.1/7.1.0–7.2.1, and 0.4.2/7.2.3–7.2.5
   compatibility mappings.
 
 ### Compatibility

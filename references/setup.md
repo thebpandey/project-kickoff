@@ -105,7 +105,7 @@ sources. Compare the needed capability, gaps, maintenance, host support, source,
 and verified license. Do not describe an unverified or paid product as a free
 equivalent.
 
-For an Agent-Team 7.2.5 handoff, the selected tracker must be Beads or Markdown
+For an Agent-Team 7.2.6 handoff, the selected tracker must be Beads or Markdown
 at root `TASKS.md` or `.agent-team/TASKS.md`. Other researched trackers remain
 valid for projects that will not use Agent-Team, but are not compatible handoff
 targets for this version.
