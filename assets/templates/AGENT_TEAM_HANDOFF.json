@@ -8,14 +8,14 @@
     "approvedRevision": "{{full Git revision containing the approved PLAN.md baseline}}"
   },
   "agentTeam": {
-    "testedVersion": "7.1.0",
+    "testedVersion": "7.2.0",
     "initializationSource": "existing"
   },
   "project": {
     "id": "{{stable project ID}}",
     "root": "{{absolute canonical project root}}",
     "branch": "{{canonical integration branch}}",
-    "revision": "{{full current integration branch tip used for handoff}}"
+    "revision": "{{full generation/integration baseline observed when the handoff is generated}}"
   },
   "tracker": {
     "kind": "{{markdown or beads}}",

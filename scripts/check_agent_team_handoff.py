@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-"""Check the bounded Project Kickoff handoff consumed by Agent-Team 7.1.0."""
+"""Check the bounded Project Kickoff handoff consumed by Agent-Team."""
 
 import argparse
+import errno
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -15,6 +17,13 @@ MAX_HANDOFF_BYTES = 250 * 1024
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_TASKS = 500
 MAX_LIST_ITEMS = 100
+CHECKER_VERSION = "0.4.1"
+SUPPORTED_PAIRS = frozenset({
+    ("0.3.1", "7.0.2"),
+    ("0.4.0", "7.0.2"),
+    ("0.4.1", "7.1.0"),
+    ("0.4.1", "7.2.0"),
+})
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}
 READY = {"ready", "open", "todo", "pending"}
@@ -56,45 +65,87 @@ def split_dependencies(value):
             if item and item.lower() not in {"none", "-"}]
 
 
+def compatibility_pair(project_kickoff_version, agent_team_version):
+    pair = (project_kickoff_version, agent_team_version)
+    if pair not in SUPPORTED_PAIRS:
+        raise ValueError(
+            f"unsupported handoff compatibility {project_kickoff_version}/{agent_team_version}; "
+            f"checker {CHECKER_VERSION} requires an approved migration"
+        )
+    return pair
+
+
+def stable_regular_bytes(path, maximum, label):
+    flags = os.O_RDONLY | getattr(os, "O_NONBLOCK", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        descriptor = os.open(path, flags)
+    except OSError as error:
+        if error.errno == errno.ELOOP:
+            raise ValueError(f"{label} must be a regular non-symlink file") from error
+        raise
+    try:
+        before = os.fstat(descriptor)
+        if not stat.S_ISREG(before.st_mode):
+            raise ValueError(f"{label} must be a regular non-symlink file")
+        if before.st_size > maximum:
+            raise ValueError(f"{label} exceeds {maximum} bytes")
+        source = b""
+        while len(source) <= maximum:
+            chunk = os.read(descriptor, min(65536, maximum + 1 - len(source)))
+            if not chunk:
+                break
+            source += chunk
+        after = os.fstat(descriptor)
+        identity = (before.st_dev, before.st_ino, before.st_size,
+                    before.st_mtime_ns, before.st_ctime_ns)
+        if identity != (after.st_dev, after.st_ino, after.st_size,
+                        after.st_mtime_ns, after.st_ctime_ns):
+            raise ValueError(f"{label} changed while being read")
+        if len(source) > maximum:
+            raise ValueError(f"{label} exceeds {maximum} bytes")
+        return source, identity
+    finally:
+        os.close(descriptor)
+
+
+def git(root, *arguments):
+    return subprocess.run(
+        ["git", "-C", root, *arguments],
+        capture_output=True, text=True, timeout=3,
+    )
+
+
 def git_boundary(root, branch, approved_revision, integration_revision):
-    top = subprocess.run(
-        ["git", "-C", root, "rev-parse", "--show-toplevel"],
-        capture_output=True, text=True, timeout=3,
-    )
-    if top.returncode != 0 or os.path.realpath(top.stdout.strip()) != os.path.realpath(root):
-        return "project.root must be the selected Git root"
-    current = subprocess.run(
-        ["git", "-C", root, "symbolic-ref", "--quiet", "--short", "HEAD"],
-        capture_output=True, text=True, timeout=3,
-    )
+    top = git(root, "rev-parse", "--show-toplevel")
+    canonical_root = os.path.realpath(root)
+    if (top.returncode != 0 or canonical_root != os.path.abspath(root)
+            or top.stdout.strip() != canonical_root):
+        return "project.root must be the selected Git root", None
+    current = git(root, "symbolic-ref", "--quiet", "--short", "HEAD")
     if current.returncode != 0 or current.stdout.strip() != branch:
-        return "project.branch must be checked out in the selected Git root"
-    branch_ref = subprocess.run(
-        ["git", "-C", root, "show-ref", "--verify", f"refs/heads/{branch}"],
-        capture_output=True, text=True, timeout=3,
-    )
+        return "project.branch must be checked out in the selected Git root", None
+    branch_ref = git(root, "rev-parse", "--verify", f"refs/heads/{branch}^{{commit}}")
     if branch_ref.returncode != 0:
-        return "integration branch does not exist"
-    if branch_ref.stdout.split()[0] != integration_revision:
-        return "project.revision must match the integration branch tip"
-    ancestor = subprocess.run(
-        ["git", "-C", root, "merge-base", "--is-ancestor", approved_revision, branch],
-        capture_output=True, text=True, timeout=3,
-    )
+        return "integration branch does not exist", None
+    observed_revision = branch_ref.stdout.strip()
+    approved = git(root, "rev-parse", "--verify", f"{approved_revision}^{{commit}}")
+    baseline = git(root, "rev-parse", "--verify", f"{integration_revision}^{{commit}}")
+    if approved.returncode != 0 or approved.stdout.strip() != approved_revision:
+        return "approved revision is not an ancestor of the generation baseline", None
+    if baseline.returncode != 0 or baseline.stdout.strip() != integration_revision:
+        return "generation baseline is not an ancestor of the observed branch tip", None
+    ancestor = git(root, "merge-base", "--is-ancestor", approved_revision, integration_revision)
     if ancestor.returncode != 0:
-        return "approved revision is not on the integration branch"
-    return None
+        return "approved revision is not an ancestor of the generation baseline", None
+    descendant = git(root, "merge-base", "--is-ancestor", integration_revision, observed_revision)
+    if descendant.returncode != 0:
+        return "generation baseline is not an ancestor of the observed branch tip", None
+    return None, observed_revision
 
 
-def markdown_tracker(path):
-    metadata = path.lstat()
-    if path.is_symlink() or not stat.S_ISREG(metadata.st_mode):
-        raise ValueError("selected Markdown tracker must be a regular non-symlink file")
-    if metadata.st_size > 1024 * 1024:
-        raise ValueError("selected Markdown tracker exceeds 1 MiB")
-    source = path.read_text(encoding="utf-8")
-    if len(source.encode("utf-8")) > 1024 * 1024:
-        raise ValueError("selected Markdown tracker exceeds 1 MiB")
+def markdown_tracker_snapshot(path):
+    encoded, identity = stable_regular_bytes(path, 1024 * 1024, "selected Markdown tracker")
+    source = encoded.decode("utf-8")
     lines = source.splitlines()
     task_rows = []
     index = 0
@@ -119,12 +170,20 @@ def markdown_tracker(path):
     if (any(not row.get("id") or not row.get("owner") or not row.get("status") for row in task_rows)
             or len({row["id"] for row in task_rows}) != len(task_rows)):
         raise ValueError("selected Markdown tracker has invalid or duplicate task rows")
-    return [{"id": row["id"], "status": row["status"], "owner": row["owner"],
+    rows = [{"id": row["id"], "status": row["status"], "owner": row["owner"],
              "dependencies": split_dependencies(row.get("depends on"))}
             for row in task_rows]
+    return rows, {
+        "kind": "markdown", "path": str(path), "sha256": hashlib.sha256(encoded).hexdigest(),
+        "identity": identity,
+    }
 
 
-def beads_tracker(root, executable):
+def markdown_tracker(path):
+    return markdown_tracker_snapshot(path)[0]
+
+
+def beads_tracker_snapshot(root, executable):
     environment = os.environ.copy()
     routing = [
         "DB", "DOLT_DATA_DIR", "DOLT_DATABASE", "DOLT_SERVER_DATABASE", "DOLT_HOST",
@@ -155,10 +214,10 @@ def beads_tracker(root, executable):
                    for row in rows)
             or len({row["id"] for row in rows}) != len(rows)):
         raise ValueError("selected Beads tracker returned invalid rows")
-    return [{
+    normalized = [{
         "id": row["id"],
         "status": row["status"],
-        "owner": row.get("assignee", ""),
+        "owner": row.get("assignee") or "",
         "dependencies": [dependency["depends_on_id"] for dependency in row.get("dependencies", [])
                          if is_object(dependency) and dependency.get("type") == "blocks"
                          and isinstance(dependency.get("depends_on_id"), str)],
@@ -169,9 +228,19 @@ def beads_tracker(root, executable):
                                        and dependency.get("type") in {"blocks", "parent-child", "related"}
                                        for dependency in row["dependencies"])),
     } for row in rows]
+    return normalized, {
+        "kind": "beads", "root": root, "executable": executable,
+        "sha256": hashlib.sha256(
+            json.dumps(normalized, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        ).hexdigest(),
+    }
 
 
-def validate_handoff(value, *, size=None):
+def beads_tracker(root, executable):
+    return beads_tracker_snapshot(root, executable)[0]
+
+
+def validate_handoff(value, *, size=None, details=None):
     errors = []
     if size is not None and size > MAX_HANDOFF_BYTES:
         errors.append(f"handoff exceeds {MAX_HANDOFF_BYTES} bytes")
@@ -199,8 +268,16 @@ def validate_handoff(value, *, size=None):
     if not is_object(agent_team):
         errors.append("agentTeam must be an object")
     else:
-        if agent_team.get("testedVersion") != "7.1.0":
-            errors.append("agentTeam.testedVersion must be 7.1.0")
+        kickoff_version = kickoff.get("version") if is_object(kickoff) else None
+        tested_version = agent_team.get("testedVersion")
+        if (re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", str(kickoff_version or ""))
+                and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", str(tested_version or ""))):
+            try:
+                compatibility_pair(kickoff_version, tested_version)
+            except ValueError as error:
+                errors.append(str(error))
+        elif not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", str(tested_version or "")):
+            errors.append("agentTeam.testedVersion must be semantic")
         if agent_team.get("initializationSource") != "existing":
             errors.append("agentTeam.initializationSource must be existing")
 
@@ -229,7 +306,7 @@ def validate_handoff(value, *, size=None):
         if not text(executable, 4096) or not os.path.isabs(executable):
             errors.append("unsupported tracker: Beads executable must be absolute")
     else:
-        errors.append("unsupported tracker: Agent-Team 7.1.0 accepts only Beads or Markdown")
+        errors.append("unsupported tracker: supported Agent-Team contracts accept only Beads or Markdown")
 
     plan = value.get("plan")
     if not is_object(plan):
@@ -259,12 +336,14 @@ def validate_handoff(value, *, size=None):
             and re.fullmatch(r"[0-9a-f]{40}", str(project.get("revision", "")))
             and os.path.isabs(project["root"])):
         try:
-            git_error = git_boundary(
+            git_error, observed_revision = git_boundary(
                 project["root"], project["branch"], kickoff["approvedRevision"],
                 project["revision"],
             )
             if git_error:
                 errors.append(git_error)
+            elif details is not None:
+                details["observedRevision"] = observed_revision
         except (OSError, subprocess.SubprocessError) as error:
             errors.append(f"Git validation failed: {error}")
 
@@ -295,23 +374,31 @@ def validate_handoff(value, *, size=None):
         errors.append("duplicate task ID")
     id_set = set(ids)
     tracker_rows = None
+    tracker_identity = None
     try:
         if is_object(tracker) and is_object(project) and text(project.get("root"), 4096):
             if tracker.get("kind") == "markdown" and tracker.get("path") in {"TASKS.md", ".agent-team/TASKS.md"}:
-                tracker_rows = markdown_tracker(Path(project["root"]) / tracker["path"])
+                tracker_rows, tracker_identity = markdown_tracker_snapshot(
+                    Path(project["root"]) / tracker["path"]
+                )
             elif tracker.get("kind") == "beads" and text(tracker.get("executable"), 4096):
-                tracker_rows = beads_tracker(project["root"], tracker["executable"])
+                tracker_rows, tracker_identity = beads_tracker_snapshot(
+                    project["root"], tracker["executable"]
+                )
     except (OSError, UnicodeError, json.JSONDecodeError, subprocess.SubprocessError, ValueError) as error:
         errors.append(f"tracker validation failed: {error}")
     if tracker_rows is not None:
+        if details is not None:
+            details["trackerRows"] = tracker_rows
+            details["trackerIdentity"] = tracker_identity
         tracker_by_id = {row["id"]: row for row in tracker_rows}
-        if len(tracker_rows) != len(tasks) or set(tracker_by_id) != id_set:
+        if [row["id"] for row in tracker_rows] != ids:
             errors.append("tracker task IDs do not exactly match handoff task IDs")
         else:
             graph = {}
             for row in tracker_rows:
                 if row["status"] not in KNOWN_STATUSES:
-                    errors.append(f"status {row['status']} is not compatible with Agent-Team 7.1.0")
+                    errors.append(f"status {row['status']} is not compatible with the selected Agent-Team contract")
                 dependencies = row["dependencies"]
                 if (len(set(dependencies)) != len(dependencies)
                         or any(dependency not in id_set or dependency == row["id"]
@@ -358,14 +445,10 @@ def main():
     args = parser.parse_args()
     handoff = Path(args.handoff)
     try:
-        metadata = handoff.lstat()
-        if handoff.is_symlink() or not stat.S_ISREG(metadata.st_mode):
-            raise ValueError("handoff must be a regular non-symlink file")
-        if metadata.st_size > MAX_HANDOFF_BYTES:
-            raise ValueError(f"handoff exceeds {MAX_HANDOFF_BYTES} bytes")
-        source = handoff.read_bytes()
+        source, _ = stable_regular_bytes(handoff, MAX_HANDOFF_BYTES, "handoff")
         value = json.loads(source.decode("utf-8"))
-        errors = validate_handoff(value, size=len(source))
+        details = {}
+        errors = validate_handoff(value, size=len(source), details=details)
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
         errors = [str(error)]
         value = {}
@@ -385,6 +468,25 @@ def main():
             for error in runtime_errors:
                 print(error, file=sys.stderr)
             return 1
+        current = {}
+        current_errors = validate_handoff(value, size=len(source), details=current)
+        if (current.get("trackerRows") != details.get("trackerRows")
+                or current.get("trackerIdentity") != details.get("trackerIdentity")):
+            print("tracker changed after handoff validation", file=sys.stderr)
+            return 1
+        if current_errors:
+            for error in current_errors:
+                print(error, file=sys.stderr)
+            return 1
+        try:
+            project_root = Path(value["project"]["root"]).resolve(strict=True)
+            relative_handoff = handoff.resolve(strict=True).relative_to(project_root).as_posix()
+            producer_version, tested_version = compatibility_pair(
+                value["projectKickoff"]["version"], value["agentTeam"]["testedVersion"]
+            )
+        except (OSError, ValueError):
+            print("handoff path must be within project.root", file=sys.stderr)
+            return 1
         request = {
             "schemaVersion": 1,
             "actorSessionId": args.actor_session_id,
@@ -395,6 +497,21 @@ def main():
                 "source": value["agentTeam"]["initializationSource"],
                 "tracker": value["tracker"],
                 "plan": value["plan"],
+                "handoff": {
+                    "schemaVersion": 1,
+                    "path": relative_handoff,
+                    "sha256": hashlib.sha256(source).hexdigest(),
+                    "generatedBy": {
+                        "name": "project-kickoff",
+                        "version": producer_version,
+                    },
+                    "testedAgainst": {
+                        "name": "agent-team",
+                        "version": tested_version,
+                    },
+                    "generationBaseline": value["project"]["revision"],
+                    "observedRevision": current["observedRevision"],
+                },
             },
         }
         serialized = json.dumps(request, ensure_ascii=False, separators=(",", ":"))

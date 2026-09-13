@@ -1,6 +1,7 @@
 """Validate the Project Kickoff to Agent-Team handoff contract."""
 
 import copy
+import hashlib
 import json
 import os
 from pathlib import Path
@@ -28,7 +29,7 @@ def valid_handoff(root):
             "approvalId": "APR-005",
             "approvedRevision": revision,
         },
-        "agentTeam": {"testedVersion": "7.1.0", "initializationSource": "existing"},
+        "agentTeam": {"testedVersion": "7.2.0", "initializationSource": "existing"},
         "project": {
             "id": "fixture-project",
             "root": str(root),
@@ -41,6 +42,7 @@ def valid_handoff(root):
             "acceptance": ["The approved behavior passes its checks."],
             "verification": ["python3 -m unittest discover -s tests -v"],
             "branch": "main",
+            "requiredCapabilities": ["graphify"],
             "authority": {"ownedPaths": ["src/**", "tests/**"], "externalActions": []},
             "tasks": [{"id": "AT-001"}],
         },
@@ -84,11 +86,19 @@ class AgentTeamHandoffTests(unittest.TestCase):
             capture_output=True, text=True, timeout=3,
         )
 
+    def commit_file(self, name, contents, message="fixture descendant"):
+        (self.root / name).write_text(contents)
+        subprocess.run(["git", "-C", str(self.root), "add", name], check=True)
+        subprocess.run(["git", "-C", str(self.root), "commit", "-qm", message], check=True)
+        return subprocess.check_output(
+            ["git", "-C", str(self.root), "rev-parse", "HEAD"], text=True,
+        ).strip()
+
     def test_package_declares_the_machine_readable_handoff(self):
         template = json.loads(TEMPLATE.read_text())
         self.assertEqual(template["schemaVersion"], 1)
         self.assertEqual(template["kind"], "project-kickoff-agent-team-handoff")
-        self.assertEqual(template["agentTeam"]["testedVersion"], "7.1.0")
+        self.assertEqual(template["agentTeam"]["testedVersion"], "7.2.0")
         self.assertEqual(template["plan"]["requiredCapabilities"], ["graphify"])
         self.assertIn("tasks", template["plan"])
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
@@ -105,12 +115,12 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertIn("| {{ready}} |", tracker)
         self.assertNotIn("| {{planned}} |", tracker)
 
-    def test_checker_accepts_the_710_contract(self):
+    def test_checker_accepts_the_720_contract(self):
         result = self.check(valid_handoff(self.root))
         self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "passed")
-        self.assertEqual(output["agentTeamVersion"], "7.1.0")
+        self.assertEqual(output["agentTeamVersion"], "7.2.0")
         self.assertEqual(output["taskCount"], 1)
 
     def test_checker_emits_a_direct_agent_team_request(self):
@@ -118,6 +128,10 @@ class AgentTeamHandoffTests(unittest.TestCase):
         result = self.emit_request(handoff)
         self.assertEqual(result.returncode, 0, result.stderr)
         request = json.loads(result.stdout)
+        self.assertEqual(set(request), {"schemaVersion", "actorSessionId", "expectedVersion", "request"})
+        self.assertEqual(set(request["request"]), {
+            "projectId", "operationId", "source", "tracker", "plan", "handoff",
+        })
         self.assertEqual(request["schemaVersion"], 1)
         self.assertEqual(request["actorSessionId"], "project-owner")
         self.assertEqual(request["expectedVersion"], 0)
@@ -125,7 +139,11 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(request["request"]["source"], "existing")
         self.assertEqual(request["request"]["tracker"], handoff["tracker"])
         self.assertEqual(request["request"]["plan"], handoff["plan"])
-        self.assertNotIn("requiredCapabilities", request["request"]["plan"])
+        self.assertEqual(request["request"]["plan"]["requiredCapabilities"], ["graphify"])
+        self.assertEqual(set(request["request"]["handoff"]), {
+            "schemaVersion", "path", "sha256", "generatedBy", "testedAgainst",
+            "generationBaseline", "observedRevision",
+        })
 
     def test_checker_copies_required_capabilities_to_the_agent_team_request(self):
         handoff = valid_handoff(self.root)
@@ -222,14 +240,224 @@ class AgentTeamHandoffTests(unittest.TestCase):
         handoff["projectKickoff"]["approvedRevision"] = "a" * 40
         result = self.check(handoff)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("approved revision is not on the integration branch", result.stderr)
+        self.assertIn("approved revision is not an ancestor of the generation baseline", result.stderr)
 
-    def test_checker_rejects_a_stale_integration_tip(self):
+    def test_checker_accepts_a_committed_handoff_descendant(self):
         handoff = valid_handoff(self.root)
-        handoff["project"]["revision"] = "b" * 40
+        self.commit_file("README.md", "descendant\n")
+        result = self.check(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_checker_rejects_an_unrelated_generation_revision(self):
+        handoff = valid_handoff(self.root)
+        tree = subprocess.check_output(
+            ["git", "-C", str(self.root), "write-tree"], text=True,
+        ).strip()
+        unrelated = subprocess.check_output(
+            ["git", "-C", str(self.root), "commit-tree", tree, "-m", "unrelated"],
+            text=True,
+        ).strip()
+        handoff["project"]["revision"] = unrelated
+        handoff["projectKickoff"]["approvedRevision"] = unrelated
         result = self.check(handoff)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("project.revision must match the integration branch tip", result.stderr)
+        self.assertIn("generation baseline is not an ancestor of the observed branch tip", result.stderr)
+
+    def test_checker_rejects_approved_revision_after_generation_baseline(self):
+        handoff = valid_handoff(self.root)
+        approved = self.commit_file("README.md", "after baseline\n")
+        handoff["projectKickoff"]["approvedRevision"] = approved
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("approved revision is not an ancestor of the generation baseline", result.stderr)
+
+    def test_checker_enforces_the_supported_compatibility_matrix(self):
+        supported = [
+            ("0.3.1", "7.0.2"),
+            ("0.4.0", "7.0.2"),
+            ("0.4.1", "7.1.0"),
+            ("0.4.1", "7.2.0"),
+        ]
+        for kickoff, agent_team in supported:
+            with self.subTest(pair=(kickoff, agent_team)):
+                handoff = valid_handoff(self.root)
+                handoff["projectKickoff"]["version"] = kickoff
+                handoff["agentTeam"]["testedVersion"] = agent_team
+                result = self.check(handoff)
+                self.assertEqual(result.returncode, 0, result.stderr)
+        for kickoff, agent_team in [("0.3.1", "7.2.0"), ("0.4.1", "7.0.2"), ("0.5.0", "7.2.0")]:
+            with self.subTest(unsupported=(kickoff, agent_team)):
+                handoff = valid_handoff(self.root)
+                handoff["projectKickoff"]["version"] = kickoff
+                handoff["agentTeam"]["testedVersion"] = agent_team
+                result = self.check(handoff)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"unsupported handoff compatibility {kickoff}/{agent_team}", result.stderr)
+                self.assertIn("checker 0.4.1 requires an approved migration", result.stderr)
+
+    def test_emit_request_rebinds_the_current_descendant_tip(self):
+        handoff = valid_handoff(self.root)
+        baseline = handoff["project"]["revision"]
+        path = self.root / "AGENT_TEAM_HANDOFF.json"
+        source = (json.dumps(handoff, indent=2) + "\n").encode()
+        path.write_bytes(source)
+        subprocess.run(["git", "-C", str(self.root), "add", path.name], check=True)
+        subprocess.run(["git", "-C", str(self.root), "commit", "-qm", "commit handoff"], check=True)
+        tip = subprocess.check_output(
+            ["git", "-C", str(self.root), "rev-parse", "HEAD"], text=True,
+        ).strip()
+        result = subprocess.run(
+            [sys.executable, str(CHECKER), "--handoff", str(path),
+             "--emit-request", "--actor-session-id", "project-owner",
+             "--operation-id", "initialize-project-kickoff-handoff",
+             "--expected-version", "0"],
+            capture_output=True, text=True, timeout=3,
+        )
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(path.read_bytes(), source)
+        emitted = json.loads(result.stdout)
+        binding = emitted["request"]["handoff"]
+        self.assertEqual(set(binding), {
+            "schemaVersion", "path", "sha256", "generatedBy", "testedAgainst",
+            "generationBaseline", "observedRevision",
+        })
+        self.assertEqual(binding, {
+            "schemaVersion": 1,
+            "path": "AGENT_TEAM_HANDOFF.json",
+            "sha256": hashlib.sha256(source).hexdigest(),
+            "generatedBy": {"name": "project-kickoff", "version": "0.4.1"},
+            "testedAgainst": {"name": "agent-team", "version": "7.2.0"},
+            "generationBaseline": baseline,
+            "observedRevision": tip,
+        })
+
+    def test_emit_request_rejects_tracker_drift(self):
+        row = {"id": "AT-001", "title": "Approved behavior", "status": "ready",
+               "assignee": "", "dependency_count": 0, "dependencies": []}
+        second = {"id": "AT-002", "title": "Second behavior", "status": "ready",
+                  "assignee": "", "dependency_count": 0, "dependencies": []}
+        cases = {
+            "addition": ([row], [row, second]),
+            "removal": ([row], []),
+            "reorder": ([row, second], [second, row]),
+            "status": ([row], [{**row, "status": "active"}]),
+            "owner": ([row], [{**row, "assignee": "developer"}]),
+            "dependencies": ([row], [{**row, "dependency_count": 1,
+                                       "dependencies": [{"type": "blocks", "depends_on_id": "AT-002"}]}]),
+        }
+        for label, (first_rows, second_rows) in cases.items():
+            with self.subTest(drift=label):
+                counter = self.root / f"counter-{label}"
+                executable = self.root / f"changing-bd-{label}"
+                executable.write_text(
+                    "#!/usr/bin/env python3\n"
+                    "import json\n"
+                    "from pathlib import Path\n"
+                    f"counter = Path({str(counter)!r})\n"
+                    "count = int(counter.read_text()) if counter.exists() else 0\n"
+                    "counter.write_text(str(count + 1))\n"
+                    f"first = json.loads({json.dumps(first_rows)!r})\n"
+                    f"second = json.loads({json.dumps(second_rows)!r})\n"
+                    "print(json.dumps(first if count == 0 else second))\n"
+                )
+                executable.chmod(0o700)
+                handoff = valid_handoff(self.root)
+                handoff["tracker"] = {"kind": "beads", "executable": str(executable)}
+                handoff["plan"]["tasks"] = [{"id": item["id"]} for item in first_rows]
+                path = self.root / "AGENT_TEAM_HANDOFF.json"
+                source = json.dumps(handoff).encode()
+                path.write_bytes(source)
+                result = subprocess.run(
+                    [sys.executable, str(CHECKER), "--handoff", str(path),
+                     "--emit-request", "--actor-session-id", "project-owner",
+                     "--operation-id", "initialize-project-kickoff-handoff",
+                     "--expected-version", "0"],
+                    capture_output=True, text=True, timeout=3,
+                )
+                self.assertNotEqual(result.returncode, 0)
+                self.assertEqual(result.stdout, "")
+                self.assertIn("tracker changed after handoff validation", result.stderr)
+                self.assertEqual(path.read_bytes(), source)
+
+    def test_checker_rejects_symlink_handoff_and_tracker(self):
+        handoff = valid_handoff(self.root)
+        target = self.root / "handoff-target.json"
+        target.write_text(json.dumps(handoff))
+        link = self.root / "AGENT_TEAM_HANDOFF.json"
+        link.symlink_to(target)
+        result = subprocess.run(
+            [sys.executable, str(CHECKER), "--handoff", str(link)],
+            capture_output=True, text=True, timeout=3,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+
+        link.unlink()
+        tracker = self.root / "TASKS.md"
+        tracker_source = tracker.read_bytes()
+        tracker.unlink()
+        tracker_target = self.root / "tracker-target.md"
+        tracker_target.write_bytes(tracker_source)
+        tracker.symlink_to(tracker_target)
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("regular non-symlink", result.stderr)
+
+    def test_checker_rejects_a_symlink_alias_as_the_selected_git_root(self):
+        alias = Path(self.temp.name) / "project-alias"
+        alias.symlink_to(self.root, target_is_directory=True)
+        handoff = valid_handoff(self.root)
+        handoff["project"]["root"] = str(alias)
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("project.root must be the selected Git root", result.stderr)
+
+    def test_checker_rejects_wrong_branch_and_detached_head(self):
+        wrong = valid_handoff(self.root)
+        wrong["project"]["branch"] = "other"
+        wrong["plan"]["branch"] = "other"
+        result = self.check(wrong)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("project.branch must be checked out", result.stderr)
+
+        handoff = valid_handoff(self.root)
+        subprocess.run(["git", "-C", str(self.root), "checkout", "-q", "--detach"], check=True)
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("project.branch must be checked out", result.stderr)
+
+    @unittest.skipUnless(hasattr(os, "mkfifo"), "FIFO unavailable on this platform")
+    def test_checker_rejects_a_special_handoff_without_blocking(self):
+        fifo = self.root / "AGENT_TEAM_HANDOFF.json"
+        os.mkfifo(fifo)
+        result = subprocess.run(
+            [sys.executable, str(CHECKER), "--handoff", str(fifo)],
+            capture_output=True, text=True, timeout=3,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("regular non-symlink", result.stderr)
+
+    def test_emit_request_rejects_out_of_root_handoff_without_traceback(self):
+        handoff = valid_handoff(self.root)
+        outside = Path(self.temp.name) / "outside.json"
+        source = json.dumps(handoff).encode()
+        outside.write_bytes(source)
+        result = subprocess.run(
+            [sys.executable, str(CHECKER), "--handoff", str(outside),
+             "--emit-request", "--actor-session-id", "project-owner",
+             "--operation-id", "initialize-project-kickoff-handoff",
+             "--expected-version", "0"], capture_output=True, text=True, timeout=3,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertEqual(result.stdout, "")
+        self.assertIn("handoff path must be within project.root", result.stderr)
+        self.assertNotIn("Traceback", result.stderr)
+        self.assertEqual(outside.read_bytes(), source)
 
     def test_beads_read_can_exceed_the_old_1_5_second_limit(self):
         executable = self.root / "slow-bd"
@@ -249,11 +477,17 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
 
     @unittest.skipUnless(os.environ.get("AGENT_TEAM_ROOT"),
-                         "set AGENT_TEAM_ROOT for real Agent-Team qualification")
-    def test_real_agent_team_711_adopts_the_710_handoff(self):
+                         "set AGENT_TEAM_ROOT for preliminary Agent-Team qualification")
+    def test_preliminary_local_agent_team_720_consumes_the_041_handoff(self):
         agent_team = Path(os.environ["AGENT_TEAM_ROOT"]).resolve()
         version = (agent_team / "SKILL.md").read_text()
-        self.assertIn('version: "7.1.1"', version)
+        self.assertIn('version: "7.2.0"', version)
+        expected_revision = os.environ.get("AGENT_TEAM_EXPECTED_REVISION")
+        if expected_revision:
+            observed_revision = subprocess.check_output(
+                ["git", "-C", str(agent_team), "rev-parse", "HEAD"], text=True,
+            ).strip()
+            self.assertEqual(observed_revision, expected_revision)
 
         (self.root / "README.md").write_text("Fixture project.\n")
         (self.root / "TASKS.md").write_text(
@@ -266,33 +500,89 @@ class AgentTeamHandoffTests(unittest.TestCase):
         subprocess.run(["git", "-C", str(self.root), "commit", "-qm", "fixture project"], check=True)
 
         handoff = valid_handoff(self.root)
-        handoff["projectKickoff"]["approvedRevision"] = subprocess.check_output(
+        self.assertEqual(handoff["plan"]["requiredCapabilities"], ["graphify"])
+        handoff_path = self.root / "AGENT_TEAM_HANDOFF.json"
+        handoff_source = (json.dumps(handoff, indent=2) + "\n").encode()
+        handoff_path.write_bytes(handoff_source)
+        subprocess.run(["git", "-C", str(self.root), "add", handoff_path.name], check=True)
+        subprocess.run(["git", "-C", str(self.root), "commit", "-qm", "fixture handoff"], check=True)
+        observed_tip = subprocess.check_output(
             ["git", "-C", str(self.root), "rev-parse", "HEAD"], text=True,
         ).strip()
-        emitted = self.emit_request(handoff)
+        emitted = subprocess.run(
+            [sys.executable, str(CHECKER), "--handoff", str(handoff_path),
+             "--emit-request", "--actor-session-id", "project-owner",
+             "--operation-id", "initialize-project-kickoff-handoff",
+             "--expected-version", "0"], capture_output=True, text=True, timeout=3,
+        )
         self.assertEqual(emitted.returncode, 0, emitted.stderr)
         envelope = json.loads(emitted.stdout)
+        provenance = envelope["request"]["handoff"]
+        self.assertEqual(provenance["generationBaseline"], handoff["project"]["revision"])
+        self.assertEqual(provenance["observedRevision"], observed_tip)
+        self.assertEqual(provenance["sha256"], hashlib.sha256(handoff_source).hexdigest())
+        self.assertEqual(envelope["request"]["plan"]["requiredCapabilities"], ["graphify"])
+        self.assertEqual(handoff_path.read_bytes(), handoff_source)
         request = self.root / "initialization.json"
         request.write_text(json.dumps(envelope))
         cli = agent_team / "hooks/agent-team-cli.mjs"
+        before_shell = {
+            item.relative_to(self.root).as_posix(): hashlib.sha256(item.read_bytes()).hexdigest()
+            for item in self.root.rglob("*") if item.is_file() and ".git" not in item.parts
+        }
         result = subprocess.run(
             ["node", str(cli), "project-initialize", "--project", str(self.root),
              "--request", str(request)], capture_output=True, text=True, timeout=10,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        initialized = json.loads(result.stdout)
-        self.assertEqual(initialized["status"], "applied")
-        self.assertTrue(initialized["canonicalReady"])
-        self.assertEqual(initialized["taskIds"], ["AT-001"])
+        shell = json.loads(result.stdout)
+        self.assertEqual(shell["status"], "validated")
+        self.assertEqual(shell["reason"], "native_identity_required")
+        after_shell = {
+            item.relative_to(self.root).as_posix(): hashlib.sha256(item.read_bytes()).hexdigest()
+            for item in self.root.rglob("*") if item.is_file() and ".git" not in item.parts
+        }
+        self.assertEqual(after_shell, before_shell)
 
-        readiness = subprocess.run(
-            ["node", str(cli), "readiness", "--project", str(self.root),
-             "--host", "codex", "--scope", "user"],
-            capture_output=True, text=True, timeout=10,
+        driver = self.root / "consume.mjs"
+        driver.write_text(
+            "import { initializeProject } from "
+            f"{json.dumps((agent_team / 'hooks/lib/initialization.mjs').as_uri())};\n"
+            "import { readFile } from 'node:fs/promises';\n"
+            "const root = process.argv[2];\n"
+            "const envelope = JSON.parse(await readFile(process.argv[3], 'utf8'));\n"
+            "const result = await initializeProject(root, envelope.request, {"
+            "actorSessionId: envelope.actorSessionId, expectedVersion: envelope.expectedVersion, "
+            "nativeIdentity: {host:'codex',sessionId:envelope.actorSessionId,observed:true,cwd:root}});\n"
+            "process.stdout.write(JSON.stringify(result));\n"
         )
-        self.assertEqual(readiness.returncode, 0, readiness.stderr)
-        state = json.loads(readiness.stdout)
-        self.assertFalse(state["projectInitialization"]["required"])
+        consumed = subprocess.run(
+            ["node", str(driver), str(self.root), str(request)],
+            capture_output=True, text=True, timeout=15,
+        )
+        self.assertEqual(consumed.returncode, 0, consumed.stderr)
+        initialized = json.loads(consumed.stdout)
+        self.assertEqual(initialized["status"], "applied")
+        self.assertTrue(initialized["ready"])
+        self.assertEqual(initialized["taskIds"], ["AT-001"])
+        setup = json.loads((self.root / ".agent-team/setup.json").read_text())
+        self.assertEqual(setup["ownership"]["current"]["host"], "codex")
+        self.assertEqual(setup["ownership"]["current"]["sessionId"], "project-owner")
+        self.assertEqual(setup["plan"]["requiredCapabilities"], ["graphify"])
+        self.assertEqual(setup["initialization"]["initialTaskIds"], ["AT-001"])
+        tracker_source = (self.root / "TASKS.md").read_bytes()
+        tracker_id = f"markdown:{self.root / 'TASKS.md'}".encode()
+        self.assertEqual(
+            setup["initialization"]["trackerFingerprint"],
+            hashlib.sha256(tracker_id + b"\0" + tracker_source).hexdigest(),
+        )
+        consumed_handoff = setup["initialization"]["handoff"]
+        for key, value in provenance.items():
+            self.assertEqual(consumed_handoff[key], value)
+        self.assertEqual(consumed_handoff["consumptionOperationId"], envelope["request"]["operationId"])
+        self.assertFalse((self.root / "graphify-out").exists())
+        self.assertFalse((self.root / ".agent-team/tools").exists())
+        self.assertEqual(handoff_path.read_bytes(), handoff_source)
 
 
 if __name__ == "__main__":
