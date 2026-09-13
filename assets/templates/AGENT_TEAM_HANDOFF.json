@@ -8,7 +8,7 @@
     "approvedRevision": "{{full Git revision containing the approved PLAN.md baseline}}"
   },
   "agentTeam": {
-    "testedVersion": "7.2.4",
+    "testedVersion": "7.2.5",
     "initializationSource": "existing"
   },
   "project": {

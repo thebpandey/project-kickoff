@@ -95,7 +95,7 @@ do not infer it from another project or package manager.
 - Exact invocation for this host: `{{verified Codex or Claude Code invocation}}`
 - Initialization request: {{checker command with the actual Agent-Team owner session, operation ID, and current setup version}}
 
-The handoff is tested with Agent-Team 7.2.4. It prepares Agent-Team; it does not
+The handoff is tested with Agent-Team 7.2.5. It prepares Agent-Team; it does not
 create Agent-Team runtime state or start implementation. Product code,
 package installation, scaffold execution, builds, and tests run later through
 complexity-appropriate subagents in isolated worktrees under `AGENTS.md`.
