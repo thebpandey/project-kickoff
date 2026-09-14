@@ -54,7 +54,10 @@ affected paths or boundary, acceptance criteria, verification, and an effort or
 complexity estimate with assumptions. Mark parallel tasks only when their files,
 state, and prerequisites permit independent work.
 
-`PLAN.md` owns scope, acceptance criteria, and the approved task graph. The
+`PLAN.md` owns scope, acceptance criteria, and the approved task graph. It can
+identify ordered retained-context candidates when their dependencies and paths
+are independent, with one owner for each shared protocol and an independent
+review dependency. These candidates are planning inputs, not runtime lanes. The
 selected tracker owns assignment and live execution status. A completed tracker
 item does not silently revise `PLAN.md`; a plan revision does not erase execution
 history.
@@ -100,11 +103,11 @@ approved tooling needs them. Never include secret values. List commands only for
 tools that were created and verified. State clearly if the minimal scaffold does
 not yet run an application.
 
-## Agent-Team 7.2.6 boundary
+## Agent-Team 7.3.0 boundary
 
-The handoff supports Agent-Team 7.2.6. Use only a selected Beads tracker or a
+The handoff supports Agent-Team 7.3.0. Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
-500 implementation task records, keep the JSON at or below 250 KiB, use unique safe
+1000 implementation task records, keep the JSON at or below 250 KiB, use unique safe
 task IDs, and provide at least one dependency-ready task when implementation
 remains. The handoff lists only task IDs. They must exactly match all rows in the
 selected tracker. The checker reads status and dependencies from that tracker;
@@ -114,8 +117,15 @@ revision must equal the current branch tip.
 
 Keep epics and stories in `PLAN.md`. Do not seed them as tracker rows. This
 prevents an open or ready summary record from becoming runnable Agent-Team work.
-Agent-Team controls runtime assignments, worktrees, scopes, and correlation IDs
-after it initializes the project.
+Agent-Team controls runtime lanes, claims, assignments, worktrees, briefs,
+worker identities, capacity, scopes, and correlation IDs after it initializes
+the project. Do not add those runtime records to the handoff.
+
+The 1000-task boundary is Agent-Team 7.3.0's default `maxPlanTasks`, not a
+promise about a target host's effective setting. Before readiness, verify that
+the selected host's current configured limit is at least the handoff task count.
+A lower effective limit blocks initialization until the task set or authorized
+configuration is reconciled.
 
 Project Kickoff only declares capabilities in the handoff. It must never
 install, initialize, execute, register, or evaluate Graphify, or create

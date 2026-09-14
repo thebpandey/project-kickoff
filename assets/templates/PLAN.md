@@ -52,6 +52,13 @@ Parallel candidates:
 Do not label work parallel when it shares an unresolved decision, migration,
 generated artifact, writable path, or environment resource.
 
+For an Agent-Team handoff, describe candidate retained-context sequences as
+ordered task groups with explicit dependencies, disjoint writable paths, and a
+single owner for each shared protocol or generated contract. Link independent
+review as a dependency without assigning it to the author. These are planning
+inputs only. Do not create lane IDs, claims, assignments, worker identities,
+briefs, capacity reservations, or other Agent-Team runtime state.
+
 ## First-release epics and stories
 
 ### EPIC-001 — {{epic outcome}}
@@ -95,6 +102,8 @@ As {{actor}}, I need {{capability}}, so that {{outcome}}.
 - Verification:
   - {{exact test/check type, environment, and expected observation}}
   - {{integration boundary or manual review where automation cannot prove it}}
+- Independent review: {{source-first challenge, required evidence, and author
+  separation, or reason review does not apply}}
 - Evidence to retain: {{test output path, screenshot, report, revision, or other
   durable pointer; do not paste credentials or full logs}}
 - Handoff: {{downstream task, interface contract, or integration note}}
@@ -148,10 +157,14 @@ tracker.
 - [ ] Approved PRD requirements all have plan coverage.
 - [ ] Approved design obligations appear in tasks and verification.
 - [ ] Dependencies have correct direction and no cycles.
+- [ ] Parallel candidates have disjoint boundaries and explicit review and
+  shared-protocol ownership.
 - [ ] External access and setup prerequisites have owners.
 - [ ] The selected tracker contains one mapping for each runnable task.
 - [ ] The first actionable task and its worktree boundary are clear.
 - [ ] Verification covers the integrated first-release behavior.
+- [ ] Required independent reviews and normal integration/release gates are
+  explicit without assigning runtime reviewer identities.
 - [ ] Future ideas were not seeded as active tasks.
 
 ## Future roadmap — not active work

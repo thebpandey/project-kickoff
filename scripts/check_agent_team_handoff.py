@@ -15,9 +15,9 @@ import sys
 
 MAX_HANDOFF_BYTES = 250 * 1024
 MAX_REQUEST_BYTES = 256 * 1024
-MAX_TASKS = 500
+MAX_TASKS = 1000
 MAX_LIST_ITEMS = 100
-CHECKER_VERSION = "0.4.2"
+CHECKER_VERSION = "0.5.0"
 SUPPORTED_PAIRS = frozenset({
     ("0.3.1", "7.0.2"),
     ("0.4.0", "7.0.2"),
@@ -28,6 +28,7 @@ SUPPORTED_PAIRS = frozenset({
     ("0.4.2", "7.2.4"),
     ("0.4.2", "7.2.5"),
     ("0.4.2", "7.2.6"),
+    ("0.5.0", "7.3.0"),
 })
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}
@@ -209,8 +210,8 @@ def beads_tracker_snapshot(root, executable):
     )
     if result.returncode != 0:
         raise ValueError("selected Beads tracker read failed")
-    if len(result.stdout.encode("utf-8")) > 1024 * 1024:
-        raise ValueError("selected Beads response exceeds 1 MiB")
+    if len(result.stdout.encode("utf-8")) > 2 * 1024 * 1024:
+        raise ValueError("selected Beads response exceeds 2 MiB")
     rows = json.loads(result.stdout)
     if (not isinstance(rows, list)
             or any(not is_object(row) or not text(row.get("id"), 128)
@@ -325,6 +326,9 @@ def validate_handoff(value, *, size=None, details=None):
         errors.append("plan.branch is invalid")
     elif plan.get("branch") != project.get("branch"):
         errors.append("plan.branch must match project.branch")
+    if any(field in plan for field in (
+            "lanes", "claims", "assignments", "briefs", "workerIdentities", "capacity")):
+        errors.append("plan must not contain Agent-Team runtime state")
     if "requiredCapabilities" in plan:
         required_capabilities = plan["requiredCapabilities"]
         if not isinstance(required_capabilities, list):

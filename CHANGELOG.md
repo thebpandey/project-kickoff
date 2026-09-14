@@ -3,6 +3,31 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] - 2026-09-14
+
+### Added
+
+- Planning guidance for ordered retained-context candidates, disjoint writable
+  boundaries, independent review dependencies, and one owner per shared
+  protocol. Agent-Team alone creates and owns lane runtime state after handoff.
+
+### Changed
+
+- New handoffs target Agent-Team 7.3.0 and accept up to its default 1000 plan
+  tasks within the existing 250 KiB handoff limit. A lower effective host
+  `maxPlanTasks` remains a readiness blocker.
+- Beads validation accepts a bounded 2 MiB response, preserving the established
+  user-scope checker behavior while remaining below the handoff task cap.
+- The checker rejects Agent-Team lane, claim, assignment, brief, worker identity,
+  and capacity records in Project Kickoff handoffs while retaining all
+  previously supported compatibility pairs.
+
+### Compatibility
+
+- Existing approved plans, one-tracker mappings, task IDs, reviews, gates, and
+  handoff evidence remain valid. Project Kickoff does not claim workers, create
+  briefs, reserve capacity, or write Agent-Team runtime state.
+
 ## [0.4.2] - 2026-09-13
 
 ### Changed

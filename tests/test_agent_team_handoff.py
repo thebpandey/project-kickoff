@@ -25,11 +25,11 @@ def valid_handoff(root):
         "kind": "project-kickoff-agent-team-handoff",
         "status": "approved",
         "projectKickoff": {
-            "version": "0.4.2",
+            "version": "0.5.0",
             "approvalId": "APR-005",
             "approvedRevision": revision,
         },
-        "agentTeam": {"testedVersion": "7.2.6", "initializationSource": "existing"},
+        "agentTeam": {"testedVersion": "7.3.0", "initializationSource": "existing"},
         "project": {
             "id": "fixture-project",
             "root": str(root),
@@ -98,7 +98,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         template = json.loads(TEMPLATE.read_text())
         self.assertEqual(template["schemaVersion"], 1)
         self.assertEqual(template["kind"], "project-kickoff-agent-team-handoff")
-        self.assertEqual(template["agentTeam"]["testedVersion"], "7.2.6")
+        self.assertEqual(template["agentTeam"]["testedVersion"], "7.3.0")
         self.assertEqual(template["plan"]["requiredCapabilities"], ["graphify"])
         self.assertIn("tasks", template["plan"])
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
@@ -115,12 +115,12 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertIn("| {{ready}} |", tracker)
         self.assertNotIn("| {{planned}} |", tracker)
 
-    def test_checker_accepts_the_726_contract(self):
+    def test_checker_accepts_the_730_contract(self):
         result = self.check(valid_handoff(self.root))
         self.assertEqual(result.returncode, 0, result.stderr)
         output = json.loads(result.stdout)
         self.assertEqual(output["status"], "passed")
-        self.assertEqual(output["agentTeamVersion"], "7.2.6")
+        self.assertEqual(output["agentTeamVersion"], "7.3.0")
         self.assertEqual(output["taskCount"], 1)
 
     def test_checker_emits_a_direct_agent_team_request(self):
@@ -171,8 +171,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
     def test_checker_rejects_limits_and_non_actionable_status(self):
         cases = []
         too_many = valid_handoff(self.root)
-        too_many["plan"]["tasks"] = [{"id": f"AT-{index:03d}"} for index in range(1, 502)]
-        cases.append(("501 tasks", too_many))
+        too_many["plan"]["tasks"] = [{"id": f"AT-{index:04d}"} for index in range(1, 1002)]
+        cases.append(("1001 tasks", too_many))
 
         duplicate = valid_handoff(self.root)
         duplicate["plan"]["tasks"].append(copy.deepcopy(duplicate["plan"]["tasks"][0]))
@@ -199,6 +199,32 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 result = self.check(value)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(phrase, result.stderr)
+
+    def test_checker_accepts_the_default_1000_task_boundary(self):
+        task_ids = [f"AT-{index:04d}" for index in range(1, 1001)]
+        rows = "".join(
+            f"| {task_id} | Approved behavior | unassigned | none | ready | none | Implement the plan. |\n"
+            for task_id in task_ids
+        )
+        (self.root / "TASKS.md").write_text(
+            "# Agent-Team Tasks\n\n"
+            "| ID | Requirement / acceptance | Owner | Depends on | Status | Revision / evidence | Next action |\n"
+            "| --- | --- | --- | --- | --- | --- | --- |\n" + rows
+        )
+        handoff = valid_handoff(self.root)
+        handoff["plan"]["tasks"] = [{"id": task_id} for task_id in task_ids]
+        result = self.check(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(json.loads(result.stdout)["taskCount"], 1000)
+
+    def test_checker_rejects_agent_team_lane_runtime_state(self):
+        for field in ("lanes", "claims", "assignments", "briefs", "workerIdentities", "capacity"):
+            with self.subTest(field=field):
+                handoff = valid_handoff(self.root)
+                handoff["plan"][field] = []
+                result = self.check(handoff)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn("Agent-Team runtime state", result.stderr)
 
     def test_checker_rejects_planned_tracker_status(self):
         handoff = valid_handoff(self.root)
@@ -282,6 +308,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
             ("0.4.2", "7.2.4"),
             ("0.4.2", "7.2.5"),
             ("0.4.2", "7.2.6"),
+            ("0.5.0", "7.3.0"),
         ]
         for kickoff, agent_team in supported:
             with self.subTest(pair=(kickoff, agent_team)):
@@ -298,7 +325,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 result = self.check(handoff)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"unsupported handoff compatibility {kickoff}/{agent_team}", result.stderr)
-                self.assertIn("checker 0.4.2 requires an approved migration", result.stderr)
+                self.assertIn("checker 0.5.0 requires an approved migration", result.stderr)
 
     def test_emit_request_rebinds_the_current_descendant_tip(self):
         handoff = valid_handoff(self.root)
@@ -330,8 +357,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
             "schemaVersion": 1,
             "path": "AGENT_TEAM_HANDOFF.json",
             "sha256": hashlib.sha256(source).hexdigest(),
-            "generatedBy": {"name": "project-kickoff", "version": "0.4.2"},
-            "testedAgainst": {"name": "agent-team", "version": "7.2.6"},
+            "generatedBy": {"name": "project-kickoff", "version": "0.5.0"},
+            "testedAgainst": {"name": "agent-team", "version": "7.3.0"},
             "generationBaseline": baseline,
             "observedRevision": tip,
         })
@@ -481,12 +508,35 @@ class AgentTeamHandoffTests(unittest.TestCase):
         result = self.check(handoff)
         self.assertEqual(result.returncode, 0, result.stderr)
 
+    def test_beads_response_can_exceed_the_old_1_mib_limit(self):
+        task_ids = [f"AT-{index:04d}" for index in range(1, 1001)]
+        rows = [{
+            "id": task_id,
+            "title": "x" * 1100,
+            "status": "ready",
+            "assignee": "",
+            "dependency_count": 0,
+            "dependencies": [],
+        } for task_id in task_ids]
+        executable = self.root / "large-bd"
+        executable.write_text(
+            "#!/usr/bin/env python3\n"
+            "import json\n"
+            f"print(json.loads({json.dumps(json.dumps(rows))!r}))\n"
+        )
+        executable.chmod(0o700)
+        handoff = valid_handoff(self.root)
+        handoff["tracker"] = {"kind": "beads", "executable": str(executable)}
+        handoff["plan"]["tasks"] = [{"id": task_id} for task_id in task_ids]
+        result = self.check(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     @unittest.skipUnless(os.environ.get("AGENT_TEAM_ROOT"),
                          "set AGENT_TEAM_ROOT for preliminary Agent-Team qualification")
-    def test_preliminary_local_agent_team_726_consumes_the_042_handoff(self):
+    def test_preliminary_local_agent_team_730_consumes_the_050_handoff(self):
         agent_team = Path(os.environ["AGENT_TEAM_ROOT"]).resolve()
         version = (agent_team / "SKILL.md").read_text()
-        self.assertIn('version: "7.2.6"', version)
+        self.assertIn('version: "7.3.0"', version)
         expected_revision = os.environ.get("AGENT_TEAM_EXPECTED_REVISION")
         if expected_revision:
             observed_revision = subprocess.check_output(
@@ -494,17 +544,23 @@ class AgentTeamHandoffTests(unittest.TestCase):
             ).strip()
             self.assertEqual(observed_revision, expected_revision)
 
+        task_ids = [f"AT-{index:04d}" for index in range(1, 1001)]
+        rows = "".join(
+            f"| {task_id} | Approved behavior | unassigned | none | ready | none | Implement the plan. |\n"
+            for task_id in task_ids
+        )
         (self.root / "README.md").write_text("Fixture project.\n")
         (self.root / "TASKS.md").write_text(
             "# Agent-Team Tasks\n\n"
             "| ID | Requirement / acceptance | Owner | Depends on | Status | Revision / evidence | Next action |\n"
             "| --- | --- | --- | --- | --- | --- | --- |\n"
-            "| AT-001 | Approved behavior | unassigned | none | ready | none | Implement the plan. |\n"
+            + rows
         )
         subprocess.run(["git", "-C", str(self.root), "add", "README.md", "TASKS.md"], check=True)
         subprocess.run(["git", "-C", str(self.root), "commit", "-qm", "fixture project"], check=True)
 
         handoff = valid_handoff(self.root)
+        handoff["plan"]["tasks"] = [{"id": task_id} for task_id in task_ids]
         self.assertEqual(handoff["plan"]["requiredCapabilities"], ["graphify"])
         handoff_path = self.root / "AGENT_TEAM_HANDOFF.json"
         handoff_source = (json.dumps(handoff, indent=2) + "\n").encode()
@@ -567,14 +623,14 @@ class AgentTeamHandoffTests(unittest.TestCase):
         )
         self.assertEqual(consumed.returncode, 0, consumed.stderr)
         initialized = json.loads(consumed.stdout)
-        self.assertEqual(initialized["status"], "applied")
+        self.assertEqual(initialized["status"], "applied", initialized)
         self.assertTrue(initialized["ready"])
-        self.assertEqual(initialized["taskIds"], ["AT-001"])
+        self.assertEqual(initialized["taskIds"], task_ids)
         setup = json.loads((self.root / ".agent-team/setup.json").read_text())
         self.assertEqual(setup["ownership"]["current"]["host"], "codex")
         self.assertEqual(setup["ownership"]["current"]["sessionId"], "project-owner")
         self.assertEqual(setup["plan"]["requiredCapabilities"], ["graphify"])
-        self.assertEqual(setup["initialization"]["initialTaskIds"], ["AT-001"])
+        self.assertEqual(setup["initialization"]["initialTaskIds"], task_ids)
         tracker_source = (self.root / "TASKS.md").read_bytes()
         tracker_id = f"markdown:{self.root / 'TASKS.md'}".encode()
         self.assertEqual(

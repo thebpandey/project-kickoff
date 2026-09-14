@@ -105,7 +105,7 @@ sources. Compare the needed capability, gaps, maintenance, host support, source,
 and verified license. Do not describe an unverified or paid product as a free
 equivalent.
 
-For an Agent-Team 7.2.6 handoff, the selected tracker must be Beads or Markdown
+For an Agent-Team 7.3.0 handoff, the selected tracker must be Beads or Markdown
 at root `TASKS.md` or `.agent-team/TASKS.md`. Other researched trackers remain
 valid for projects that will not use Agent-Team, but are not compatible handoff
 targets for this version.
@@ -141,7 +141,7 @@ After the plan, tracker, and scaffold are verified, adapt
 `.project-kickoff/AGENT_TEAM_HANDOFF.json`. Put only the ID of each implementation
 task in its task list. Include every selected tracker row exactly once. Do not
 copy titles, status, dependencies, or acceptance details into this list. The
-selected tracker and approved plan own that content. Limit the list to 500 tasks
+selected tracker and approved plan own that content. Limit the list to 1000 tasks
 and the file to 250 KiB so Agent-Team can wrap it in its
 256 KiB initialization request. Validate it with:
 
@@ -152,6 +152,11 @@ python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \
 
 Resolve `<project-kickoff-skill-path>` to the loaded Skill directory. Do not
 start Agent-Team or pre-create its runtime receipt as part of this check.
+
+Agent-Team 7.3.0 defaults `maxPlanTasks` to 1000, but the selected host can have
+a lower effective setting. Verify the current host setting before declaring the
+handoff ready. Do not raise it or reduce approved scope without matching
+authorization.
 
 `plan.requiredCapabilities` is optional. When supplied, use at most 100 unique
 safe capability IDs; the shipped template declares `graphify`. This is a

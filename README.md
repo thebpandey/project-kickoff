@@ -1,6 +1,6 @@
 # Project Kickoff
 
-Current version: **0.4.2**
+Current version: **0.5.0**
 
 ```text
 ██████   ██████     ████   ████████ ████████   ██████ ████████
@@ -18,7 +18,7 @@ Current version: **0.4.2**
 ██    ██ ████████   ██████ ██    ██   ████   ██       ██
 ```
 
-Project Kickoff v0.4.2
+Project Kickoff v0.5.0
 
 Created by thebpandey.
 
@@ -82,7 +82,7 @@ flowchart TD
     TRACKER -->|Yes| SEED["Seed implementation task IDs once and verify dependencies"]
     TRACKER -->|No| ALT["Research free or open-source choices"]
     ALT --> CHOOSE["Ask the user to choose a fallback"]
-    CHOOSE --> COMPAT{"Compatible with Agent-Team 7.2.6?"}
+    CHOOSE --> COMPAT{"Compatible with Agent-Team 7.3.0?"}
     COMPAT -->|Yes| SEED
     COMPAT -->|No| OTHER["Prepare the selected non-Agent-Team handoff"]
     SEED --> DOCS["Finalize agent rules, context, receipts, and one live tracker"]
@@ -167,7 +167,7 @@ flowchart LR
     BR -->|No| RESEARCH["Research current alternatives"]
     RESEARCH --> USER{"Which verified tracker does the user select?"}
     USER -->|root TASKS.md| FT["Activate the Agent-Team-compatible fallback"]
-    USER -->|another tracker| NAT["Use it only without Agent-Team 7.2.6"]
+    USER -->|another tracker| NAT["Use it only without Agent-Team 7.3.0"]
 
     I --> VIS{"Visual interface?"}
     UI --> VIS
@@ -185,15 +185,15 @@ The Skill prefers compatible project-local installations. It preserves current
 project settings. It does not add global configuration or hooks without matching
 authorization. If one tool is unavailable, it continues independent work.
 
-For Agent-Team 7.2.6, the handoff tracker is Beads or Markdown at `TASKS.md` or
+For Agent-Team 7.3.0, the handoff tracker is Beads or Markdown at `TASKS.md` or
 `.agent-team/TASKS.md`. Another tracker can support a project that does not use
-Agent-Team, but it is not a compatible Agent-Team 7.2.6 handoff target.
+Agent-Team, but it is not a compatible Agent-Team 7.3.0 handoff target.
 
 ## Requirements before installation
 
 You need written permission from the licensors. The Skill is proprietary and
 licensed under the Project Kickoff Private Use License. The GitHub repository
-is public. The examples use GitHub CLI and the verified `v0.4.2` release tag.
+is public. The examples use GitHub CLI and the verified `v0.5.0` release tag.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -223,7 +223,7 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.4.2 --single-branch
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.0 --single-branch
 kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
@@ -256,7 +256,7 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.4.2 --single-branch
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.0 --single-branch
 kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
@@ -284,7 +284,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.4.2.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.5.0.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -447,7 +447,7 @@ Enter one of these lines in Claude Code chat:
 | `CONTEXT.md` | Stores a short resumption checkpoint and links to the live tracker. |
 | `README.md` | Orients people to the generated project and verified commands. |
 | `.project-kickoff/setup.json` | Records Project Kickoff dependency, tracker, and stable ID choices. It does not store task status or secrets. |
-| `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Gives Agent-Team 7.2.6 a bounded, validated, machine-readable initialization input. |
+| `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Gives Agent-Team 7.3.0 a bounded, validated, machine-readable initialization input. |
 | `.agent-team/setup.json` | Agent-Team creates this runtime receipt later. Project Kickoff treats it as read-only. |
 | Selected tracker | Owns live execution status. The Skill activates only one tracker. |
 | Minimal scaffold | Adds only approved folders and basic tooling. It can contain no runnable application yet. |
@@ -484,7 +484,7 @@ evidence report.
 The Skill keeps `PLAN.md` as the approved baseline. The selected tracker owns
 live status. It maps stable implementation task IDs to tracker IDs. It keeps
 epics and stories in the plan instead of seeding them as tracker rows. This
-prevents Agent-Team 7.2.6 from claiming an open summary record as implementation
+prevents Agent-Team 7.3.0 from claiming an open summary record as implementation
 work. It verifies blocker direction separately from hierarchy.
 
 After an interrupted seed, the Skill reads the tracker and saved mappings. It
@@ -498,10 +498,10 @@ Beads automatically if Beads becomes available later.
 
 Before an Agent-Team handoff, the Skill writes
 `.project-kickoff/AGENT_TEAM_HANDOFF.json` and runs
-`scripts/check_agent_team_handoff.py`. The checker enforces the 7.2.6 boundary:
+`scripts/check_agent_team_handoff.py`. The checker enforces the 7.3.0 boundary:
 
 - The file is at most 250 KiB.
-- It contains no more than 500 implementation tasks.
+- It contains no more than 1000 implementation tasks.
 - Its task IDs exactly match all rows in the selected tracker.
 - Task titles, statuses, dependencies, and acceptance details stay in the
   approved plan and tracker instead of being copied into the handoff.
@@ -519,8 +519,17 @@ executes, registers, or evaluates Graphify or creates `graphify-out/`.
 Agent-Team prepares and verifies declared capabilities and may block dispatch if
 one is unavailable.
 
-Beads validation uses the same five-second read window as Agent-Team 7.2.6. A
-read that needs more than the former 1.5-second limit does not fail early.
+The 1000-task boundary is Agent-Team 7.3.0's default `maxPlanTasks`. The selected
+host can configure a lower effective limit, which the kickoff must verify before
+readiness. The approved `PLAN.md` can identify ordered retained-context
+candidates with disjoint writable paths, explicit dependencies, independent
+review, and one owner for each shared protocol. Project Kickoff does not create
+lane records, claims, assignments, briefs, worker identities, or capacity state;
+Agent-Team derives and owns that runtime state after initialization.
+
+Beads validation uses the same five-second read window and 2 MiB response bound
+as the Agent-Team 7.3.0 default. A read that needs more than the former
+1.5-second limit does not fail early.
 
 During the later Agent-Team session, the same checker can emit the direct
 `project-initialize` request. The caller supplies the actual registered owner
@@ -564,8 +573,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.4.2`. Archives use
-the form `project-kickoff-0.4.2.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.5.0`. Archives use
+the form `project-kickoff-0.5.0.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 
