@@ -13,7 +13,7 @@ All notable changes to Project Kickoff are recorded here. Versions follow
 
 ### Changed
 
-- New handoffs target Agent-Team 7.3.0 and accept up to its default 1000 plan
+- New handoffs target Agent-Team 7.3.1 and accept up to its default 1000 plan
   tasks within the existing 250 KiB handoff limit. A lower effective host
   `maxPlanTasks` remains a readiness blocker.
 - Beads validation accepts a bounded 2 MiB response, preserving the established

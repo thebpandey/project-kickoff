@@ -103,9 +103,9 @@ approved tooling needs them. Never include secret values. List commands only for
 tools that were created and verified. State clearly if the minimal scaffold does
 not yet run an application.
 
-## Agent-Team 7.3.0 boundary
+## Agent-Team 7.3.1 boundary
 
-The handoff supports Agent-Team 7.3.0. Use only a selected Beads tracker or a
+The handoff supports Agent-Team 7.3.1. Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
 1000 implementation task records, keep the JSON at or below 250 KiB, use unique safe
 task IDs, and provide at least one dependency-ready task when implementation
@@ -121,7 +121,7 @@ Agent-Team controls runtime lanes, claims, assignments, worktrees, briefs,
 worker identities, capacity, scopes, and correlation IDs after it initializes
 the project. Do not add those runtime records to the handoff.
 
-The 1000-task boundary is Agent-Team 7.3.0's default `maxPlanTasks`, not a
+The 1000-task boundary is Agent-Team 7.3.1's default `maxPlanTasks`, not a
 promise about a target host's effective setting. Before readiness, verify that
 the selected host's current configured limit is at least the handoff task count.
 A lower effective limit blocks initialization until the task set or authorized

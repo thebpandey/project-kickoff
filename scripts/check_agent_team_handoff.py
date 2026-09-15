@@ -29,6 +29,7 @@ SUPPORTED_PAIRS = frozenset({
     ("0.4.2", "7.2.5"),
     ("0.4.2", "7.2.6"),
     ("0.5.0", "7.3.0"),
+    ("0.5.0", "7.3.1"),
 })
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}
