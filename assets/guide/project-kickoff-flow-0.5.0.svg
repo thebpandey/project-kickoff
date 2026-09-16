@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="720" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">Project Kickoff 0.5.0 workflow</title>
+  <desc id="desc">Help, version, and status return information without changing the project. Start, audit, audit-only, and resume follow the state-changing path; audit-only stops after its report, while the other applicable actions can continue from discovery through approved planning and setup to a validated Agent-Team handoff.</desc>
+  <rect width="1200" height="720" fill="#f8fbf7"/>
+  <g font-family="system-ui,-apple-system,sans-serif" fill="#17231f">
+    <text x="54" y="62" font-size="28" font-weight="750">Project Kickoff 0.5.0</text>
+    <text x="54" y="92" font-size="16" fill="#54655f">A bounded path from an idea to a buildable handoff</text>
+    <rect x="54" y="132" width="245" height="90" rx="10" fill="#dff1e8" stroke="#9bcab7" stroke-width="2"/>
+    <text x="76" y="167" font-size="18" font-weight="700">Choose an action</text>
+    <text x="76" y="195" font-size="14" fill="#54655f">The host routes the request</text>
+    <rect x="354" y="132" width="245" height="90" rx="10" fill="#fff2d7" stroke="#dfb675" stroke-width="2"/>
+    <text x="376" y="167" font-size="18" font-weight="700">Read-only action</text>
+    <text x="376" y="195" font-size="14" fill="#654313">help · version · status</text>
+    <rect x="654" y="132" width="245" height="90" rx="10" fill="#f0e8f7" stroke="#c7aadd" stroke-width="2"/>
+    <text x="676" y="167" font-size="18" font-weight="700">Return information</text>
+    <text x="676" y="195" font-size="14" fill="#54655f">No interview or setup</text>
+    <rect x="954" y="132" width="192" height="90" rx="10" fill="#eee" stroke="#c8cfca" stroke-width="2"/>
+    <text x="976" y="167" font-size="18" font-weight="700">Stop</text>
+    <text x="976" y="195" font-size="14" fill="#54655f">No files changed</text>
+    <path d="M299 177h55M599 177h55M899 177h55" stroke="#176b55" stroke-width="3" fill="none"/>
+    <path d="M347 177l-10-7v14zm300 0-10-7v14zm300 0-10-7v14z" fill="#176b55"/>
+    <rect x="54" y="318" width="180" height="92" rx="10" fill="#fff" stroke="#176b55" stroke-width="2"/>
+    <text x="72" y="354" font-size="17" font-weight="700">State-changing action</text>
+    <text x="72" y="382" font-size="13" fill="#54655f">start · audit · audit-only · resume</text>
+    <rect x="270" y="318" width="200" height="92" rx="10" fill="#fff" stroke="#176b55" stroke-width="2"/>
+    <text x="290" y="354" font-size="18" font-weight="700">Discovery</text>
+    <text x="290" y="382" font-size="14" fill="#54655f">One question · record · summary</text>
+    <rect x="506" y="318" width="200" height="92" rx="10" fill="#fff" stroke="#176b55" stroke-width="2"/>
+    <text x="526" y="354" font-size="18" font-weight="700">Approved planning</text>
+    <text x="526" y="382" font-size="14" fill="#54655f">Five stage approvals</text>
+    <rect x="742" y="318" width="180" height="92" rx="10" fill="#fff" stroke="#c17b22" stroke-width="2"/>
+    <text x="762" y="354" font-size="18" font-weight="700">Setup</text>
+    <text x="762" y="382" font-size="14" fill="#54655f">Tracker · scaffold</text>
+    <rect x="958" y="318" width="188" height="92" rx="10" fill="#fff" stroke="#8b5db5" stroke-width="2"/>
+    <text x="978" y="354" font-size="18" font-weight="700">Ready for handoff</text>
+    <text x="978" y="382" font-size="14" fill="#54655f">Validated input</text>
+    <path d="M176 222v96M234 364h36M470 364h36M706 364h36M922 364h36" stroke="#176b55" stroke-width="3" fill="none"/>
+    <path d="M262 364l-10-7v14zm200 0-10-7v14zm200 0-10-7v14zm200 0-10-7v14z" fill="#176b55"/>
+    <rect x="54" y="486" width="1092" height="165" rx="12" fill="#18332b"/>
+    <text x="80" y="524" font-size="18" font-weight="700" fill="#dff1e8">State-changing loop</text>
+    <text x="80" y="559" font-size="16" fill="#fff">Ask one unresolved question → wait for the answer → record the decision</text>
+    <text x="80" y="589" font-size="16" fill="#fff">→ summarize the stage → ask for approval → revise or continue.</text>
+    <text x="80" y="620" font-size="14" fill="#b8d9ca">After approved setup, validate the tracker mapping and handoff before Agent-Team starts.</text>
+    <text x="80" y="644" font-size="14" fill="#b8d9ca">Audit-only stops after its report. No fallback stack, tracker, or unresolved product choice is invented.</text>
+  </g>
+</svg>
