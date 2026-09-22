@@ -308,8 +308,6 @@ project-kickoff/
 ├── README.md
 ├── CHANGELOG.md
 ├── LICENSE
-├── PRODUCT.md
-├── DESIGN.md
 ├── agents/
 │   └── openai.yaml
 ├── references/
@@ -330,15 +328,9 @@ project-kickoff/
 │   ├── hook_utils.py
 │   └── load_context.py
 └── assets/
-    ├── fonts/
-    │   ├── NEWSREADER-LICENSE.txt
-    │   └── newsreader-latin.woff2
     ├── hooks/
     │   ├── codex-session-start.json
     │   └── claude-session-start.json
-    ├── site/
-    │   ├── project-kickoff-planning.webp
-    │   └── project-kickoff-planning.webp.json
     └── templates/
         ├── AGENTS.md
         ├── AGENT_TEAM_HANDOFF.json

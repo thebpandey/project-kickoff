@@ -20,8 +20,8 @@ CHANGELOG = PACKAGE / "CHANGELOG.md"
 HANDOFF_TEMPLATE = PACKAGE / "assets/templates/AGENT_TEAM_HANDOFF.json"
 
 # Tracked paths that stay in the development repository.
-DEVELOPMENT_FILES = {".gitignore", "scripts/check-guide.mjs"}
-DEVELOPMENT_PREFIXES = ("docs/", "tests/", "assets/guide/")
+DEVELOPMENT_FILES = {".gitignore", "PRODUCT.md", "DESIGN.md", "scripts/check-guide.mjs"}
+DEVELOPMENT_PREFIXES = ("docs/", "tests/", "assets/guide/", "assets/fonts/", "assets/site/")
 DEVELOPMENT_SUFFIXES = (".html",)
 
 

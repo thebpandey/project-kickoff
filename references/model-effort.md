@@ -67,12 +67,21 @@ This example uses the documented Claude Code identifiers:
 ```text
 Which model and reasoning effort should Project Kickoff use in this session?
 
-1. Balanced: claude-opus-5 at high for planning, claude-sonnet-5 at high for delegated work (Recommended) — Strong interview and artifact quality, lower cost for scaffold and check agents.
-2. Strong for all work: claude-opus-5 at xhigh for planning and for delegated work — The most depth on every step, the highest cost, and the slowest turns.
+1. Balanced: claude-opus-5-5 at high for planning, claude-sonnet-5 at high for delegated work (Recommended) — Strong interview and artifact quality, lower cost for scaffold and check agents.
+2. Strong for all work: claude-opus-5-5 at xhigh for planning and for delegated work — The most depth on every step, the highest cost, and the slowest turns.
 3. Lower cost: claude-sonnet-5 at high for planning, claude-haiku-4-5-20251001 at high for delegated work — The lowest cost and the fastest turns, less depth on hard trade-offs.
 
 Reply with a number or your own answer.
 ```
+
+For native Agent-Team's initial role settings, prefer `gpt-6-sol` for Codex
+development and independent review, and `claude-opus-5-5` for Claude
+development and review, when the detected host exposes those models. These are
+recommendations to present with the settings choice, not approval to replace a
+saved selection. Offer `gpt-6-luna` only for optional routine, low-risk work.
+The orchestrator inherits the foreground model. Preserve other roles, explicit
+user choices, and supported effort levels; use `inherit` when the user accepts
+the host default.
 
 ## Saved values
 
