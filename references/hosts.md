@@ -52,11 +52,19 @@ project-specific effect and keep the current pinned installation unless the user
 approved an upgrade. Preserve stable IDs, evidence, valid approvals, and project
 outputs through an approved migration.
 
-Project Kickoff 0.5.0 handoffs are tested against Agent-Team 7.3.1.
+Released Project Kickoff 0.5.0 handoffs are tested against Agent-Team 7.3.1.
 The handoff checker converts `.project-kickoff/AGENT_TEAM_HANDOFF.json` into the
 request accepted by Agent-Team's `project-initialize` helper after the runtime
 identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
 runtime state. Do not pre-populate that runtime receipt during kickoff.
+
+The unreleased native compatibility source keeps producer metadata 0.5.0 and
+accepts the same nested schema for the patched 8.0.10 candidate. It does not
+qualify stock published 8.0.10 onboarding. Require the actual native controller's
+structured setup contract, complete dependencies and first role settings, and
+record functional evidence through [native setup](setup.md#native-v8-setup-after-approvals).
+No owner-session, operation-ID transfer, legacy hook, or repeated discovery is
+needed. Preserve all current approvals and resume only unfinished setup steps.
 
 ## Model and reasoning effort
 

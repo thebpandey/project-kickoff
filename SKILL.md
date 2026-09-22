@@ -116,9 +116,18 @@ the one-question protocol and the approval boundaries below.
   `.agent-team/setup.json`; Agent-Team owns that initialization receipt and its
   other runtime state. Before an Agent-Team handoff, generate and validate
   `.project-kickoff/AGENT_TEAM_HANDOFF.json` from the approved plan and tracker.
-- Project Kickoff may declare required capabilities in that handoff, but never
-  installs, initializes, executes, registers, or evaluates Graphify or creates
-  `graphify-out/`. Agent-Team owns capability preparation and readiness.
+- After setup approval, Project Kickoff completes selected native dependency
+  preparation, including Beads, Serena, and Graphify when selected, through the
+  qualified Agent-Team setup contract in [setup](references/setup.md). Reuse
+  approved choices and installation scope. Agent-Team owns its runtime receipts;
+  Project Kickoff records the returned evidence and resolves remaining setup
+  steps before handoff. No lifecycle hook or external hook is required.
+- Native schema compatibility does not prove runtime readiness. The original
+  published Agent-Team 8.0.10 onboarding needs an update: require the patched
+  setup contract's structured `status` and `next_action`, complete dependency
+  preparation and first role settings, then hand off. For an explicitly selected
+  legacy 7.3.1 runtime, retain its separate initialization path and capability
+  ownership rules.
 - Plan independent task boundaries and review dependencies so Agent-Team can
   form lanes after handoff. Project Kickoff does not create lane records,
   claims, assignments, briefs, worker identities, or runtime capacity state.

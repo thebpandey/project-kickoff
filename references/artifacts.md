@@ -103,9 +103,11 @@ approved tooling needs them. Never include secret values. List commands only for
 tools that were created and verified. State clearly if the minimal scaffold does
 not yet run an application.
 
-## Agent-Team 7.3.1 boundary
+## Agent-Team handoff boundary
 
-The handoff supports Agent-Team 7.3.1. Use only a selected Beads tracker or a
+The released handoff targets Agent-Team 7.3.1. The unreleased native bridge uses
+the same nested 0.5.0 shape after the native setup contract is qualified as
+described in [setup](setup.md#native-v8-setup-after-approvals). Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
 1000 implementation task records, keep the JSON at or below 250 KiB, use unique safe
 task IDs, and provide at least one dependency-ready task when implementation
@@ -127,7 +129,9 @@ the selected host's current configured limit is at least the handoff task count.
 A lower effective limit blocks initialization until the task set or authorized
 configuration is reconciled.
 
-Project Kickoff only declares capabilities in the handoff. It must never
-install, initialize, execute, register, or evaluate Graphify, or create
-`graphify-out/`; Agent-Team owns preparation and readiness and can block
-dispatch when a declared capability is unavailable.
+For native v8, Project Kickoff completes approved capability preparation
+through native setup and records returned evidence before handoff. Beads,
+Serena, and Graphify are prepared when selected. The handoff declares only
+capabilities required for dispatch; empty optional capability and resource lists
+are valid. For explicitly selected legacy 7.3.1, Graphify preparation remains
+Agent-Team's responsibility. No external hook is required for native setup.

@@ -30,6 +30,9 @@ SUPPORTED_PAIRS = frozenset({
     ("0.4.2", "7.2.6"),
     ("0.5.0", "7.3.0"),
     ("0.5.0", "7.3.1"),
+    # Schema compatibility only. The native setup contract must be probed;
+    # the original published 8.0.10 onboarding is not qualified by this entry.
+    ("0.5.0", "8.0.10"),
 })
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}
@@ -65,6 +68,14 @@ def safe_relative(value):
     if not text(value, 256) or os.path.isabs(value) or any(part == ".." for part in re.split(r"[\\/]", value)):
         return False
     return not any(character in value for character in ("\r", "\n", "|"))
+
+
+def native_contained(root, relative):
+    """Resolve existing parents without expanding any approved ownership glob."""
+    try:
+        (Path(root) / relative).resolve().relative_to(Path(root).resolve(strict=True))
+    except (OSError, ValueError) as error:
+        raise ValueError("native path escapes project.root") from error
 
 
 def split_dependencies(value):
@@ -150,10 +161,19 @@ def git_boundary(root, branch, approved_revision, integration_revision):
     return None, observed_revision
 
 
-def markdown_tracker_snapshot(path):
+def markdown_tracker_snapshot(path, *, native=False):
     encoded, identity = stable_regular_bytes(path, 1024 * 1024, "selected Markdown tracker")
     source = encoded.decode("utf-8")
     lines = source.splitlines()
+    if native:
+        sections = [index for index, line in enumerate(lines)
+                    if line.strip().lower() == "## active tasks"]
+        if len(sections) != 1:
+            raise ValueError("native Markdown tracker needs exactly one Active tasks section")
+        start = sections[0] + 1
+        end = next((index for index in range(start, len(lines))
+                    if lines[index].lstrip().startswith("## ")), len(lines))
+        lines = lines[start:end]
     task_rows = []
     index = 0
     while index < len(lines) - 1:
@@ -169,6 +189,8 @@ def markdown_tracker_snapshot(path):
             rows.append(dict(zip(headers, cells)))
             index += 1
         if "id" in headers:
+            if native and not {"intended outcome / acceptance pointer", "depends on"}.issubset(headers):
+                raise ValueError("native Active tasks table needs outcome and dependency columns")
             if "owner" not in headers or "status" not in headers or len(set(headers)) != len(headers):
                 raise ValueError("selected Markdown tracker has an invalid task table")
             task_rows.extend(rows)
@@ -272,6 +294,7 @@ def validate_handoff(value, *, size=None, details=None):
             errors.append("projectKickoff.approvedRevision must be a full Git revision")
 
     agent_team = value.get("agentTeam")
+    native = is_object(agent_team) and str(agent_team.get("testedVersion", "")).startswith("8.")
     if not is_object(agent_team):
         errors.append("agentTeam must be an object")
     else:
@@ -352,6 +375,8 @@ def validate_handoff(value, *, size=None, details=None):
             )
             if git_error:
                 errors.append(git_error)
+            elif native and project["revision"] != observed_revision:
+                errors.append("native handoff project.revision must equal the current branch tip")
             elif details is not None:
                 details["observedRevision"] = observed_revision
         except (OSError, subprocess.SubprocessError) as error:
@@ -366,9 +391,17 @@ def validate_handoff(value, *, size=None, details=None):
             errors.append("plan.authority.ownedPaths must contain 1 to 100 paths")
         elif any(not safe_relative(path) for path in owned):
             errors.append("unsafe owned path")
+        elif native and text(project.get("root"), 4096):
+            for path in owned:
+                try:
+                    native_contained(project["root"], path)
+                except ValueError as error:
+                    errors.append(str(error))
         external = authority.get("externalActions", [])
         if not string_list(external, allow_empty=True):
             errors.append("plan.authority.externalActions must be a bounded string list")
+        elif native and external:
+            errors.append("external actions require a separate native authority decision")
 
     tasks = plan.get("tasks")
     if not isinstance(tasks, list) or not tasks:
@@ -388,8 +421,10 @@ def validate_handoff(value, *, size=None, details=None):
     try:
         if is_object(tracker) and is_object(project) and text(project.get("root"), 4096):
             if tracker.get("kind") == "markdown" and tracker.get("path") in {"TASKS.md", ".agent-team/TASKS.md"}:
+                if native:
+                    native_contained(project["root"], tracker["path"])
                 tracker_rows, tracker_identity = markdown_tracker_snapshot(
-                    Path(project["root"]) / tracker["path"]
+                    Path(project["root"]) / tracker["path"], native=native
                 )
             elif tracker.get("kind") == "beads" and text(tracker.get("executable"), 4096):
                 tracker_rows, tracker_identity = beads_tracker_snapshot(
@@ -459,6 +494,12 @@ def main():
         value = json.loads(source.decode("utf-8"))
         details = {}
         errors = validate_handoff(value, size=len(source), details=details)
+        native = is_object(value) and is_object(value.get("agentTeam")) and str(value["agentTeam"].get("testedVersion", "")).startswith("8.")
+        if native:
+            try:
+                handoff.resolve(strict=True).relative_to(Path(value["project"]["root"]).resolve(strict=True))
+            except (OSError, KeyError, TypeError, ValueError):
+                errors.append("handoff path must be within project.root")
     except (OSError, UnicodeError, json.JSONDecodeError, ValueError) as error:
         errors = [str(error)]
         value = {}
@@ -467,6 +508,9 @@ def main():
             print(error, file=sys.stderr)
         return 1
     if args.emit_request:
+        if native:
+            print("use the qualified native setup contract with this handoff; --emit-request is only for legacy project-initialize", file=sys.stderr)
+            return 1
         runtime_errors = []
         if not valid_id(args.actor_session_id):
             runtime_errors.append("actor-session-id is invalid")
@@ -530,12 +574,16 @@ def main():
             return 1
         print(serialized)
         return 0
-    print(json.dumps({
+    output = {
         "status": "passed",
         "agentTeamVersion": value["agentTeam"]["testedVersion"],
         "taskCount": len(value["plan"]["tasks"]),
         "tracker": value["tracker"]["kind"],
-    }, separators=(",", ":")))
+    }
+    if native:
+        output.update({"compatibility": "schema-only", "runtimeVerified": False,
+                       "requiredSetupContract": "status-and-next-action"})
+    print(json.dumps(output, separators=(",", ":")))
     return 0
 
 

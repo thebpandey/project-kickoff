@@ -77,7 +77,7 @@ flowchart TD
     end
 
     APPROVE -->|All five stages approved| PLAN["Finalize PRD.md, DESIGN.md, and PLAN.md"]
-    PLAN --> SETUP["Inspect six dependencies and project setup"]
+    PLAN --> SETUP["Inspect selected dependencies and project setup"]
     SETUP --> TRACKER{"Is the selected tracker ready?"}
     TRACKER -->|Yes| SEED["Seed implementation task IDs once and verify dependencies"]
     TRACKER -->|No| ALT["Research free or open-source choices"]
@@ -138,7 +138,7 @@ write its record.
 
 ## Dependencies
 
-The Skill checks these six dependencies. It records the selected path, source,
+The Skill checks these dependencies. It records the selected path, source,
 version or revision, scope, license or access terms, and verification result.
 It proposes missing tools within an explicit installation scope. It waits for
 approval before installation. It does not install an irrelevant tool only to
@@ -152,6 +152,8 @@ complete the list.
 | Agent-Team | Coordinates delegated implementation and integration. | Use the authorized source recorded for the proprietary installed copy. |
 | Impeccable | Guides product and interface design. | https://github.com/pbakaus/impeccable |
 | UI UX Pro Max Skill | Supplies UI patterns, data, and search tools. | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
+| Serena | Supplies scoped semantic navigation. | https://github.com/oraios/serena |
+| Graphify | Supplies code-only repository structure analysis. | https://github.com/Graphify-Labs/graphify |
 
 ```mermaid
 flowchart LR
@@ -188,6 +190,15 @@ authorization. If one tool is unavailable, it continues independent work.
 For Agent-Team 7.3.1, the handoff tracker is Beads or Markdown at `TASKS.md` or
 `.agent-team/TASKS.md`. Another tracker can support a project that does not use
 Agent-Team, but it is not a compatible Agent-Team 7.3.1 handoff target.
+
+This source branch also contains an **unreleased native compatibility update**.
+It keeps the 0.5.0 nested handoff format and accepts the patched Agent-Team
+8.0.10 setup candidate at the schema level. Stock published 8.0.10 onboarding
+needs an update. The checker reports `runtimeVerified: false`; actual readiness
+requires the structured native setup contract, completed selected dependencies,
+and confirmed first role settings. That path reuses all current approvals and
+tracker records, prepares selected Beads/Serena/Graphify, and needs no external
+hook or owner-session transfer. See [native setup](references/setup.md#native-v8-setup-after-approvals).
 
 ## Requirements before installation
 
@@ -498,7 +509,7 @@ Beads automatically if Beads becomes available later.
 
 Before an Agent-Team handoff, the Skill writes
 `.project-kickoff/AGENT_TEAM_HANDOFF.json` and runs
-`scripts/check_agent_team_handoff.py`. The checker enforces the 7.3.1 boundary:
+`scripts/check_agent_team_handoff.py`. The checker enforces the selected handoff boundary:
 
 - The file is at most 250 KiB.
 - It contains no more than 1000 implementation tasks.
@@ -514,10 +525,13 @@ Before an Agent-Team handoff, the Skill writes
 - Optional `plan.requiredCapabilities` entries are unique safe IDs. When omitted,
   Agent-Team retains its empty optional-capability behavior.
 
-Project Kickoff only declares capabilities. It never installs, initializes,
-executes, registers, or evaluates Graphify or creates `graphify-out/`.
-Agent-Team prepares and verifies declared capabilities and may block dispatch if
-one is unavailable.
+For the qualified native setup path, Project Kickoff prepares approved selected
+dependencies through `setup --prepare-only` before tracker seeding, then submits
+the finished handoff and completes role settings. It records functional
+readiness for selected Serena and Graphify; a required capability must be ready.
+For explicitly selected legacy 7.3.1, capabilities remain declarations and
+legacy Agent-Team owns Graphify preparation. The historical template does not
+make Graphify mandatory for every project.
 
 The 1000-task boundary is Agent-Team 7.3.1's default `maxPlanTasks`. The selected
 host can configure a lower effective limit, which the kickoff must verify before
@@ -531,10 +545,15 @@ Beads validation uses the same five-second read window and 2 MiB response bound
 as the Agent-Team 7.3.1 default. A read that needs more than the former
 1.5-second limit does not fail early.
 
-During the later Agent-Team session, the same checker can emit the direct
+For explicitly selected legacy 7.3.1, the same checker can emit the direct
 `project-initialize` request. The caller supplies the actual registered owner
 session, a unique operation ID, and the current setup version. Project Kickoff
 does not guess these runtime identities.
+
+Native setup consumes the approved handoff directly and does not use that
+legacy identity request. Its schema check returns `runtimeVerified: false`;
+the installed setup contract and actual preparation receipts establish runtime
+readiness, not the 8.0.10 version string.
 
 Kickoff does not write `.agent-team/setup.json`. Agent-Team creates that file
 atomically with its team registry, state, and operation cache during project

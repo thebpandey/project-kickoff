@@ -67,15 +67,20 @@ the validated `.project-kickoff/AGENT_TEAM_HANDOFF.json`. The handoff identifies
 the exact approved revision, current integration branch tip, tracker task IDs,
 acceptance criteria, verification commands, and safe owned paths. The selected
 tracker remains authoritative for task titles, status, and dependencies.
-Optional `plan.requiredCapabilities` declares only capabilities Agent-Team must
-prepare and verify. Project Kickoff never installs, initializes, executes,
-registers, or evaluates Graphify and never creates `graphify-out/`; Agent-Team
-may block dispatch if a declared capability is unavailable.
+Optional `plan.requiredCapabilities` declares capabilities that must be ready.
+For qualified native v8, Project Kickoff drives the approved dependency
+preparation and first role settings through [native setup](setup.md#native-v8-setup-after-approvals)
+before readiness, including selected Serena and Graphify. Agent-Team records its
+own runtime receipts. A missing required capability blocks handoff; a deferred
+optional tool is reported separately. The explicitly selected legacy 7.3.1
+path retains legacy Agent-Team ownership of Graphify preparation.
 Agent-Team controls runtime lanes, claims, worker identities, assignments,
 worktrees, briefs, capacity, scopes, and correlation IDs after it initializes
 the project. Kickoff records none of that runtime state. The checker can combine the approved facts
 with the actual Agent-Team owner session, operation ID, and setup version to emit
-the direct `project-initialize` request. For a healthy completed existing project,
+the direct legacy `project-initialize` request. Native v8 instead consumes the
+same approved handoff through its qualified structured setup flow and needs no
+owner-session transfer or operation ID. For a healthy completed existing project,
 Kickoff can instead supply evidence that no implementation work remains. It also
 records the generating `project-kickoff` metadata version and any resolved
 compatibility note. It does not create `.agent-team/setup.json`, start
@@ -94,11 +99,15 @@ Declare `ready for handoff` only when:
 - exactly one tracker is active, mappings are complete, dependencies are acyclic,
   and the first actionable task is known, or audit evidence establishes that no
   implementation work remains;
-- when Agent-Team 7.3.1 is selected and implementation remains, its handoff is
+- when Agent-Team is selected and implementation remains, its handoff is
   at most 250 KiB, contains at most 1000 implementation task IDs, does not
   exceed the selected host's current effective `maxPlanTasks`, exactly matches
   the selected tracker, records the current branch tip, names only a supported tracker, and passes
   `check_agent_team_handoff.py`;
+- for native v8, the actual controller exposes the structured setup contract,
+  selected dependency preparation and first role settings are complete, and
+  their evidence is saved. Schema compatibility alone is insufficient; the
+  original published 8.0.10 onboarding requires an update;
 - AGENTS, CLAUDE, MISTAKES, CONTEXT, discovery, and tracker ownership agree;
 - no roadmap item was activated and no feature implementation began.
 
