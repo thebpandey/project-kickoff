@@ -123,7 +123,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(output["agentTeamVersion"], "7.3.1")
         self.assertEqual(output["taskCount"], 1)
 
-    def native_handoff(self):
+    def native_handoff(self, version="8.0.11"):
         (self.root / "TASKS.md").write_text(
             "# Tasks\n\n## Active tasks\n"
             "| ID | Intended outcome / acceptance pointer | Owner | Depends on | Status |\n"
@@ -131,16 +131,19 @@ class AgentTeamHandoffTests(unittest.TestCase):
             "| AT-001 | Approved behavior | unassigned | none | ready |\n"
         )
         handoff = valid_handoff(self.root)
-        handoff["agentTeam"]["testedVersion"] = "8.0.10"
+        handoff["agentTeam"]["testedVersion"] = version
         return handoff
 
     def test_native_schema_check_does_not_claim_runtime_verified(self):
-        result = self.check(self.native_handoff())
-        self.assertEqual(result.returncode, 0, result.stderr)
-        output = json.loads(result.stdout)
-        self.assertEqual(output["compatibility"], "schema-only")
-        self.assertFalse(output["runtimeVerified"])
-        self.assertEqual(output["requiredSetupContract"], "status-and-next-action")
+        for version in ("8.0.10", "8.0.11"):
+            with self.subTest(version=version):
+                result = self.check(self.native_handoff(version))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                output = json.loads(result.stdout)
+                self.assertEqual(output["agentTeamVersion"], version)
+                self.assertEqual(output["compatibility"], "schema-only")
+                self.assertFalse(output["runtimeVerified"])
+                self.assertEqual(output["requiredSetupContract"], "status-and-next-action")
 
     def test_native_handoff_does_not_emit_legacy_identity_request(self):
         result = self.emit_request(self.native_handoff())

@@ -192,9 +192,11 @@ For Agent-Team 7.3.1, the handoff tracker is Beads or Markdown at `TASKS.md` or
 Agent-Team, but it is not a compatible Agent-Team 7.3.1 handoff target.
 
 This source branch also contains an **unreleased native compatibility update**.
-It keeps the 0.5.0 nested handoff format and accepts the patched Agent-Team
-8.0.10 setup candidate at the schema level. Stock published 8.0.10 onboarding
-needs an update. The checker reports `runtimeVerified: false`; actual readiness
+It keeps the 0.5.0 nested handoff format and accepts the upcoming Agent-Team
+8.0.11 setup candidate at the schema level, retaining the 8.0.10 schema bridge.
+Neither allowance claims that this source change is released or installed.
+Stock published 8.0.10 onboarding needs an update. The checker reports
+`runtimeVerified: false`; actual readiness
 requires the structured native setup contract, completed selected dependencies,
 and confirmed first role settings. That path reuses all current approvals and
 tracker records, prepares selected Beads/Serena/Graphify, and needs no external
@@ -553,7 +555,7 @@ does not guess these runtime identities.
 Native setup consumes the approved handoff directly and does not use that
 legacy identity request. Its schema check returns `runtimeVerified: false`;
 the installed setup contract and actual preparation receipts establish runtime
-readiness, not the 8.0.10 version string.
+readiness; neither an 8.0.10 nor an 8.0.11 version string proves it.
 
 Kickoff does not write `.agent-team/setup.json`. Agent-Team creates that file
 atomically with its team registry, state, and operation cache during project

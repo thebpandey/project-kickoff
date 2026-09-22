@@ -101,8 +101,10 @@ package installation, scaffold execution, builds, and tests run later through
 complexity-appropriate subagents in isolated worktrees under `AGENTS.md`.
 For the unreleased native compatibility source, adapt `agentTeam.testedVersion`
 only after qualifying the actual native setup contract. The checker verifies
-schema compatibility; it does not prove the original published 8.0.10 runtime
-ready. Complete selected dependencies and first role settings through native
+schema compatibility for the upcoming 8.0.11 candidate and retained 8.0.10
+bridge; neither allowance proves a runtime ready or a release installed.
+Original published 8.0.10 onboarding needs an update. Complete selected
+dependencies and first role settings through native
 setup, preserve their receipts, and prepare selected Serena and Graphify there.
 Required capabilities declare dispatch gates; do not require an optional tool
 merely because the historical template lists it. For explicitly selected legacy

@@ -123,8 +123,10 @@ the one-question protocol and the approval boundaries below.
   Project Kickoff records the returned evidence and resolves remaining setup
   steps before handoff. No lifecycle hook or external hook is required.
 - Native schema compatibility does not prove runtime readiness. The original
-  published Agent-Team 8.0.10 onboarding needs an update: require the patched
-  setup contract's structured `status` and `next_action`, complete dependency
+  published Agent-Team 8.0.10 onboarding needs an update. This unreleased source
+  targets the upcoming 8.0.11 native candidate and retains the 8.0.10 schema
+  bridge. Require structured `status` and `next_action` from the actual
+  controller's setup contract, complete dependency
   preparation and first role settings, then hand off. For an explicitly selected
   legacy 7.3.1 runtime, retain its separate initialization path and capability
   ownership rules.

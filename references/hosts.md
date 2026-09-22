@@ -59,8 +59,10 @@ identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
 runtime state. Do not pre-populate that runtime receipt during kickoff.
 
 The unreleased native compatibility source keeps producer metadata 0.5.0 and
-accepts the same nested schema for the patched 8.0.10 candidate. It does not
-qualify stock published 8.0.10 onboarding. Require the actual native controller's
+accepts the same nested schema for the upcoming 8.0.11 candidate and preserves
+8.0.10 schema compatibility. Neither entry qualifies a runtime. Stock published
+8.0.10 onboarding needs an update; target the authorized 8.0.11 release and
+managed update when available. Require the actual native controller's
 structured setup contract, complete dependencies and first role settings, and
 record functional evidence through [native setup](setup.md#native-v8-setup-after-approvals).
 No owner-session, operation-ID transfer, legacy hook, or repeated discovery is
