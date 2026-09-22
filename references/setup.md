@@ -187,9 +187,10 @@ alone never qualifies it. Do not mark this source change released or installed.
 3. Complete selected dependency preparation before seeding or creating the
    final handoff. Use the native preparation-only route so this step does not
    bind an incomplete project handoff into the immutable setup receipt.
-   For example, after Beads, Serena, and Graphify installation at the current
-   project scope has been approved, use
-   `agent-teamctl setup --prepare-only --install beads,serena,graphify --approve --tracker beads --host <codex-or-claude> --json`.
+   Offer Serena, Graphify, rg, ast-grep, and lean-ctx together, plus Beads when
+   selected. Name any project-local uv/Python prerequisites in the same consent
+   question. After the selected bundle and project scope have been approved, use
+   `agent-teamctl setup --prepare-only --install beads,serena,graphify,rg,ast-grep,lean-ctx --approve --tracker beads --host <codex-or-claude> --json`.
    Omit unselected packages; use `--tracker tasks-md` for an approved Markdown
    fallback. Installation consent is already covered only when the saved
    approval names the same packages and scope.
