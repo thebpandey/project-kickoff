@@ -105,8 +105,8 @@ not yet run an application.
 
 ## Agent-Team handoff boundary
 
-The released handoff targets Agent-Team 7.3.1. The unreleased native bridge uses
-the same nested 0.5.0 shape after the native setup contract is qualified as
+The legacy handoff targets Agent-Team 7.3.1. The 0.5.1 native bridge uses
+the same nested shape, accepting both 0.5.0 and 0.5.1 producers, after the native setup contract is qualified as
 described in [setup](setup.md#native-v8-setup-after-approvals). Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
 1000 implementation task records, keep the JSON at or below 250 KiB, use unique safe

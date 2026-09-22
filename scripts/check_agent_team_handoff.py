@@ -17,7 +17,7 @@ MAX_HANDOFF_BYTES = 250 * 1024
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_TASKS = 1000
 MAX_LIST_ITEMS = 100
-CHECKER_VERSION = "0.5.0"
+CHECKER_VERSION = "0.5.1"
 SUPPORTED_PAIRS = frozenset({
     ("0.3.1", "7.0.2"),
     ("0.4.0", "7.0.2"),
@@ -30,11 +30,15 @@ SUPPORTED_PAIRS = frozenset({
     ("0.4.2", "7.2.6"),
     ("0.5.0", "7.3.0"),
     ("0.5.0", "7.3.1"),
+    ("0.5.1", "7.3.0"),
+    ("0.5.1", "7.3.1"),
     # Schema compatibility only. The native setup contract must be probed;
     # neither the original 8.0.10 nor the upcoming 8.0.11 runtime is qualified
     # by a schema allowlist entry alone.
     ("0.5.0", "8.0.10"),
     ("0.5.0", "8.0.11"),
+    ("0.5.1", "8.0.10"),
+    ("0.5.1", "8.0.11"),
 })
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}

@@ -1,6 +1,6 @@
 # Project Kickoff
 
-Current version: **0.5.0**
+Current version: **0.5.1**
 
 ```text
 ██████   ██████     ████   ████████ ████████   ██████ ████████
@@ -18,7 +18,7 @@ Current version: **0.5.0**
 ██    ██ ████████   ██████ ██    ██   ████   ██       ██
 ```
 
-Project Kickoff v0.5.0
+Project Kickoff v0.5.1
 
 Created by thebpandey.
 
@@ -191,8 +191,9 @@ For Agent-Team 7.3.1, the handoff tracker is Beads or Markdown at `TASKS.md` or
 `.agent-team/TASKS.md`. Another tracker can support a project that does not use
 Agent-Team, but it is not a compatible Agent-Team 7.3.1 handoff target.
 
-This source branch also contains an **unreleased native compatibility update**.
-It keeps the 0.5.0 nested handoff format and accepts the upcoming Agent-Team
+This source branch contains the **0.5.1 release candidate**; publication and
+managed installation are pending. It keeps the existing nested handoff format,
+writes producer version 0.5.1, preserves 0.5.0 compatibility, and accepts the upcoming Agent-Team
 8.0.11 setup candidate at the schema level, retaining the 8.0.10 schema bridge.
 Neither allowance claims that this source change is released or installed.
 Stock published 8.0.10 onboarding needs an update. The checker reports
@@ -206,7 +207,8 @@ hook or owner-session transfer. See [native setup](references/setup.md#native-v8
 
 You need written permission from the licensors. The Skill is proprietary and
 licensed under the Project Kickoff Private Use License. The GitHub repository
-is public. The examples use GitHub CLI and the verified `v0.5.0` release tag.
+is public. The examples target GitHub CLI and release tag `v0.5.1`. Use them
+after that release is published and its source and checksum are verified.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -236,7 +238,7 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.0 --single-branch
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.1 --single-branch
 kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
@@ -269,7 +271,7 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.0 --single-branch
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.1 --single-branch
 kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
@@ -297,7 +299,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.5.0.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.5.1.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -594,8 +596,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.5.0`. Archives use
-the form `project-kickoff-0.5.0.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.5.1`. Archives use
+the form `project-kickoff-0.5.1.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 

@@ -123,7 +123,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(output["agentTeamVersion"], "7.3.1")
         self.assertEqual(output["taskCount"], 1)
 
-    def native_handoff(self, version="8.0.11"):
+    def native_handoff(self, version="8.0.11", producer="0.5.1"):
         (self.root / "TASKS.md").write_text(
             "# Tasks\n\n## Active tasks\n"
             "| ID | Intended outcome / acceptance pointer | Owner | Depends on | Status |\n"
@@ -131,13 +131,15 @@ class AgentTeamHandoffTests(unittest.TestCase):
             "| AT-001 | Approved behavior | unassigned | none | ready |\n"
         )
         handoff = valid_handoff(self.root)
+        handoff["projectKickoff"]["version"] = producer
         handoff["agentTeam"]["testedVersion"] = version
         return handoff
 
     def test_native_schema_check_does_not_claim_runtime_verified(self):
-        for version in ("8.0.10", "8.0.11"):
-            with self.subTest(version=version):
-                result = self.check(self.native_handoff(version))
+        for producer, version in (("0.5.0", "8.0.10"), ("0.5.0", "8.0.11"),
+                                  ("0.5.1", "8.0.10"), ("0.5.1", "8.0.11")):
+            with self.subTest(producer=producer, version=version):
+                result = self.check(self.native_handoff(version, producer))
                 self.assertEqual(result.returncode, 0, result.stderr)
                 output = json.loads(result.stdout)
                 self.assertEqual(output["agentTeamVersion"], version)
@@ -391,6 +393,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
             ("0.4.2", "7.2.6"),
             ("0.5.0", "7.3.0"),
             ("0.5.0", "7.3.1"),
+            ("0.5.1", "7.3.0"),
+            ("0.5.1", "7.3.1"),
         ]
         for kickoff, agent_team in supported:
             with self.subTest(pair=(kickoff, agent_team)):
@@ -407,7 +411,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 result = self.check(handoff)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"unsupported handoff compatibility {kickoff}/{agent_team}", result.stderr)
-                self.assertIn("checker 0.5.0 requires an approved migration", result.stderr)
+                self.assertIn("checker 0.5.1 requires an approved migration", result.stderr)
 
     def test_emit_request_rebinds_the_current_descendant_tip(self):
         handoff = valid_handoff(self.root)

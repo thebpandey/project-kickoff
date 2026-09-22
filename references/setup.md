@@ -171,9 +171,9 @@ required capability must be ready before handoff.
 
 ### Native v8 setup after approvals
 
-This source contains an unreleased compatibility update. Its checker accepts
-the existing nested 0.5.0 handoff shape for the upcoming 8.0.11 native candidate
-and retains 8.0.10 schema compatibility.
+This 0.5.1 release candidate writes the existing nested handoff shape with
+producer version 0.5.1 and still accepts 0.5.0 producers. Its checker accepts
+the upcoming 8.0.11 native candidate and retains 8.0.10 schema compatibility.
 It reports `compatibility: schema-only` and `runtimeVerified: false`. The original
 published 8.0.10 binary has incomplete onboarding and needs an update; its version
 alone never qualifies it. Target 8.0.11 after its authorized release and managed

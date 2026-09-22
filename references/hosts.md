@@ -58,8 +58,8 @@ request accepted by Agent-Team's `project-initialize` helper after the runtime
 identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
 runtime state. Do not pre-populate that runtime receipt during kickoff.
 
-The unreleased native compatibility source keeps producer metadata 0.5.0 and
-accepts the same nested schema for the upcoming 8.0.11 candidate and preserves
+The 0.5.1 source candidate writes producer metadata 0.5.1, retains 0.5.0
+compatibility, and accepts the same nested schema for the upcoming 8.0.11 candidate. It preserves
 8.0.10 schema compatibility. Neither entry qualifies a runtime. Stock published
 8.0.10 onboarding needs an update; target the authorized 8.0.11 release and
 managed update when available. Require the actual native controller's
