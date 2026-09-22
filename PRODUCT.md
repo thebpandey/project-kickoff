@@ -23,7 +23,7 @@ A resumable, approval-driven planning workflow that asks one material question a
 - Current Project Kickoff release: 0.5.0.
 - Five approval stages lead through four lifecycle states.
 - The 0.5.0 handoff checker was released against Agent-Team 7.3.1.
-- Native Agent-Team 8.0.9 can consume approved Project Kickoff facts during setup while preserving producer and compatibility provenance.
+- Native Agent-Team 8.0.10 can consume approved Project Kickoff facts during setup while preserving producer and compatibility provenance.
 - Project Kickoff does not start Agent-Team or implement product features as a side effect.
 
 ## Brand Commitments
