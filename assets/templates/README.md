@@ -93,15 +93,22 @@ do not infer it from another project or package manager.
 - Integration worktree: {{absolute path or Create when first needed}}
 - Required lessons: {{M-IDs or None}}
 - Exact invocation for this host: `{{verified Codex or Claude Code invocation}}`
-- Initialization request: {{checker command with the actual Agent-Team owner session, operation ID, and current setup version}}
+- Initialization route: {{qualified native setup handoff command and receipt, or explicitly selected legacy checker request with runtime identity}}
 
 The handoff is tested with Agent-Team 7.3.1. It prepares Agent-Team; it does not
 create Agent-Team runtime state or start implementation. Product code,
 package installation, scaffold execution, builds, and tests run later through
 complexity-appropriate subagents in isolated worktrees under `AGENTS.md`.
-Required capabilities in the handoff are declarations only. Project Kickoff does
-not install, initialize, execute, register, or evaluate Graphify or create
-`graphify-out/`; Agent-Team owns readiness and can block dispatch if unavailable.
+For the unreleased native compatibility source, adapt `agentTeam.testedVersion`
+only after qualifying the actual native setup contract. The checker verifies
+schema compatibility for the upcoming 8.0.11 candidate and retained 8.0.10
+bridge; neither allowance proves a runtime ready or a release installed.
+Original published 8.0.10 onboarding needs an update. Complete selected
+dependencies and first role settings through native
+setup, preserve their receipts, and prepare selected Serena and Graphify there.
+Required capabilities declare dispatch gates; do not require an optional tool
+merely because the historical template lists it. For explicitly selected legacy
+7.3.1, Agent-Team retains Graphify preparation ownership.
 
 ## Verification and readiness
 

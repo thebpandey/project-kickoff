@@ -3,6 +3,24 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.1] - 2026-09-22
+
+Release candidate; publication and managed installation are pending.
+
+- Added schema compatibility for the upcoming Agent-Team 8.0.11 native setup
+  candidate, retaining the 8.0.10 schema bridge, 0.5.0 producer compatibility, and the
+  explicit legacy 7.3.1 route. This source change is not released or installed.
+  The checker marks native runtime verification as false; stock published 8.0.10 onboarding needs
+  an update and cannot be qualified by its version string alone.
+- Native setup reuses approved artifacts and tracker choices, completes selected
+  dependency preparation and first role settings, and resumes from receipts
+  without a repeated interview, owner-session transfer, or external hooks.
+- Native handoff validation rejects stale branch tips, outside-project handoff
+  paths, unsupported task table shapes, and unrepresentable external authority.
+- New handoffs identify producer 0.5.1. The native reader accepts exactly
+  producer versions 0.5.0 and 0.5.1; existing approved artifacts and task IDs
+  remain valid without a repeated interview or tracker migration.
+
 ## [0.5.0] - 2026-09-14
 
 ### Added

@@ -29,7 +29,7 @@ compatible installation. A directory, download, or successful installer exit is
 not proof that a tool works. Use the selected executable's version/help output
 and a small functional check where appropriate.
 
-Present these six requested dependencies even when some are already ready:
+Present these dependencies even when some are already ready:
 
 | Dependency | Purpose | Authoritative source |
 | --- | --- | --- |
@@ -39,6 +39,8 @@ Present these six requested dependencies even when some are already ready:
 | Agent-Team | Delegated implementation, integration, and coordination | Use the authorized package source recorded for the installed proprietary copy |
 | Impeccable | Product and interface design workflow | https://github.com/pbakaus/impeccable |
 | UI UX Pro Max Skill | UI/UX patterns, data, and search tools | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
+| Serena | Scoped semantic navigation for implementation | https://github.com/oraios/serena |
+| Graphify | Code-only repository structure and dependency analysis | https://github.com/Graphify-Labs/graphify |
 
 For each item, show purpose, Ready/Missing/Cannot use status, selected executable
 or skill path, source URL, version or exact revision, installation scope and
@@ -105,10 +107,12 @@ sources. Compare the needed capability, gaps, maintenance, host support, source,
 and verified license. Do not describe an unverified or paid product as a free
 equivalent.
 
-For an Agent-Team 7.3.1 handoff, the selected tracker must be Beads or Markdown
+For an Agent-Team handoff, the selected tracker must be Beads or Markdown
 at root `TASKS.md` or `.agent-team/TASKS.md`. Other researched trackers remain
 valid for projects that will not use Agent-Team, but are not compatible handoff
-targets for this version.
+targets for these contracts. Native setup must preserve the selected tracker;
+an available Beads executable never authorizes changing an approved Markdown
+tracker or discarding an existing task file.
 
 If Beads is unavailable, include root `TASKS.md` as one choice and explain that
 it is a simple single-writer file without Beads automation. Present researched
@@ -159,11 +163,96 @@ handoff ready. Do not raise it or reduce approved scope without matching
 authorization.
 
 `plan.requiredCapabilities` is optional. When supplied, use at most 100 unique
-safe capability IDs; the shipped template declares `graphify`. This is a
-declaration only: Project Kickoff must never install, initialize, execute,
-register, or evaluate Graphify or create `graphify-out/`. Agent-Team owns
-preparation and readiness and may block dispatch when a declared capability is
-unavailable.
+safe capability IDs. The historical template declares `graphify`; retain it only
+when the approved project requires it. An empty list is valid when no optional
+capability gates implementation. Native setup prepares selected tools and reports
+their actual readiness. A selected optional tool may remain deferred; a declared
+required capability must be ready before handoff.
+
+### Native v8 setup after approvals
+
+This 0.5.1 release candidate writes the existing nested handoff shape with
+producer version 0.5.1 and still accepts 0.5.0 producers. Its checker accepts
+the upcoming 8.0.11 native candidate and retains 8.0.10 schema compatibility.
+It reports `compatibility: schema-only` and `runtimeVerified: false`. The original
+published 8.0.10 binary has incomplete onboarding and needs an update; its version
+alone never qualifies it. Target 8.0.11 after its authorized release and managed
+update, then qualify the actual installed setup contract. Do not mark this
+source change, or the upcoming native candidate, released or installed merely
+because its checker tests pass.
+
+1. Reuse all five current stage approvals, the approved documents, tracker
+   selection, task mapping, installation scope, and known model choices. Do not
+   restart discovery, repeat answered questions, or switch trackers.
+2. Run `agent-teamctl setup --host <codex-or-claude> --json` from the canonical project checkout. Require
+   structured `status`, `next_action`, and the selected tracker. A generic success
+   message without those fields is not preparation evidence: record an update
+   blocker and use the authorized native update procedure before continuing.
+3. Complete selected dependency preparation before seeding or creating the
+   final handoff. Use the native preparation-only route so this step does not
+   bind an incomplete project handoff into the immutable setup receipt.
+   Offer Serena, Graphify, rg, ast-grep, and lean-ctx together, plus Beads when
+   selected. Name any project-local uv/Python prerequisites in the same consent
+   question. After the selected bundle and project scope have been approved, use
+   `agent-teamctl setup --prepare-only --install beads,serena,graphify,rg,ast-grep,lean-ctx --approve --tracker beads --host <codex-or-claude> --json`.
+   Omit unselected packages; use `--tracker tasks-md` for an approved Markdown
+   fallback. Installation consent is already covered only when the saved
+   approval names the same packages and scope.
+   Reuse healthy installations. If an install is needed, provide only the
+   previously approved package, source, project scope, and location. Follow
+   structured consent/resume results and save returned paths, versions, checks,
+   and unresolved blockers in `.project-kickoff/setup.json`. Present a new
+   question only for a scope, access, or dependency choice not already approved.
+   For selected Beads, install/verify the chosen executable and initialize its
+   tracker before idempotent seeding. If it cannot be used, offer TASKS.md and
+   wait for the user's selection. Prepare selected Serena and Graphify before
+   readiness; no external hook is necessary. Keep Graphify in the native
+   code-only profile and do not add MCP registration or global hooks implicitly.
+   Require the structured prepared result and per-tool functional evidence;
+   mere executable existence is not readiness. A missing `--prepare-only`
+   contract requires the native update, not a normal setup call in its place.
+4. Seed the one selected tracker idempotently, verify the approved scaffold,
+   then generate the nested handoff with `agentTeam.testedVersion` equal to the
+   qualified controller version and run this Skill's checker. For the native
+   bridge, `project.revision` must be the current branch tip and
+   `plan.authority.externalActions` must be empty; publication authority is a
+   separate later native decision. Keep the exact approved task IDs and paths.
+5. Use the native setup response and its installed help to submit the handoff
+   and existing setup approval. The supported handoff route is
+   `agent-teamctl setup --kickoff .project-kickoff/AGENT_TEAM_HANDOFF.json --approve-kickoff --approve --host <codex-or-claude> --json`.
+   These flags carry the already-recorded approvals; they do not create new
+   authority. Agent-Team creates its own governance files and receipt while
+   preserving existing user instructions and the seeded tracker. If a project
+   already has native setup, use its approved handoff-attachment transition;
+   never rewrite its immutable receipt or silently ignore the new handoff.
+6. Complete the first native role settings step. Read the returned roles, models,
+   efforts, and profile; reuse approved execution choices. If execution choices
+   are unresolved, ask the one remaining role-settings question, persist the
+   answer through the native settings contract, and confirm the resulting
+   settings. Use supported, observed host model choices or `inherit`, not an
+   invented latest model name. Native keys have the form
+   `<codex-or-claude>.<orchestrator|developer|reviewer|visual_reviewer>.<model|effort>=value`.
+   `coder` aliases `developer`; `inherit` clears a role override. When inherited
+   defaults were approved, persist that choice with
+   `agent-teamctl settings parallel_teams=1 codex.developer.model=inherit claude.developer.model=inherit --json`.
+   Never claim this changed the current parent session model.
+7. Reinspect native setup. Declare ready only from its completed setup,
+   dependency, and settings evidence. Resume failed or interrupted preparation
+   from the same receipts; do not recreate tasks or reinstall verified packages.
+   Save `agent-teamctl start --host <codex-or-claude> --json` as the later
+   implementation invocation without starting workers. `status --json` is the
+   read-only inspection route after setup.
+
+Native v8 does not use `project-initialize`, an owner-session transfer, operation
+ID, or the legacy `--emit-request` wrapper. Project Kickoff must not invent any
+of those runtime identities. Optional Project Kickoff context hooks remain
+separate and are not prerequisites for this path.
+
+### Explicitly selected legacy 7.3.1 initialization
+
+Keep the tested 7.3.1 template value for this route. Required capabilities remain
+declarations here: Project Kickoff does not prepare Graphify through legacy
+hooks or create `graphify-out/`; legacy Agent-Team owns that preparation.
 
 At the later Agent-Team initialization step, use the actual registered project
 owner session, a new operation ID, and the freshly observed Agent-Team setup

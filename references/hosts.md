@@ -17,8 +17,12 @@ shell binaries. Route them through `SKILL.md` before loading the workflow.
 - Use the exposed native user-input tool for one recommended-choice question.
 - Use Codex collaboration controls for delegated work only when available and
   authorized. Resolve models and reasoning effort from current host capability.
-- Keep no Codex model list and no Codex effort list in this Skill. Read the
-  current host capability at each selection.
+- Read the current host capability at each selection. When exposed, recommend
+  `gpt-6-sol` for planning, development, and independent review. Offer
+  `gpt-6-luna` for optional routine, low-risk work. These examples were observed
+  in the local Codex catalog and host tools on 2026-09-22 and are not a capability
+  allowlist; use only model identifiers and effort levels available in the
+  current host.
 
 Official source: https://learn.chatgpt.com/docs/build-skills
 
@@ -31,11 +35,15 @@ Official source: https://learn.chatgpt.com/docs/build-skills
 - A same-named personal skill can shadow a project skill. Verify the loaded
   source before relying on project-specific content.
 - The documented Anthropic model identifiers are `claude-fable-5-1`,
-  `claude-opus-5`, `claude-sonnet-5`, and `claude-haiku-4-5-20251001`. The
+  `claude-opus-5-5`, `claude-sonnet-5`, and `claude-haiku-4-5-20251001`. The
   documented effort levels include `high` and `xhigh`. Use an identifier or a
   level only when the current session exposes it.
 
 Official source: https://code.claude.com/docs/en/skills
+
+Claude Opus 5.5 model configuration: https://code.claude.com/docs/en/model-config
+(`claude-opus-5-5`, supported from Claude Code 2.1.280). Verify the installed
+host exposes it before offering or applying it.
 
 Both hosts support skill directories with referenced files and symlinked skill
 folders. Install the complete package, including `LICENSE`, `CHANGELOG.md`, `agents/`,
@@ -52,11 +60,21 @@ project-specific effect and keep the current pinned installation unless the user
 approved an upgrade. Preserve stable IDs, evidence, valid approvals, and project
 outputs through an approved migration.
 
-Project Kickoff 0.5.0 handoffs are tested against Agent-Team 7.3.1.
+Released Project Kickoff 0.5.0 handoffs are tested against Agent-Team 7.3.1.
 The handoff checker converts `.project-kickoff/AGENT_TEAM_HANDOFF.json` into the
 request accepted by Agent-Team's `project-initialize` helper after the runtime
 identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
 runtime state. Do not pre-populate that runtime receipt during kickoff.
+
+The 0.5.1 source candidate writes producer metadata 0.5.1, retains 0.5.0
+compatibility, and accepts the same nested schema for the upcoming 8.0.11 candidate. It preserves
+8.0.10 schema compatibility. Neither entry qualifies a runtime. Stock published
+8.0.10 onboarding needs an update; target the authorized 8.0.11 release and
+managed update when available. Require the actual native controller's
+structured setup contract, complete dependencies and first role settings, and
+record functional evidence through [native setup](setup.md#native-v8-setup-after-approvals).
+No owner-session, operation-ID transfer, legacy hook, or repeated discovery is
+needed. Preserve all current approvals and resume only unfinished setup steps.
 
 ## Model and reasoning effort
 

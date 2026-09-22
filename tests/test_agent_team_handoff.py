@@ -123,6 +123,89 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(output["agentTeamVersion"], "7.3.1")
         self.assertEqual(output["taskCount"], 1)
 
+    def native_handoff(self, version="8.0.11", producer="0.5.1"):
+        (self.root / "TASKS.md").write_text(
+            "# Tasks\n\n## Active tasks\n"
+            "| ID | Intended outcome / acceptance pointer | Owner | Depends on | Status |\n"
+            "| --- | --- | --- | --- | --- |\n"
+            "| AT-001 | Approved behavior | unassigned | none | ready |\n"
+        )
+        handoff = valid_handoff(self.root)
+        handoff["projectKickoff"]["version"] = producer
+        handoff["agentTeam"]["testedVersion"] = version
+        return handoff
+
+    def test_native_schema_check_does_not_claim_runtime_verified(self):
+        for producer, version in (("0.5.0", "8.0.10"), ("0.5.0", "8.0.11"),
+                                  ("0.5.1", "8.0.10"), ("0.5.1", "8.0.11")):
+            with self.subTest(producer=producer, version=version):
+                result = self.check(self.native_handoff(version, producer))
+                self.assertEqual(result.returncode, 0, result.stderr)
+                output = json.loads(result.stdout)
+                self.assertEqual(output["agentTeamVersion"], version)
+                self.assertEqual(output["compatibility"], "schema-only")
+                self.assertFalse(output["runtimeVerified"])
+                self.assertEqual(output["requiredSetupContract"], "status-and-next-action")
+
+    def test_native_handoff_does_not_emit_legacy_identity_request(self):
+        result = self.emit_request(self.native_handoff())
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("native setup", result.stderr)
+        self.assertNotIn("actorSessionId", result.stdout)
+
+    def test_native_rejects_stale_revision_and_external_actions(self):
+        handoff = self.native_handoff()
+        handoff["plan"]["authority"]["externalActions"] = ["deploy"]
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("separate native authority", result.stderr)
+        handoff["plan"]["authority"]["externalActions"] = []
+        self.commit_file("later.txt", "later")
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("current branch tip", result.stderr)
+
+    def test_native_rejects_handoff_outside_project(self):
+        handoff = self.native_handoff()
+        path = Path(self.temp.name) / "outside.json"
+        path.write_text(json.dumps(handoff))
+        result = subprocess.run(
+            [sys.executable, str(CHECKER), "--handoff", str(path)],
+            capture_output=True, text=True, timeout=3,
+        )
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("within project.root", result.stderr)
+
+    def test_native_rejects_unsupported_table_shape_and_unsafe_path(self):
+        handoff = self.native_handoff()
+        handoff["plan"]["authority"]["ownedPaths"] = ["../outside"]
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("unsafe owned path", result.stderr)
+        handoff["plan"]["authority"]["ownedPaths"] = ["src/**"]
+        path = self.root / "TASKS.md"
+        path.write_text(path.read_text().replace("## Active tasks", "## Other tasks"))
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("Active tasks", result.stderr)
+
+    @unittest.skipIf(os.name == "nt", "symlink creation may require privileges")
+    def test_native_rejects_symlinked_tracker_and_owned_path_escapes(self):
+        handoff = self.native_handoff()
+        outside = Path(self.temp.name) / "outside"
+        outside.mkdir()
+        (outside / "TASKS.md").write_text((self.root / "TASKS.md").read_text())
+        (self.root / ".agent-team").symlink_to(outside, target_is_directory=True)
+        handoff["tracker"]["path"] = ".agent-team/TASKS.md"
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("escapes project.root", result.stderr)
+        handoff["tracker"]["path"] = "TASKS.md"
+        handoff["plan"]["authority"]["ownedPaths"] = [".agent-team/**"]
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("escapes project.root", result.stderr)
+
     def test_checker_emits_a_direct_agent_team_request(self):
         handoff = valid_handoff(self.root)
         result = self.emit_request(handoff)
@@ -310,6 +393,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
             ("0.4.2", "7.2.6"),
             ("0.5.0", "7.3.0"),
             ("0.5.0", "7.3.1"),
+            ("0.5.1", "7.3.0"),
+            ("0.5.1", "7.3.1"),
         ]
         for kickoff, agent_team in supported:
             with self.subTest(pair=(kickoff, agent_team)):
@@ -326,7 +411,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 result = self.check(handoff)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"unsupported handoff compatibility {kickoff}/{agent_team}", result.stderr)
-                self.assertIn("checker 0.5.0 requires an approved migration", result.stderr)
+                self.assertIn("checker 0.5.1 requires an approved migration", result.stderr)
 
     def test_emit_request_rebinds_the_current_descendant_tip(self):
         handoff = valid_handoff(self.root)
