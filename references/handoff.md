@@ -107,8 +107,8 @@ Declare `ready for handoff` only when:
 - for native v8, the actual controller exposes the structured setup contract,
   selected dependency preparation and first role settings are complete, and
   their evidence is saved. Schema compatibility alone is insufficient; the
-  original published 8.0.10 onboarding requires an update. This source targets
-  the upcoming 8.0.11 candidate without claiming it released or installed;
+  original published 8.0.10 onboarding requires an update. Use the
+  verified 8.0.12 package after publication and verify its installed setup contract;
 - AGENTS, CLAUDE, MISTAKES, CONTEXT, discovery, and tracker ownership agree;
 - no roadmap item was activated and no feature implementation began.
 

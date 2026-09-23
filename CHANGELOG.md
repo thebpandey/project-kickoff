@@ -5,11 +5,11 @@ All notable changes to Project Kickoff are recorded here. Versions follow
 
 ## [0.5.1] - 2026-09-22
 
-Release candidate; publication and managed installation are pending.
+Release candidate; publication and managed installation are pending. Native handoff targets the Agent-Team 8.0.12 managed-update repair.
 
-- Added schema compatibility for the upcoming Agent-Team 8.0.11 native setup
-  candidate, retaining the 8.0.10 schema bridge, 0.5.0 producer compatibility, and the
-  explicit legacy 7.3.1 route. This source change is not released or installed.
+- Added handoff compatibility for native Agent-Team 8.0.12, retaining the
+  8.0.10/8.0.11 schema bridge, 0.5.0 producer compatibility, and the explicit legacy
+  7.3.1 route.
   The checker marks native runtime verification as false; stock published 8.0.10 onboarding needs
   an update and cannot be qualified by its version string alone.
 - Native setup reuses approved artifacts and tracker choices, completes selected

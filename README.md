@@ -191,12 +191,11 @@ For Agent-Team 7.3.1, the handoff tracker is Beads or Markdown at `TASKS.md` or
 `.agent-team/TASKS.md`. Another tracker can support a project that does not use
 Agent-Team, but it is not a compatible Agent-Team 7.3.1 handoff target.
 
-This source branch contains the **0.5.1 release candidate**; publication and
-managed installation are pending. It keeps the existing nested handoff format,
-writes producer version 0.5.1, preserves 0.5.0 compatibility, and accepts the upcoming Agent-Team
-8.0.11 setup candidate at the schema level, retaining the 8.0.10 schema bridge.
-Neither allowance claims that this source change is released or installed.
-Stock published 8.0.10 onboarding needs an update. The checker reports
+Project Kickoff **0.5.1 is an unpublished candidate**. It keeps the existing nested handoff format, writes producer version 0.5.1, and preserves 0.5.0 compatibility. It targets the [Agent-Team 8.0.12 repair candidate](https://github.com/thebpandey/agent-team/blob/main/docs/releases/8.0.12-readiness.md) for native setup and handoff; the 8.0.10 schema bridge remains for compatibility.
+Stock published 8.0.10 onboarding needs an update. Published 8.0.11 then exposed
+a managed-update journal limit; this candidate targets the 8.0.12 repair.
+Schema compatibility with 8.0.10/8.0.11 remains available, but does not qualify
+their installation or runtime state. The checker reports
 `runtimeVerified: false`; actual readiness
 requires the structured native setup contract, completed selected dependencies,
 and confirmed first role settings. That path reuses all current approvals and
@@ -207,8 +206,9 @@ hook or owner-session transfer. See [native setup](references/setup.md#native-v8
 
 You need written permission from the licensors. The Skill is proprietary and
 licensed under the Project Kickoff Private Use License. The GitHub repository
-is public. The examples target GitHub CLI and release tag `v0.5.1`. Use them
-after that release is published and its source and checksum are verified.
+is public. The examples target GitHub CLI and release tag
+[`v0.5.1`](https://github.com/thebpandey/project-kickoff/releases/tag/v0.5.1).
+Use these instructions after publication, then verify the release source and checksum before installation.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -557,7 +557,7 @@ does not guess these runtime identities.
 Native setup consumes the approved handoff directly and does not use that
 legacy identity request. Its schema check returns `runtimeVerified: false`;
 the installed setup contract and actual preparation receipts establish runtime
-readiness; neither an 8.0.10 nor an 8.0.11 version string proves it.
+readiness; neither an 8.0.10 nor an 8.0.12 version string proves it.
 
 Kickoff does not write `.agent-team/setup.json`. Agent-Team creates that file
 atomically with its team registry, state, and operation cache during project

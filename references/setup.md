@@ -171,15 +171,14 @@ required capability must be ready before handoff.
 
 ### Native v8 setup after approvals
 
-This 0.5.1 release candidate writes the existing nested handoff shape with
-producer version 0.5.1 and still accepts 0.5.0 producers. Its checker accepts
-the upcoming 8.0.11 native candidate and retains 8.0.10 schema compatibility.
+Project Kickoff 0.5.1 writes the existing nested handoff shape with producer
+version 0.5.1 and still accepts 0.5.0 producers. Its checker accepts native
+Agent-Team 8.0.12 and retains 8.0.10/8.0.11 schema compatibility.
 It reports `compatibility: schema-only` and `runtimeVerified: false`. The original
 published 8.0.10 binary has incomplete onboarding and needs an update; its version
-alone never qualifies it. Target 8.0.11 after its authorized release and managed
-update, then qualify the actual installed setup contract. Do not mark this
-source change, or the upcoming native candidate, released or installed merely
-because its checker tests pass.
+alone never qualifies it. After publication, install or update from the verified 8.0.12 release,
+then qualify the actual installed setup contract. Passing schema checks does
+not establish that a package is installed or ready.
 
 1. Reuse all five current stage approvals, the approved documents, tracker
    selection, task mapping, installation scope, and known model choices. Do not
