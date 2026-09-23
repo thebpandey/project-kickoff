@@ -123,7 +123,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(output["agentTeamVersion"], "7.3.1")
         self.assertEqual(output["taskCount"], 1)
 
-    def native_handoff(self, version="8.0.11", producer="0.5.1"):
+    def native_handoff(self, version="8.0.12", producer="0.5.1"):
         (self.root / "TASKS.md").write_text(
             "# Tasks\n\n## Active tasks\n"
             "| ID | Intended outcome / acceptance pointer | Owner | Depends on | Status |\n"
@@ -137,7 +137,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
     def test_native_schema_check_does_not_claim_runtime_verified(self):
         for producer, version in (("0.5.0", "8.0.10"), ("0.5.0", "8.0.11"),
-                                  ("0.5.1", "8.0.10"), ("0.5.1", "8.0.11")):
+                                  ("0.5.0", "8.0.12"), ("0.5.1", "8.0.10"),
+                                  ("0.5.1", "8.0.11"), ("0.5.1", "8.0.12")):
             with self.subTest(producer=producer, version=version):
                 result = self.check(self.native_handoff(version, producer))
                 self.assertEqual(result.returncode, 0, result.stderr)
@@ -146,6 +147,15 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 self.assertEqual(output["compatibility"], "schema-only")
                 self.assertFalse(output["runtimeVerified"])
                 self.assertEqual(output["requiredSetupContract"], "status-and-next-action")
+
+    def test_native_unknown_versions_still_require_approved_migration(self):
+        for producer, version in (("0.5.0", "8.0.13"), ("0.5.1", "8.0.13"),
+                                  ("0.5.1", "8.1.0"), ("0.5.2", "8.0.12")):
+            with self.subTest(producer=producer, version=version):
+                result = self.check(self.native_handoff(version, producer))
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(f"unsupported handoff compatibility {producer}/{version}", result.stderr)
+                self.assertIn("requires an approved migration", result.stderr)
 
     def test_native_handoff_does_not_emit_legacy_identity_request(self):
         result = self.emit_request(self.native_handoff())
