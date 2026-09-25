@@ -18,6 +18,7 @@ MAX_REQUEST_BYTES = 256 * 1024
 MAX_TASKS = 1000
 MAX_LIST_ITEMS = 100
 CHECKER_VERSION = "0.5.2"
+SKILL_FIRST_MODE = "skill-first"
 SUPPORTED_PAIRS = frozenset({
     ("0.3.1", "7.0.2"),
     ("0.4.0", "7.0.2"),
@@ -41,6 +42,8 @@ SUPPORTED_PAIRS = frozenset({
     ("0.5.1", "8.0.11"),
     ("0.5.1", "8.0.12"),
     ("0.5.2", "8.0.15"),
+    # Schema-valid only until cross-repository live canaries qualify this pair.
+    ("0.5.2", "9.0.0"),
 })
 RUNTIME_VERIFIED_PAIRS = frozenset({("0.5.2", "8.0.15")})
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
@@ -326,6 +329,7 @@ def validate_handoff(value, *, size=None, details=None):
 
     agent_team = value.get("agentTeam")
     native = is_object(agent_team) and str(agent_team.get("testedVersion", "")).startswith("8.")
+    skill_first = is_object(agent_team) and agent_team.get("mode") == SKILL_FIRST_MODE
     if not is_object(agent_team):
         errors.append("agentTeam must be an object")
     else:
@@ -339,6 +343,12 @@ def validate_handoff(value, *, size=None, details=None):
                 errors.append(str(error))
         elif not re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+", str(tested_version or "")):
             errors.append("agentTeam.testedVersion must be semantic")
+        if str(tested_version or "").startswith("9.") and not skill_first:
+            errors.append("agentTeam.mode must be skill-first for Agent-Team v9")
+        if skill_first and tested_version != "9.0.0":
+            errors.append("agentTeam.skill-first mode requires testedVersion 9.0.0")
+        if native and agent_team.get("mode") not in {None, "native-v8"}:
+            errors.append("agentTeam.mode is incompatible with the native v8 contract")
         if agent_team.get("initializationSource") != "existing":
             errors.append("agentTeam.initializationSource must be existing")
 
@@ -394,6 +404,8 @@ def validate_handoff(value, *, size=None, details=None):
             errors.append("invalid required capability ID")
         elif len(set(required_capabilities)) != len(required_capabilities):
             errors.append("duplicate required capability ID")
+        elif skill_first and required_capabilities:
+            errors.append("skill-first handoff must not gate optional aids")
 
     if (is_object(kickoff) and re.fullmatch(r"[0-9a-f]{40}", str(kickoff.get("approvedRevision", "")))
             and text(project.get("root"), 4096) and text(project.get("branch"), 256)
@@ -406,8 +418,9 @@ def validate_handoff(value, *, size=None, details=None):
             )
             if git_error:
                 errors.append(git_error)
-            elif native and project["revision"] != observed_revision:
-                errors.append("native handoff project.revision must equal the current branch tip")
+            elif (native or skill_first) and project["revision"] != observed_revision:
+                prefix = "native" if native else "skill-first"
+                errors.append(f"{prefix} handoff project.revision must equal the current branch tip")
             elif details is not None:
                 details["observedRevision"] = observed_revision
         except (OSError, subprocess.SubprocessError) as error:
@@ -426,7 +439,7 @@ def validate_handoff(value, *, size=None, details=None):
                     errors.append(
                         f"unsupported owned path {path!r}; supported forms are an exact relative path or directory/**"
                     )
-        elif native and text(project.get("root"), 4096):
+        elif (native or skill_first) and text(project.get("root"), 4096):
             for path in owned:
                 try:
                     native_contained(project["root"], path)
@@ -435,8 +448,9 @@ def validate_handoff(value, *, size=None, details=None):
         external = authority.get("externalActions", [])
         if not string_list(external, allow_empty=True):
             errors.append("plan.authority.externalActions must be a bounded string list")
-        elif native and external:
-            errors.append("external actions require a separate native authority decision")
+        elif (native or skill_first) and external:
+            prefix = "native" if native else "skill-first"
+            errors.append(f"external actions require a separate {prefix} authority decision")
 
     tasks = plan.get("tasks")
     if not isinstance(tasks, list) or not tasks:
@@ -456,7 +470,7 @@ def validate_handoff(value, *, size=None, details=None):
     try:
         if is_object(tracker) and is_object(project) and text(project.get("root"), 4096):
             if tracker.get("kind") == "markdown" and tracker.get("path") in {"TASKS.md", ".agent-team/TASKS.md"}:
-                if native:
+                if native or skill_first:
                     native_contained(project["root"], tracker["path"])
                 tracker_rows, tracker_identity = markdown_tracker_snapshot(
                     Path(project["root"]) / tracker["path"], native=native
@@ -542,7 +556,9 @@ def main():
         details = {}
         errors = validate_handoff(value, size=len(source), details=details)
         native = is_object(value) and is_object(value.get("agentTeam")) and str(value["agentTeam"].get("testedVersion", "")).startswith("8.")
-        if native:
+        skill_first = (is_object(value) and is_object(value.get("agentTeam"))
+                       and value["agentTeam"].get("mode") == SKILL_FIRST_MODE)
+        if native or skill_first:
             try:
                 handoff.resolve(strict=True).relative_to(Path(value["project"]["root"]).resolve(strict=True))
             except (OSError, KeyError, TypeError, ValueError):
@@ -557,6 +573,9 @@ def main():
     if args.emit_request:
         if native:
             print("use the qualified native setup contract with this handoff; --emit-request is only for legacy project-initialize", file=sys.stderr)
+            return 1
+        if skill_first:
+            print("Agent-Team skill-first handoffs are consumed directly by v9; --emit-request does not run setup, settings, or preparation", file=sys.stderr)
             return 1
         runtime_errors = []
         if not valid_id(args.actor_session_id):
@@ -633,6 +652,13 @@ def main():
         output.update({"compatibility": "runtime-qualified" if verified else "schema-only",
                        "runtimeVerified": verified,
                        "requiredSetupContract": "status-and-next-action"})
+    elif skill_first:
+        output.update({"compatibility": "schema-valid-unverified",
+                       "runtimeVerified": False,
+                       "trackerDisposition": (
+                           "direct-beads" if value["tracker"]["kind"] == "beads"
+                           else "one-time-markdown-import-candidate"
+                       )})
     print(json.dumps(output, separators=(",", ":")))
     return 0
 

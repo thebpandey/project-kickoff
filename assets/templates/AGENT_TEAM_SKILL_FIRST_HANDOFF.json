@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "kind": "project-kickoff-agent-team-handoff",
+  "status": "approved",
+  "projectKickoff": {
+    "version": "0.5.2",
+    "approvalId": "{{stage 5 APR-###}}",
+    "approvedRevision": "{{full Git revision containing the approved PLAN.md baseline}}"
+  },
+  "agentTeam": {
+    "mode": "skill-first",
+    "testedVersion": "9.0.0",
+    "initializationSource": "existing"
+  },
+  "project": {
+    "id": "{{stable project ID}}",
+    "root": "{{absolute canonical project root}}",
+    "branch": "{{canonical integration branch}}",
+    "revision": "{{current canonical branch tip observed when the handoff is generated}}"
+  },
+  "tracker": {
+    "kind": "beads",
+    "executable": "{{absolute selected bd path}}"
+  },
+  "plan": {
+    "scope": "{{approved implementation scope}}",
+    "acceptance": [
+      "{{observable release acceptance condition}}"
+    ],
+    "verification": [
+      "{{exact verification command or check}}"
+    ],
+    "branch": "{{same canonical integration branch as project.branch}}",
+    "requiredCapabilities": [],
+    "authority": {
+      "ownedPaths": [
+        "{{exact project-relative path or directory/**}}"
+      ],
+      "externalActions": []
+    },
+    "tasks": [
+      {
+        "id": "{{exact existing Beads ID}}"
+      }
+    ]
+  }
+}

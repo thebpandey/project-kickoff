@@ -169,6 +169,39 @@ capability gates implementation. Native setup prepares selected tools and report
 their actual readiness. A selected optional tool may remain deferred; a declared
 required capability must be ready before handoff.
 
+### Explicit v9 skill-first handoff (opt-in, schema-valid/unverified)
+
+Use this path only when the user explicitly selects
+`agentTeam.mode: skill-first` and `agentTeam.testedVersion: 9.0.0`. It is an
+optional Project Kickoff adapter, not a prerequisite for Agent-Team v9
+standalone setup, one-off work, or release. Start from
+`assets/templates/AGENT_TEAM_SKILL_FIRST_HANDOFF.json` and write the approved
+handoff at `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
+
+1. Create or reconcile the user-selected tracker and seed only approved task
+   IDs. Prefer Beads: list its existing task IDs, select a bounded set of at
+   most 1000 IDs, and include every unfinished blocking dependency in that set.
+   v9 consumes those Beads IDs directly; do not duplicate their titles, status,
+   dependencies, or acceptance into the handoff.
+2. A user-selected `TASKS.md` or `.agent-team/TASKS.md` remains an existing
+   Markdown source only. Validate its IDs and dependency closure in the
+   handoff, then identify it to v9 as a one-time import candidate. Do not make
+   it a v9 live tracker, and do not import or mutate it during Project Kickoff.
+3. Set `requiredCapabilities` to `[]` or omit it. Do not install, probe, or
+   gate LeanCTX, Serena, Graphify, rg, ast-grep, browsers, or any other optional
+   aid. Project Kickoff creates and validates the approved tracker and handoff
+   only; it never invokes `agent-teamctl setup`, `--prepare-only`, or settings
+   for this path.
+4. Require `project.revision` to be the current canonical branch tip and keep
+   `plan.authority.externalActions` empty. Validate the bounded handoff with the
+   checker above. Its v9 result is `schema-valid-unverified`, not
+   `runtime-qualified`; only the cross-repository live canary may change that
+   wording.
+5. Give the validated file and its tracker disposition to the user's active v9
+   skill session. Do not use `--emit-request`, create `.agent-team/setup.json`,
+   start workers, or claim a v9 runtime receipt. Agent-Team owns any later
+   import decision, role preferences, and runtime state.
+
 ### Native v8 setup after approvals
 
 The Project Kickoff 0.5.2 handoff contract retains the existing nested shape and

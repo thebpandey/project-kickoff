@@ -6,6 +6,12 @@ Seed only after `PLAN.md` is approved and the user selected the tracker. The
 tracker is authoritative for execution status; `PLAN.md` remains authoritative
 for the approved task definitions and acceptance criteria.
 
+For an explicitly selected v9 skill-first handoff, Beads is the preferred and
+directly consumed tracker. A selected Markdown `TASKS.md` is preserved as a
+one-time import candidate for v9, never a second v9 live tracker. Project
+Kickoff does not import it, create Agent-Team runtime state, or alter Beads
+records after handoff validation.
+
 1. Read the approved plan revision and every stable plan ID. New plans use
    `EPIC-###`, `STORY-###`, and `TASK-###`; existing projects keep their
    established IDs and prefixes. Read the active tracker and

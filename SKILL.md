@@ -116,7 +116,8 @@ the one-question protocol and the approval boundaries below.
   `.agent-team/setup.json`; Agent-Team owns that initialization receipt and its
   other runtime state. Before an Agent-Team handoff, generate and validate
   `.project-kickoff/AGENT_TEAM_HANDOFF.json` from the approved plan and tracker.
-- After setup approval, Project Kickoff completes selected native dependency
+- For the default, runtime-qualified native v8 path, after setup approval,
+  Project Kickoff completes selected native dependency
   preparation, including Beads, Serena, and Graphify when selected, through the
   qualified Agent-Team setup contract in [setup](references/setup.md). Reuse
   approved choices and installation scope. Agent-Team owns its runtime receipts;
@@ -129,6 +130,15 @@ the one-question protocol and the approval boundaries below.
   preparation and first role settings, then hand off. For an explicitly selected
   legacy 7.3.1 runtime, retain its separate initialization path and capability
   ownership rules.
+- An explicit user selection of `agentTeam.mode: skill-first` and
+  `testedVersion: 9.0.0` uses the separate v9 adapter described in
+  [setup](references/setup.md). It creates and validates the approved handoff
+  and selected tracker only: it does not run `agent-teamctl` setup, settings, or
+  preparation; gate LeanCTX or optional aids; or start Agent-Team. Beads IDs are
+  handed to v9 directly. `TASKS.md` is only a one-time v9 import candidate.
+  This pair is schema-valid but unverified until a cross-repository live canary;
+  it is opt-in and does not make standalone Agent-Team v9 depend on Project
+  Kickoff.
 - Plan independent task boundaries and review dependencies so Agent-Team can
   form lanes after handoff. Project Kickoff does not create lane records,
   claims, assignments, briefs, worker identities, or runtime capacity state.

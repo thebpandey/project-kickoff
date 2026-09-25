@@ -14,6 +14,7 @@ import unittest
 PACKAGE = Path(__file__).resolve().parents[1]
 CHECKER = PACKAGE / "scripts/check_agent_team_handoff.py"
 TEMPLATE = PACKAGE / "assets/templates/AGENT_TEAM_HANDOFF.json"
+SKILL_FIRST_TEMPLATE = PACKAGE / "assets/templates/AGENT_TEAM_SKILL_FIRST_HANDOFF.json"
 
 
 def valid_handoff(root):
@@ -104,6 +105,16 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertIn("tasks", template["plan"])
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
 
+        skill_first_template = json.loads(SKILL_FIRST_TEMPLATE.read_text())
+        self.assertEqual(skill_first_template["projectKickoff"]["version"], "0.5.2")
+        self.assertEqual(skill_first_template["agentTeam"], {
+            "mode": "skill-first",
+            "testedVersion": "9.0.0",
+            "initializationSource": "existing",
+        })
+        self.assertEqual(skill_first_template["tracker"]["kind"], "beads")
+        self.assertEqual(skill_first_template["plan"]["requiredCapabilities"], [])
+
         setup = (PACKAGE / "references/setup.md").read_text()
         handoff = (PACKAGE / "references/handoff.md").read_text()
         readme = (PACKAGE / "README.md").read_text()
@@ -111,6 +122,9 @@ class AgentTeamHandoffTests(unittest.TestCase):
         for source in (setup, handoff, readme):
             self.assertIn("AGENT_TEAM_HANDOFF.json", source)
         self.assertIn("Do not create or edit `.agent-team/setup.json`", setup)
+        self.assertIn("Explicit v9 skill-first handoff", setup)
+        self.assertIn("schema-valid-unverified", setup)
+        self.assertIn("TASKS.md` is preserved as a\none-time import candidate", handoff)
         self.assertIn(".project-kickoff/setup.json", setup)
         self.assertIn("| AT-001", tracker)
         self.assertIn("| {{ready}} |", tracker)
@@ -134,6 +148,27 @@ class AgentTeamHandoffTests(unittest.TestCase):
         handoff = valid_handoff(self.root)
         handoff["projectKickoff"]["version"] = producer
         handoff["agentTeam"]["testedVersion"] = version
+        return handoff
+
+    def skill_first_handoff(self):
+        executable = self.root / "v9-bd"
+        executable.write_text(
+            "#!/usr/bin/env python3\n"
+            "import json\n"
+            "print(json.dumps([{'id': 'AT-001', 'title': 'Approved behavior', "
+            "'status': 'ready', 'assignee': '', 'dependency_count': 0, "
+            "'dependencies': []}]))\n"
+        )
+        executable.chmod(0o700)
+        handoff = valid_handoff(self.root)
+        handoff["projectKickoff"]["version"] = "0.5.2"
+        handoff["agentTeam"] = {
+            "mode": "skill-first",
+            "testedVersion": "9.0.0",
+            "initializationSource": "existing",
+        }
+        handoff["tracker"] = {"kind": "beads", "executable": str(executable)}
+        handoff["plan"].pop("requiredCapabilities")
         return handoff
 
     def write_native_tasks(self, rows):
@@ -160,6 +195,61 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(output["taskCount"], 2)
         self.assertEqual(output["compatibility"], "runtime-qualified")
         self.assertTrue(output["runtimeVerified"])
+
+    def test_skill_first_handoff_is_schema_valid_but_not_runtime_qualified(self):
+        result = self.check(self.skill_first_handoff())
+        self.assertEqual(result.returncode, 0, result.stderr)
+        output = json.loads(result.stdout)
+        self.assertEqual(output["compatibility"], "schema-valid-unverified")
+        self.assertFalse(output["runtimeVerified"])
+        self.assertEqual(output["trackerDisposition"], "direct-beads")
+        self.assertNotIn("requiredSetupContract", output)
+
+    def test_skill_first_requires_its_explicit_mode_and_keeps_native_safety_checks(self):
+        handoff = self.skill_first_handoff()
+        handoff["agentTeam"].pop("mode")
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("mode must be skill-first", result.stderr)
+
+        handoff = self.skill_first_handoff()
+        handoff["plan"]["authority"]["externalActions"] = ["deploy"]
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("separate skill-first authority", result.stderr)
+
+        handoff = self.skill_first_handoff()
+        self.commit_file("later-v9.txt", "later")
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("current branch tip", result.stderr)
+
+    def test_skill_first_does_not_gate_optional_aids(self):
+        handoff = self.skill_first_handoff()
+        handoff["plan"]["requiredCapabilities"] = ["lean-ctx"]
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("must not gate optional aids", result.stderr)
+
+    def test_skill_first_markdown_is_only_an_import_candidate(self):
+        handoff = valid_handoff(self.root)
+        handoff["projectKickoff"]["version"] = "0.5.2"
+        handoff["agentTeam"] = {
+            "mode": "skill-first",
+            "testedVersion": "9.0.0",
+            "initializationSource": "existing",
+        }
+        handoff["plan"].pop("requiredCapabilities")
+        result = self.check(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        output = json.loads(result.stdout)
+        self.assertEqual(output["trackerDisposition"], "one-time-markdown-import-candidate")
+
+    def test_skill_first_does_not_emit_a_legacy_setup_request(self):
+        result = self.emit_request(self.skill_first_handoff())
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("skill-first", result.stderr)
+        self.assertNotIn("actorSessionId", result.stdout)
 
     def test_native_handoff_rejects_a_task_absent_from_the_tracker(self):
         handoff = self.native_handoff("8.0.15", "0.5.2")

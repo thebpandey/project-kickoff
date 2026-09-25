@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased
+
+### Added
+
+- An opt-in Project Kickoff adapter for the Agent-Team v9 skill-first handoff.
+  It validates Beads-first approved handoffs (with Markdown as a one-time import
+  candidate) without invoking native setup or optional-aid gates. The 0.5.2/9.0.0
+  pair is schema-valid/unverified pending a cross-repository live canary; the
+  default 0.5.2/8.0.15 runtime-qualified path remains unchanged.
+
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
