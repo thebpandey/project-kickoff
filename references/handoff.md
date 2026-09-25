@@ -6,8 +6,8 @@ Seed only after `PLAN.md` is approved and the user selected the tracker. The
 tracker is authoritative for execution status; `PLAN.md` remains authoritative
 for the approved task definitions and acceptance criteria.
 
-For an explicitly selected v9 skill-first handoff, Beads is the preferred and
-directly consumed tracker. A selected Markdown `TASKS.md` is preserved as a
+For a new v9 skill-first handoff, Beads is the directly consumed tracker. A
+selected Markdown `TASKS.md` is preserved as a
 one-time import candidate for v9, never a second v9 live tracker. Project
 Kickoff does not import it, create Agent-Team runtime state, or alter Beads
 records after handoff validation.
@@ -73,13 +73,11 @@ the validated `.project-kickoff/AGENT_TEAM_HANDOFF.json`. The handoff identifies
 the exact approved revision, current integration branch tip, tracker task IDs,
 acceptance criteria, verification commands, and safe owned paths. The selected
 tracker remains authoritative for task titles, status, and dependencies.
-Optional `plan.requiredCapabilities` declares capabilities that must be ready.
-For qualified native v8, Project Kickoff drives the approved dependency
-preparation and first role settings through [native setup](setup.md#native-v8-setup-after-approvals)
-before readiness, including selected Serena and Graphify. Agent-Team records its
-own runtime receipts. A missing required capability blocks handoff; a deferred
-optional tool is reported separately. The explicitly selected legacy 7.3.1
-path retains legacy Agent-Team ownership of Graphify preparation.
+New handoffs use `AGENT_TEAM_SKILL_FIRST_HANDOFF.json` with selected existing
+Beads IDs, empty `requiredCapabilities`, and no controller setup call. The
+checker result is `schema-valid-unverified` with `runtimeVerified: false`; it
+does not prove native worker execution. Historical native v8 handoffs retain
+their prior setup and readiness rules for existing projects only.
 Agent-Team controls runtime lanes, claims, worker identities, assignments,
 worktrees, briefs, capacity, scopes, and correlation IDs after it initializes
 the project. Kickoff records none of that runtime state. The checker can combine the approved facts
@@ -111,7 +109,7 @@ Declare `ready for handoff` only when:
   present in the tracker, closes unfinished blocking dependencies within that
   subset, records the current branch tip, names only a supported tracker, and passes
   `check_agent_team_handoff.py`;
-- for native v8, the actual controller exposes the structured setup contract,
+- for a historical native v8 handoff, the actual controller exposes the structured setup contract,
   selected dependency preparation and first role settings are complete, and
   their evidence is saved. Schema compatibility alone is insufficient; the
   historical native pairs remain schema-only. Use the qualified 8.0.15 package

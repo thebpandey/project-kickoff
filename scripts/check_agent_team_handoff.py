@@ -17,7 +17,7 @@ MAX_HANDOFF_BYTES = 250 * 1024
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_TASKS = 1000
 MAX_LIST_ITEMS = 100
-CHECKER_VERSION = "0.5.2"
+CHECKER_VERSION = "0.6.0"
 SKILL_FIRST_MODE = "skill-first"
 SUPPORTED_PAIRS = frozenset({
     ("0.3.1", "7.0.2"),
@@ -44,6 +44,7 @@ SUPPORTED_PAIRS = frozenset({
     ("0.5.2", "8.0.15"),
     # Schema-valid only until cross-repository live canaries qualify this pair.
     ("0.5.2", "9.0.0"),
+    ("0.6.0", "9.0.0"),
 })
 RUNTIME_VERIFIED_PAIRS = frozenset({("0.5.2", "8.0.15")})
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")

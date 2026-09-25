@@ -106,7 +106,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
 
         skill_first_template = json.loads(SKILL_FIRST_TEMPLATE.read_text())
-        self.assertEqual(skill_first_template["projectKickoff"]["version"], "0.5.2")
+        self.assertEqual(skill_first_template["projectKickoff"]["version"], "0.6.0")
         self.assertEqual(skill_first_template["agentTeam"], {
             "mode": "skill-first",
             "testedVersion": "9.0.0",
@@ -120,9 +120,9 @@ class AgentTeamHandoffTests(unittest.TestCase):
         readme = (PACKAGE / "README.md").read_text()
         tracker = (PACKAGE / "assets/templates/TASKS.md").read_text()
         for source in (setup, handoff, readme):
-            self.assertIn("AGENT_TEAM_HANDOFF.json", source)
+            self.assertIn("AGENT_TEAM_SKILL_FIRST_HANDOFF.json", source)
         self.assertIn("Do not create or edit `.agent-team/setup.json`", setup)
-        self.assertIn("Explicit v9 skill-first handoff", setup)
+        self.assertIn("Current v9 skill-first handoff", setup)
         self.assertIn("schema-valid-unverified", setup)
         self.assertIn("TASKS.md` is preserved as a\none-time import candidate", handoff)
         self.assertIn(".project-kickoff/setup.json", setup)
@@ -161,7 +161,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         )
         executable.chmod(0o700)
         handoff = valid_handoff(self.root)
-        handoff["projectKickoff"]["version"] = "0.5.2"
+        handoff["projectKickoff"]["version"] = "0.6.0"
         handoff["agentTeam"] = {
             "mode": "skill-first",
             "testedVersion": "9.0.0",
@@ -233,7 +233,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
     def test_skill_first_markdown_is_only_an_import_candidate(self):
         handoff = valid_handoff(self.root)
-        handoff["projectKickoff"]["version"] = "0.5.2"
+        handoff["projectKickoff"]["version"] = "0.6.0"
         handoff["agentTeam"] = {
             "mode": "skill-first",
             "testedVersion": "9.0.0",
@@ -582,7 +582,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 result = self.check(handoff)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"unsupported handoff compatibility {kickoff}/{agent_team}", result.stderr)
-                self.assertIn("checker 0.5.2 requires an approved migration", result.stderr)
+                self.assertIn("checker 0.6.0 requires an approved migration", result.stderr)
 
     def test_emit_request_rebinds_the_current_descendant_tip(self):
         handoff = valid_handoff(self.root)

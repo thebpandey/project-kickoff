@@ -141,7 +141,7 @@ that actually exist, and state when no runnable application exists yet.
 ## Prepare the Agent-Team input
 
 After the plan, tracker, and scaffold are verified, adapt
-`assets/templates/AGENT_TEAM_HANDOFF.json` to
+`assets/templates/AGENT_TEAM_SKILL_FIRST_HANDOFF.json` to
 `.project-kickoff/AGENT_TEAM_HANDOFF.json`. Put only the ID of each implementation
 task in its task list. Include every selected tracker row exactly once. Do not
 copy titles, status, dependencies, or acceptance details into this list. The
@@ -157,26 +157,11 @@ python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \
 Resolve `<project-kickoff-skill-path>` to the loaded Skill directory. Do not
 start Agent-Team or pre-create its runtime receipt as part of this check.
 
-Agent-Team 7.3.1 defaults `maxPlanTasks` to 1000, but the selected host can have
-a lower effective setting. Verify the current host setting before declaring the
-handoff ready. Do not raise it or reduce approved scope without matching
-authorization.
+### Current v9 skill-first handoff (schema-valid/unverified)
 
-`plan.requiredCapabilities` is optional. When supplied, use at most 100 unique
-safe capability IDs. The historical template declares `graphify`; retain it only
-when the approved project requires it. An empty list is valid when no optional
-capability gates implementation. Native setup prepares selected tools and reports
-their actual readiness. A selected optional tool may remain deferred; a declared
-required capability must be ready before handoff.
-
-### Explicit v9 skill-first handoff (opt-in, schema-valid/unverified)
-
-Use this path only when the user explicitly selects
-`agentTeam.mode: skill-first` and `agentTeam.testedVersion: 9.0.0`. It is an
-optional Project Kickoff adapter, not a prerequisite for Agent-Team v9
-standalone setup, one-off work, or release. Start from
-`assets/templates/AGENT_TEAM_SKILL_FIRST_HANDOFF.json` and write the approved
-handoff at `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
+New handoffs use `agentTeam.mode: skill-first` and
+`agentTeam.testedVersion: 9.0.0`. This optional Project Kickoff adapter is not a
+prerequisite for Agent-Team v9 standalone setup, one-off work, or release.
 
 1. Create or reconcile the user-selected tracker and seed only approved task
    IDs. Prefer Beads: list its existing task IDs, select a bounded set of at
@@ -202,7 +187,7 @@ handoff at `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
    start workers, or claim a v9 runtime receipt. Agent-Team owns any later
    import decision, role preferences, and runtime state.
 
-### Native v8 setup after approvals
+### Historical native v8 setup after approvals
 
 The Project Kickoff 0.5.2 handoff contract retains the existing nested shape and
 is runtime-qualified with Agent-Team 8.0.15. That pair reports
