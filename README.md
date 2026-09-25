@@ -98,8 +98,8 @@ flowchart TD
     WT --> INT["Verify in one integration worktree"]
     INT --> CLEAN["Update the canonical branch and clean verified integrated work"]
     CLEAN --> CONTRACT["Write and validate the bounded Agent-Team handoff"]
-    CONTRACT --> READY["Prepare the exact Agent-Team invocation"]
-    READY --> NOAUTO["Stop; do not start Agent-Team automatically"]
+    CONTRACT --> READY["Give the validated handoff path and selected Beads IDs"]
+    READY --> NOAUTO["Stop; the user may later choose Agent-Team adoption"]
     OTHER --> NOAUTO
 ```
 
@@ -146,18 +146,18 @@ write its record.
 
 ## Dependencies
 
-The Skill checks these dependencies. It records the selected path, source,
-version or revision, scope, license or access terms, and verification result.
-It proposes missing tools within an explicit installation scope. It waits for
-approval before installation. It does not install an irrelevant tool only to
-complete the list.
+This is a candidate menu, not a required inventory. The Skill checks and records
+only dependencies that the user selected or the approved project truly requires.
+It does not probe optional aids merely because they appear below. A v9 handoff
+checks its selected tracker and handoff only. Project Kickoff also works without
+Agent-Team.
 
 | Dependency | Purpose | Official or authorized source |
 | --- | --- | --- |
 | Ponytail | Guides minimal implementation and YAGNI decisions. | https://github.com/DietrichGebert/ponytail |
 | Using-Superpowers | Supplies planning, debugging, testing, and review procedures. | https://github.com/obra/superpowers |
 | Beads | Supplies dependency-aware task tracking. | https://github.com/gastownhall/beads |
-| Agent-Team | Coordinates delegated implementation and integration. | Use the authorized source recorded for the proprietary installed copy. |
+| Agent-Team | Coordinates delegated implementation and integration. | Its public release and current documentation. |
 | Impeccable | Guides product and interface design. | https://github.com/pbakaus/impeccable |
 | UI UX Pro Max Skill | Supplies UI patterns, data, and search tools. | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
 | Serena | Supplies scoped semantic navigation. | https://github.com/oraios/serena |
@@ -576,10 +576,10 @@ untracked, and ignored files. It removes only clean, fully integrated task
 worktrees and branches. It keeps uncertain or unfinished work. This cleanup does
 not wait for production deployment.
 
-The final handoff gives the user the validated input path and exact Agent-Team
-invocation for the active host. Agent-Team controls runtime workers, worktrees,
-scopes, and operation identities after it initializes the project. Preparing the
-handoff does not run Agent-Team. The user starts the next workflow when ready.
+The final v9 handoff gives the user the validated input path and selected Beads
+IDs. Preparing it does not start Agent-Team or provide a start command. If the
+user later asks an Agent-Team session to adopt it, that session controls its own
+runtime workers, worktrees, scopes, and operation identities.
 
 ## Optional targeted skills
 
