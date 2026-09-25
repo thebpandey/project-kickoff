@@ -28,6 +28,9 @@ implementation plan. You can use it alone. If you later choose Agent-Team, it
 can use your approved Beads task IDs without restarting the interview. It does
 not implement product features during kickoff.
 
+After installing, type `$project-kickoff start "your project idea"` in Codex
+chat, or `/project-kickoff start "your project idea"` in Claude Code chat.
+
 Download [Project Kickoff 0.6.0](https://github.com/thebpandey/project-kickoff/releases/download/v0.6.0/project-kickoff-0.6.0.zip) and its [SHA256SUMS](https://github.com/thebpandey/project-kickoff/releases/download/v0.6.0/SHA256SUMS). Install it for [Codex](#install-for-codex) or [Claude Code](#install-for-claude-code). [Agent-Team 9.0.0](https://github.com/thebpandey/agent-team/releases/tag/v9.0.0) is a separate, optional skill.
 
 New handoffs use the included `AGENT_TEAM_SKILL_FIRST_HANDOFF.json` v9
