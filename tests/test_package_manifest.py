@@ -23,6 +23,8 @@ HANDOFF_TEMPLATE = PACKAGE / "assets/templates/AGENT_TEAM_HANDOFF.json"
 DEVELOPMENT_FILES = {".gitignore", "PRODUCT.md", "DESIGN.md", "scripts/check-guide.mjs"}
 DEVELOPMENT_PREFIXES = ("docs/", "tests/", "assets/guide/", "assets/fonts/", "assets/site/")
 DEVELOPMENT_SUFFIXES = (".html",)
+# This source-only candidate is not part of the published v0.5.2 archive.
+UNRELEASED_SOURCE_FILES = {"assets/templates/AGENT_TEAM_SKILL_FIRST_HANDOFF.json"}
 
 
 def package_files():
@@ -33,6 +35,27 @@ def package_files():
     kept = set()
     for path in listed:
         if path in DEVELOPMENT_FILES:
+            continue
+        if path in UNRELEASED_SOURCE_FILES:
+            continue
+        if path.startswith(DEVELOPMENT_PREFIXES):
+            continue
+        if path.endswith(DEVELOPMENT_SUFFIXES):
+            continue
+        kept.add(path)
+    return kept
+
+
+def tagged_package_files(tag):
+    """Return the release file set from the exact tag named by the README."""
+    listed = subprocess.check_output(
+        ["git", "-C", str(PACKAGE), "ls-tree", "-r", "--name-only", tag], text=True,
+    ).splitlines()
+    kept = set()
+    for path in listed:
+        if path in DEVELOPMENT_FILES:
+            continue
+        if path in UNRELEASED_SOURCE_FILES:
             continue
         if path.startswith(DEVELOPMENT_PREFIXES):
             continue
@@ -109,6 +132,13 @@ class PackageManifestTest(unittest.TestCase):
                     self.files,
                     "README allowlist does not match the package files",
                 )
+
+    def test_install_allowlists_match_the_named_release_tag(self):
+        version = skill_version(SKILL.read_text(encoding="utf-8"))
+        tagged_files = tagged_package_files(f"v{version}")
+        for index, allowlist in enumerate(readme_allowlists(self.readme)):
+            with self.subTest(allowlist=index):
+                self.assertEqual(set(allowlist.split()), tagged_files)
 
     def test_release_tree_holds_every_package_path(self):
         tree = release_tree_paths(self.readme)
