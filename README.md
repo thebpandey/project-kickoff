@@ -176,8 +176,8 @@ flowchart LR
     BR -->|Yes| BT["Use Beads as the only live tracker"]
     BR -->|No| RESEARCH["Research current alternatives"]
     RESEARCH --> USER{"Which verified tracker does the user select?"}
-    USER -->|root TASKS.md| FT["Activate the Agent-Team-compatible fallback"]
-    USER -->|another tracker| NAT["Use it only without Agent-Team 7.3.1"]
+    USER -->|root TASKS.md| FT["Use the standalone fallback; v9 may import it once"]
+    USER -->|another tracker| NAT["Use it without the optional Agent-Team v9 handoff"]
 
     I --> VIS{"Visual interface?"}
     UI --> VIS
@@ -464,7 +464,7 @@ Enter one of these lines in Claude Code chat:
 | `README.md` | Orients people to the generated project and verified commands. |
 | `.project-kickoff/setup.json` | Records Project Kickoff dependency, tracker, and stable ID choices. It does not store task status or secrets. |
 | `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Gives optional Agent-Team v9 a bounded, validated, machine-readable Beads-ID handoff. |
-| `.agent-team/setup.json` | Agent-Team creates this runtime receipt later. Project Kickoff treats it as read-only. |
+| Agent-Team adoption | Optional v9 session state exists only after the user asks Agent-Team to adopt the handoff. |
 | Selected tracker | Owns live execution status. The Skill activates only one tracker. |
 | Minimal scaffold | Adds only approved folders and basic tooling. It can contain no runnable application yet. |
 
@@ -500,8 +500,8 @@ evidence report.
 The Skill keeps `PLAN.md` as the approved baseline. The selected tracker owns
 live status. It maps stable implementation task IDs to tracker IDs. It keeps
 epics and stories in the plan instead of seeding them as tracker rows. This
-prevents Agent-Team 7.3.1 from claiming an open summary record as implementation
-work. It verifies blocker direction separately from hierarchy.
+keeps open summary records from becoming implementation work. It verifies blocker
+direction separately from hierarchy.
 
 After an interrupted seed, the Skill reads the tracker and saved mappings. It
 reuses exact matches. It creates only missing records. It stores each mapping
@@ -540,31 +540,23 @@ For explicitly selected legacy 7.3.1, capabilities remain declarations and
 legacy Agent-Team owns Graphify preparation. The historical template does not
 make Graphify mandatory for every project.
 
-The 1000-task boundary is Agent-Team 7.3.1's default `maxPlanTasks`. The selected
-host can configure a lower effective limit, which the kickoff must verify before
-readiness. The approved `PLAN.md` can identify ordered retained-context
-candidates with disjoint writable paths, explicit dependencies, independent
-review, and one owner for each shared protocol. Project Kickoff does not create
-lane records, claims, assignments, briefs, worker identities, or capacity state;
-Agent-Team derives and owns that runtime state after initialization.
+New v9 handoffs select existing Beads IDs directly. The checker validates them
+without a controller call, optional-aid gate, or Agent-Team runtime receipt. It
+reports `schema-valid-unverified` with `runtimeVerified: false`; the user later
+chooses whether to adopt the handoff in Agent-Team.
 
-Beads validation uses the same five-second read window and 2 MiB response bound
-as the Agent-Team 7.3.1 default. A read that needs more than the former
-1.5-second limit does not fail early.
-
-For explicitly selected legacy 7.3.1, the same checker can emit the direct
-`project-initialize` request. The caller supplies the actual registered owner
-session, a unique operation ID, and the current setup version. Project Kickoff
-does not guess these runtime identities.
+Historical existing projects can retain the v7/v8 controller route, including
+its `maxPlanTasks`, Beads read-bound, native setup, and runtime-receipt rules.
+Those rules are not part of a new v9 handoff.
 
 Historical native setup consumes the approved handoff directly and does not use
 that legacy identity request. The qualified 0.5.2/8.0.15 pair returns
 `runtimeVerified: true`; historical native pairs remain schema-only. The installed
 setup contract and actual preparation receipts still establish project readiness.
 
-Kickoff does not write `.agent-team/setup.json`. Agent-Team creates that file
-atomically with its team registry, state, and operation cache during project
-initialization.
+A v9 handoff does not create or imply `.agent-team/setup.json`. Any later
+Agent-Team state belongs to the session that the user explicitly asks to adopt
+the handoff.
 
 On resume, the Skill checks the actual files, Git revision, recorded version,
 approved decisions, active tracker, and pending question. A version mismatch does

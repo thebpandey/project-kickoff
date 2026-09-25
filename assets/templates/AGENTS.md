@@ -69,12 +69,11 @@ named dependency is not proof that it is installed or relevant.
 | UI quality | {{Impeccable / built-in UI guidance / skipped}} | {{only projects/tasks with a relevant visual UI}} | {{actual source/version/path or Unavailable}} | {{setup.json field}} |
 | UI/UX reference | {{UI UX Pro Max Skill / selected alternative / skipped}} | {{only concrete visual UI/UX research or design tasks}} | {{actual source/version/path or Unavailable}} | {{setup.json field}} |
 
-Before Agent-Team initializes the project, follow the selected mode in this
-table, `.project-kickoff/setup.json`, and the validated
-`.project-kickoff/AGENT_TEAM_HANDOFF.json`. After initialization, Agent-Team owns
-`.agent-team/setup.json`; treat it as the runtime receipt. If the records
-disagree, stop dependent work and have the project orchestrator reconcile them
-from the user's recorded choice.
+For an optional Agent-Team v9 handoff, use the validated
+`.project-kickoff/AGENT_TEAM_HANDOFF.json` with selected existing Beads IDs.
+Project Kickoff does not create Agent-Team runtime state or a receipt. The user
+chooses whether to adopt it; any later Agent-Team preferences and state belong
+to that session.
 
 - Inspect the actual runtime, repository, installed commands, and available
   skills before selecting a method. A directory or downloaded package alone is
@@ -91,9 +90,10 @@ from the user's recorded choice.
   verified current alternatives and trade-offs, then ask one question and wait
   before adopting a substitute. Never report an unavailable or failed install
   as ready.
-- Keep one authoritative task tracker. Use the choice recorded in
-  `.project-kickoff/setup.json` before initialization and the Agent-Team runtime
-  receipt afterward. Do not switch automatically if another tool appears.
+- Keep one authoritative task tracker. Use the selected Beads tracker (or the
+  user's standalone Project Kickoff tracker choice) recorded in
+  `.project-kickoff/setup.json`. Do not switch automatically if another tool
+  appears.
 
 Do not store or print credentials. Use example environment-variable names only
 when selected tooling needs them.
@@ -149,19 +149,19 @@ credentials, caches, or other external resources.
 ## Tracking and shared records
 
 `PLAN.md` owns the approved task definitions and stable `TASK-###` IDs. The
-tracker selected in `.project-kickoff/setup.json`, then recorded by Agent-Team
-in `.agent-team/setup.json`, owns claims, dependencies, current
-status, failure attempts, evidence, releases, and cleanup. Seed or reconcile by
-stable ID; repeated setup must not create duplicate tasks. Future roadmap ideas
-must not become active tasks without approved scope and plan changes.
+selected Beads tracker (or the user's standalone Project Kickoff tracker choice)
+owns claims, dependencies, current status, failure attempts, evidence, releases,
+and cleanup. Seed or reconcile by stable ID; repeated setup must not create
+duplicate tasks. Future roadmap ideas must not become active tasks without
+approved scope and plan changes.
 
 Shared project records have one writer: the project orchestrator alone updates
-the canonical local `TASKS.md`, `.agent-team/TEAMS.md`, main `CONTEXT.md`, and
+the selected standalone tracker when applicable, main `CONTEXT.md`, and
 `MISTAKES.md`. Teammates send task ID, revision, evidence, blocker, and next
 action through the host message channel or a unique handoff file. They maintain
-only their assigned context path. Direct tracker updates by teammates are
-allowed only when the selected tracker and recorded ownership policy explicitly
-support concurrent writes.
+only their assigned context path. Direct Beads updates by teammates are allowed
+only when the selected tracker and recorded ownership policy explicitly support
+concurrent writes.
 
 Update the active tracker at claim, meaningful progress, blocker, handoff,
 verification, integration, release, and cleanup transitions. Keep attempt
@@ -229,7 +229,7 @@ Each implementation handoff includes:
 - owned processes, previews, worktrees, or other resources needing cleanup.
 
 The final project handoff reconciles every first-release requirement to evidence,
-states tracker and setup locations, names the validated
-`.project-kickoff/AGENT_TEAM_HANDOFF.json`, identifies the first actionable task
-or blocker, and gives the exact host invocation. Preparing a handoff does not
-create `.agent-team/setup.json` or start an Agent-Team run.
+states the selected tracker location, names the validated
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`, and identifies the first actionable
+task or blocker. Preparing it does not create an Agent-Team receipt, select
+Agent-Team preferences, or start an Agent-Team run.

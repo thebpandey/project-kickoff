@@ -16,7 +16,7 @@ TEMPLATE INSTRUCTIONS — remove this comment after adapting the document.
 Updated: {{YYYY-MM-DD HH:MM timezone}}
 Project / team: {{stable project ID / project-orchestrator or team ID}}
 Agent / session: {{owner and attempt/session identity}}
-Harness: {{Agent-Team version and applicable instruction paths}}
+Optional Agent-Team handoff: {{v9 skill-first handoff path and selected Beads IDs, or Not prepared}}
 Kickoff baseline: project-kickoff {{semantic version}}; {{approval/version pointers}}
 
 ## Current phase
@@ -36,9 +36,9 @@ Phase status: {{In progress | Awaiting answer | Approved | Complete | Blocked}}
 - Active tracker: {{mode and absolute path or identity}}
 - Project Kickoff setup receipt: {{absolute .project-kickoff/setup.json path}}
 - Agent-Team handoff input: {{absolute .project-kickoff/AGENT_TEAM_HANDOFF.json path or Not prepared}}
-- Agent-Team initialization receipt: {{absolute .agent-team/setup.json path or Not initialized; Agent-Team-owned}}
+- Agent-Team adoption state: {{Not adopted / user-confirmed session reference; do not invent a receipt}}
 - Shared lessons: {{absolute MISTAKES.md path, revision, relevant M-IDs or None}}
-- Team registry / handoffs: {{paths or Not initialized}}
+- Handoff notes: {{user adoption request or None}}
 
 ## Approved decisions needed for resumption
 

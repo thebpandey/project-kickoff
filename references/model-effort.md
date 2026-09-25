@@ -74,14 +74,11 @@ Which model and reasoning effort should Project Kickoff use in this session?
 Reply with a number or your own answer.
 ```
 
-For native Agent-Team's initial role settings, prefer `gpt-6-sol` for Codex
-development and independent review, and `claude-opus-5-5` for Claude
-development and review, when the detected host exposes those models. These are
-recommendations to present with the settings choice, not approval to replace a
-saved selection. Offer `gpt-6-luna` only for optional routine, low-risk work.
-The orchestrator inherits the foreground model. Preserve other roles, explicit
-user choices, and supported effort levels; use `inherit` when the user accepts
-the host default.
+For a new v9 handoff, record the user's planning and delegated-work selections
+only. Agent-Team role preferences are considered after the user adopts the
+handoff in its own session; do not create or require native role settings during
+kickoff. For historical native v8 projects, role-setting recommendations remain
+subject to the user's recorded choices and the installed controller.
 
 ## Saved values
 

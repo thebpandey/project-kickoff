@@ -40,8 +40,8 @@ retrofit mapping. Recommendations in the audit are not implemented changes.
 - [`AGENTS.md`](AGENTS.md) — common project policy for coding agents.
 - [`MISTAKES.md`](MISTAKES.md) — canonical shared lessons, initially empty.
 - {{selected tracker link}} — live task state. The selection and canonical
-  location are recorded in `.project-kickoff/setup.json` and the validated
-  `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
+  location are recorded in `.project-kickoff/setup.json`. An optional v9
+  handoff records selected existing Beads IDs separately.
 
 ## Repository structure
 
@@ -85,30 +85,22 @@ do not infer it from another project or package manager.
 - Active tracker: {{mode and canonical absolute path or identity}}
 - Project Kickoff setup receipt: {{absolute `.project-kickoff/setup.json` path}}
 - Validated Agent-Team input: {{absolute `.project-kickoff/AGENT_TEAM_HANDOFF.json` path}}
-- Agent-Team initialization receipt: {{absolute `.agent-team/setup.json` path or Not initialized; Agent-Team-owned}}
+- Agent-Team adoption: {{Not requested / user-confirmed v9 session reference}}
 - First actionable task: {{TASK ID -> tracker ID and intended outcome}}
 - Current blocker / pending question: {{OQ/F ID or None}}
 - Shared-record writer: {{project orchestrator identity}}
 - Canonical main checkout: {{absolute path, branch, revision}}
 - Integration worktree: {{absolute path or Create when first needed}}
 - Required lessons: {{M-IDs or None}}
-- Exact invocation for this host: `{{verified Codex or Claude Code invocation}}`
-- Initialization route: {{qualified native setup handoff command and receipt, or explicitly selected legacy checker request with runtime identity}}
+- Optional next step: {{give the v9 skill-first handoff to Agent-Team only when the user asks}}
 
-The handoff is tested with Agent-Team 7.3.1. It prepares Agent-Team; it does not
-create Agent-Team runtime state or start implementation. Product code,
-package installation, scaffold execution, builds, and tests run later through
-complexity-appropriate subagents in isolated worktrees under `AGENTS.md`.
-For the unreleased native compatibility source, adapt `agentTeam.testedVersion`
-only after qualifying the actual native setup contract. The checker verifies
-schema compatibility for the upcoming 8.0.11 candidate and retained 8.0.10
-bridge; neither allowance proves a runtime ready or a release installed.
-Original published 8.0.10 onboarding needs an update. Complete selected
-dependencies and first role settings through native
-setup, preserve their receipts, and prepare selected Serena and Graphify there.
-Required capabilities declare dispatch gates; do not require an optional tool
-merely because the historical template lists it. For explicitly selected legacy
-7.3.1, Agent-Team retains Graphify preparation ownership.
+The optional handoff targets Agent-Team 9.0.0 in skill-first mode and selected
+existing Beads IDs. It does not create Agent-Team runtime state, start
+implementation, or require optional aids. The checker result is
+`schema-valid-unverified` with `runtimeVerified: false`; it does not prove
+native worker execution. Product code, package installation, scaffold execution,
+builds, and tests run later through complexity-appropriate subagents in isolated
+worktrees under `AGENTS.md`.
 
 ## Verification and readiness
 

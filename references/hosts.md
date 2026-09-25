@@ -60,19 +60,18 @@ project-specific effect and keep the current pinned installation unless the user
 approved an upgrade. Preserve stable IDs, evidence, valid approvals, and project
 outputs through an approved migration.
 
-Released Project Kickoff 0.5.0 handoffs are tested against Agent-Team 7.3.1.
-The handoff checker converts `.project-kickoff/AGENT_TEAM_HANDOFF.json` into the
-request accepted by Agent-Team's `project-initialize` helper after the runtime
-identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
-runtime state. Do not pre-populate that runtime receipt during kickoff.
+New optional handoffs use Project Kickoff 0.6.0 with Agent-Team 9.0.0 in
+skill-first mode. Give the validated handoff and selected existing Beads IDs to
+the user's v9 session only when the user asks to adopt it. Do not invoke a
+controller, create `.agent-team/setup.json`, or start Agent-Team. The checker
+result is `schema-valid-unverified` with `runtimeVerified: false`.
 
-The Project Kickoff 0.5.2 handoff contract writes producer metadata 0.5.2 and
-is runtime-qualified with native Agent-Team 8.0.15. Historical native pairs
-remain schema-only. Require the actual native controller's
-structured setup contract, complete dependencies and first role settings, and
-record functional evidence through [native setup](setup.md#native-v8-setup-after-approvals).
-No owner-session, operation-ID transfer, legacy hook, or repeated discovery is
-needed. Preserve all current approvals and resume only unfinished setup steps.
+### Historical v8/controller projects
+
+Released Project Kickoff 0.5.x handoffs and their Agent-Team 7.3.1 or 8.0.15
+controller routes remain only for existing projects. Their setup receipts,
+runtime identities, native role settings, and `project-initialize` behavior do
+not apply to new v9 handoffs.
 
 ## Model and reasoning effort
 
@@ -104,14 +103,10 @@ Code to read it and contains only necessary host differences. Read project
 instructions by their actual hierarchy; never claim they override system rules,
 permissions, or tool controls.
 
-At handoff, give the exact invocation for the detected host:
-
-- Codex: `$agent-team start`
-- Claude Code: `/agent-team start`
-
-If Agent-Team uses another verified installed name or version-specific syntax,
-use its actual help output and record it. Preparing the command does not run it.
-If delegation is unavailable, finish planning and ask for that capability or an
+At an optional v9 handoff, give the user the validated handoff path and selected
+Beads IDs. Do not give a start command or start Agent-Team automatically; the
+user decides whether to ask the active Agent-Team session to adopt it. If
+delegation is unavailable, finish planning and ask for that capability or an
 explicit exception before writing scaffold or product code on the canonical
 integration branch.
 

@@ -1,15 +1,16 @@
 <!--
 TEMPLATE INSTRUCTIONS — remove this comment after adapting the document.
-- Use this root TASKS.md only when the user selected it as the fallback tracker.
-  Record that choice and this absolute path in `.project-kickoff/setup.json` and
-  `.project-kickoff/AGENT_TEAM_HANDOFF.json`.
+- Use this root TASKS.md only when the user selected it as the standalone Project
+  Kickoff tracker fallback. Record that choice and this absolute path in
+  `.project-kickoff/setup.json`. For Agent-Team v9 it is only a one-time import
+  candidate, never a parallel live tracker.
 - The project orchestrator is the only writer. Teammates send structured updates.
 - PLAN.md owns the approved baseline; this file owns live execution state. Seed
   by immutable PLAN TASK- IDs and never maintain a second writable tracker.
 - Preserve existing IDs, evidence, unknown fields, and unrelated user content.
 -->
 
-# {{Project name}} — Agent-Team Tasks
+# {{Project name}} — Project Tasks
 
 Updated: {{YYYY-MM-DD HH:MM timezone}}
 Writer: {{project orchestrator identity}}
@@ -25,8 +26,9 @@ Use `ready`, `in_progress`, `blocked`, `verified`, `deployed`, or `deferred`.
 `verified` can be terminal when deployment is outside scope. Integration,
 deployment, and production verification are separate facts. Only the project
 orchestrator changes status, dependencies, ownership, or task closure.
-Agent-Team can claim only `ready`, `open`, `todo`, or `pending` tasks. Use
-`ready` for a new task whose dependencies are complete.
+Use `ready` for a new task whose dependencies are complete. If the user later
+chooses Agent-Team v9, offer this file only as a one-time import candidate; do
+not keep both trackers live.
 
 ## Plan-to-tracker mapping
 

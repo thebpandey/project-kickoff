@@ -78,13 +78,13 @@ history.
 - Adapt [README.md](../assets/templates/README.md) as a short project orientation and handoff.
 - Adapt [TASKS.md](../assets/templates/TASKS.md) only after the user selects root `TASKS.md`
   as the tracker fallback. It is not an automatic or temporary tracker.
-- Adapt [AGENT_TEAM_HANDOFF.json](../assets/templates/AGENT_TEAM_HANDOFF.json) as
-  `.project-kickoff/AGENT_TEAM_HANDOFF.json` before an Agent-Team handoff. Keep it
-  machine-readable and run `scripts/check_agent_team_handoff.py` against it. The
-  file describes approved inputs; it is not Agent-Team runtime state. Its optional
-  `plan.requiredCapabilities` list is bounded to 100 unique safe IDs. Omit it
-  when no optional capability is declared; the shipped template declares
-  `graphify`.
+- Adapt [AGENT_TEAM_SKILL_FIRST_HANDOFF.json](../assets/templates/AGENT_TEAM_SKILL_FIRST_HANDOFF.json)
+  as `.project-kickoff/AGENT_TEAM_HANDOFF.json` before an optional Agent-Team
+  v9 handoff. Keep it machine-readable and run
+  `scripts/check_agent_team_handoff.py` against it. The file contains selected
+  existing Beads IDs and approved inputs; it is not Agent-Team runtime state.
+  Keep `requiredCapabilities` empty or omit it. The historical v8 template is
+  for existing projects only.
 
 Use [DISCOVERY.md](../assets/templates/DISCOVERY.md) for the detailed interview
 record. Use its decision and approval IDs as sources for derived artifacts.
@@ -105,39 +105,27 @@ not yet run an application.
 
 ## Agent-Team handoff boundary
 
-The legacy handoff targets Agent-Team 7.3.1. The 0.5.2 native contract uses
-the same nested shape and is qualified with Agent-Team 8.0.15 as described in
-[setup](setup.md#native-v8-setup-after-approvals). Use only a selected Beads tracker or a
-Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
-1000 implementation task records, keep the JSON at or below 250 KiB, use unique safe
-task IDs, and provide at least one dependency-ready task when implementation
-remains. The handoff lists a nonempty, order-independent subset of task IDs from
-the selected tracker. Every selected task's unfinished blocking dependencies must
-also be selected; a terminal blocker may remain outside the subset. Parent-child
-relations are provenance, not blocking dependencies. The checker reads status and
-dependencies from the tracker; the handoff must not duplicate canonical task content. The approved plan
-revision must exist on the named integration branch. The recorded project
-revision must equal the current branch tip.
+New optional Agent-Team handoffs use the 0.6.0/9.0.0 skill-first template and
+selected existing Beads IDs. Include no more than 1000 implementation IDs, keep
+the JSON at or below 250 KiB, use unique safe task IDs, and provide at least one
+dependency-ready task when implementation remains. Every selected task's
+unfinished blocking dependencies must also be selected; a terminal blocker may
+remain outside the subset. Parent-child relations are provenance, not blocking
+dependencies. The checker reads status and dependencies from Beads; the handoff
+must not duplicate canonical task content. The approved plan revision must exist
+on the named integration branch and the recorded project revision must equal the
+current branch tip. Its result is `schema-valid-unverified` with
+`runtimeVerified: false`; it does not prove native worker execution.
 
 Each `plan.authority.ownedPaths` entry is either one exact project-relative path
 or a directory ending in `/**`. Embedded globs such as `src/*.ts` and
 `src/prefix*` are unsupported and must fail before handoff.
 
-Keep epics and stories in `PLAN.md`. Do not seed them as tracker rows. This
-prevents an open or ready summary record from becoming runnable Agent-Team work.
-Agent-Team controls runtime lanes, claims, assignments, worktrees, briefs,
-worker identities, capacity, scopes, and correlation IDs after it initializes
-the project. Do not add those runtime records to the handoff.
+Keep epics and stories in `PLAN.md`. Do not seed them as tracker rows. Do not
+add Agent-Team lanes, claims, assignments, briefs, worker identities, capacity,
+or other runtime records to the handoff. The user adopts the validated handoff
+in an Agent-Team v9 session; Project Kickoff does not start it.
 
-The 1000-task boundary is Agent-Team 7.3.1's default `maxPlanTasks`, not a
-promise about a target host's effective setting. Before readiness, verify that
-the selected host's current configured limit is at least the handoff task count.
-A lower effective limit blocks initialization until the task set or authorized
-configuration is reconciled.
-
-For native v8, Project Kickoff completes approved capability preparation
-through native setup and records returned evidence before handoff. Beads,
-Serena, and Graphify are prepared when selected. The handoff declares only
-capabilities required for dispatch; empty optional capability and resource lists
-are valid. For explicitly selected legacy 7.3.1, Graphify preparation remains
-Agent-Team's responsibility. No external hook is required for native setup.
+Historical v8/controller handoffs retain their native setup, `maxPlanTasks`,
+Graphify, and runtime-receipt requirements only for existing projects. They are
+not the new-project route.

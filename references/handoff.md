@@ -15,15 +15,15 @@ records after handoff validation.
 1. Read the approved plan revision and every stable plan ID. New plans use
    `EPIC-###`, `STORY-###`, and `TASK-###`; existing projects keep their
    established IDs and prefixes. Read the active tracker and
-   `.project-kickoff/setup.json`. If `.agent-team/setup.json` already exists,
-   read it for compatibility evidence only; Agent-Team owns it. Inspect existing
-   tracker records before any create.
+   `.project-kickoff/setup.json`. For a historical v8/controller project, an
+   existing `.agent-team/setup.json` is compatibility evidence only; Agent-Team
+   owns it. Inspect existing tracker records before any create.
 2. For each executable task plan ID, resolve a tracker item from the saved mapping or the
    tracker's stored plan-ID field. If exactly one exists, update its definition
    only when needed. If more than one exists, stop that item and reconcile the
    duplicate. If none exists, create one. Keep epic and story summaries in the
-   plan. Do not seed them as tracker rows; Agent-Team 7.3.1 can otherwise treat
-   an open summary record as executable work.
+   plan. Do not seed them as tracker rows; an open summary is not executable
+   implementation work.
 3. After each successful create, immediately persist that task's
    stable plan ID to tracker-ID mapping. A failure leaves a valid partial seed
    that the next run resumes.
@@ -67,9 +67,9 @@ integration branch without renaming it. After the approved planning commit exist
    branch.
 
 Use installed Agent-Team procedures for the subsequent implementation run.
-Kickoff supplies the approved documents, selected tracker and mapping, setup
-receipt, project instructions, first ready task when implementation remains, and
-the validated `.project-kickoff/AGENT_TEAM_HANDOFF.json`. The handoff identifies
+Kickoff supplies the approved documents, selected Beads IDs and mapping, project
+instructions, first ready task when implementation remains, and the validated
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`. The handoff identifies
 the exact approved revision, current integration branch tip, tracker task IDs,
 acceptance criteria, verification commands, and safe owned paths. The selected
 tracker remains authoritative for task titles, status, and dependencies.
@@ -79,16 +79,11 @@ checker result is `schema-valid-unverified` with `runtimeVerified: false`; it
 does not prove native worker execution. Historical native v8 handoffs retain
 their prior setup and readiness rules for existing projects only.
 Agent-Team controls runtime lanes, claims, worker identities, assignments,
-worktrees, briefs, capacity, scopes, and correlation IDs after it initializes
-the project. Kickoff records none of that runtime state. The checker can combine the approved facts
-with the actual Agent-Team owner session, operation ID, and setup version to emit
-the direct legacy `project-initialize` request. Native v8 instead consumes the
-same approved handoff through its qualified structured setup flow and needs no
-owner-session transfer or operation ID. For a healthy completed existing project,
-Kickoff can instead supply evidence that no implementation work remains. It also
-records the generating `project-kickoff` metadata version and any resolved
-compatibility note. It does not create `.agent-team/setup.json`, start
-Agent-Team, or implement the first feature.
+worktrees, briefs, capacity, scopes, and correlation IDs after the user adopts
+the handoff. Kickoff records none of that runtime state and does not create
+`.agent-team/setup.json`, start Agent-Team, or implement the first feature.
+Historical controller requests and native v8 setup remain existing-project
+routes only.
 
 ## Readiness gate
 
@@ -99,19 +94,18 @@ Declare `ready for handoff` only when:
 - PRD, DESIGN, and PLAN agree on first-release scope, stack, architecture,
   requirement IDs, and acceptance criteria;
 - the scaffold matches approved scope and its actual checks pass;
-- dependency receipt statuses are factual and required capabilities are ready;
+- dependency statuses are factual; a v9 handoff does not gate optional aids;
 - exactly one tracker is active, mappings are complete, dependencies are acyclic,
   and the first actionable task is known, or audit evidence establishes that no
   implementation work remains;
-- when Agent-Team is selected and implementation remains, its handoff is
-  at most 250 KiB, contains at most 1000 implementation task IDs, does not
-  exceed the selected host's current effective `maxPlanTasks`, selects only IDs
-  present in the tracker, closes unfinished blocking dependencies within that
-  subset, records the current branch tip, names only a supported tracker, and passes
-  `check_agent_team_handoff.py`;
+- when Agent-Team v9 is selected and implementation remains, its handoff is at
+  most 250 KiB, contains at most 1000 selected existing Beads IDs, closes
+  unfinished blocking dependencies within that subset, records the current
+  branch tip, and passes `check_agent_team_handoff.py`;
 - for a historical native v8 handoff, the actual controller exposes the structured setup contract,
   selected dependency preparation and first role settings are complete, and
-  their evidence is saved. Schema compatibility alone is insufficient; the
+  their evidence is saved; its task set remains within the host's effective
+  `maxPlanTasks`. Schema compatibility alone is insufficient; the
   historical native pairs remain schema-only. Use the qualified 8.0.15 package
   and verify its installed setup contract;
 - AGENTS, CLAUDE, MISTAKES, CONTEXT, discovery, and tracker ownership agree;
