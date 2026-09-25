@@ -1,0 +1,9 @@
+# Project Kickoff 0.6.0 release evidence
+
+[v0.6.0](https://github.com/thebpandey/project-kickoff/releases/tag/v0.6.0) is tagged at `9ff9f11df0ccb0a0f8459172d73445f1894dc93a`. Its platform-neutral ZIP contains exactly 35 tagged package files, all byte-matched to Git and checked for ZIP integrity. The ZIP SHA-256 is `ebdd4ee2fa94546278ea723f09218dd10fba108ffa90d3cb90e885ffe1bfffbd`; the published `SHA256SUMS` passed after a fresh public download.
+
+The focused handoff suite passed 44 tests (one environment-gated historical test skipped). All five package-manifest tests passed, including comparison with the exact `v0.6.0` tag. The new template and checker accept Project Kickoff `0.6.0` → Agent-Team `9.0.0` as `schema-valid-unverified` with `runtimeVerified: false`.
+
+A disposable Beads 1.2.2 fixture held two open tasks, `fixture-mrk` and `fixture-vf5`. The checker accepted its approved handoff. A fresh Codex Luna agent (`/root/pk_v9_real_beads_read`) read exactly those two selected IDs with `bd --readonly show` from the fixture root. An orchestrator post-check found both still open and the same aggregate of two total/two open/two ready, with no claim, import, or worker start. This validates read-only handoff adoption, **not** native worker dispatch, Claude, Windows, or macOS runtime execution.
+
+The public README and [GitHub Pages](https://thebpandey.github.io/project-kickoff/) content was updated at `db8e91c3a66432e7daa1b9000430d3104e9c8083` without changing the Pages CSS, layout, artwork, or element structure. GitHub Pages reported that revision built; a live page request showed version `0.6.0`, the release ZIP, first-use commands, and the optional Agent-Team `9.0.0` link. The published package was installed into the exact Codex and Claude skill roots on this server; all 35 package files in each root byte-match the release, with unrelated skills and Claude cache files preserved.
