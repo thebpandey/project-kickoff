@@ -66,11 +66,9 @@ request accepted by Agent-Team's `project-initialize` helper after the runtime
 identity fields are known. Agent-Team owns `.agent-team/setup.json` and all
 runtime state. Do not pre-populate that runtime receipt during kickoff.
 
-Project Kickoff 0.5.1 writes producer metadata 0.5.1, retains 0.5.0
-compatibility, and accepts the same nested schema for native Agent-Team 8.0.12.
-It preserves 8.0.10/8.0.11 schema compatibility. None of these version entries qualifies a runtime.
-Stock 8.0.10 onboarding needs an update; use the verified 8.0.12 distribution
-for its managed update after publication. Require the actual native controller's
+The Project Kickoff 0.5.2 handoff contract writes producer metadata 0.5.2 and
+is runtime-qualified with native Agent-Team 8.0.15. Historical native pairs
+remain schema-only. Require the actual native controller's
 structured setup contract, complete dependencies and first role settings, and
 record functional evidence through [native setup](setup.md#native-v8-setup-after-approvals).
 No owner-session, operation-ID transfer, legacy hook, or repeated discovery is

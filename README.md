@@ -1,6 +1,6 @@
 # Project Kickoff
 
-Current version: **0.5.1**
+Current version: **0.5.2**
 
 ```text
 ██████   ██████     ████   ████████ ████████   ██████ ████████
@@ -18,7 +18,7 @@ Current version: **0.5.1**
 ██    ██ ████████   ██████ ██    ██   ████   ██       ██
 ```
 
-Project Kickoff v0.5.1
+Project Kickoff v0.5.2
 
 Created by thebpandey.
 
@@ -191,24 +191,20 @@ For Agent-Team 7.3.1, the handoff tracker is Beads or Markdown at `TASKS.md` or
 `.agent-team/TASKS.md`. Another tracker can support a project that does not use
 Agent-Team, but it is not a compatible Agent-Team 7.3.1 handoff target.
 
-Project Kickoff **0.5.1 is an unpublished candidate**. It keeps the existing nested handoff format, writes producer version 0.5.1, and preserves 0.5.0 compatibility. It targets the [Agent-Team 8.0.12 repair candidate](https://github.com/thebpandey/agent-team/blob/main/docs/releases/8.0.12-readiness.md) for native setup and handoff; the 8.0.10 schema bridge remains for compatibility.
-Stock published 8.0.10 onboarding needs an update. Published 8.0.11 then exposed
-a managed-update journal limit; this candidate targets the 8.0.12 repair.
-Schema compatibility with 8.0.10/8.0.11 remains available, but does not qualify
-their installation or runtime state. The checker reports
-`runtimeVerified: false`; actual readiness
+The 0.5.2 handoff contract keeps the existing nested shape and is runtime-qualified
+with Agent-Team 8.0.15. Historical native pairs remain schema-only. The checker
+accepts a nonempty task-ID subset when every ID exists in the selected tracker and
+every unfinished blocking dependency is also selected. Actual readiness still
 requires the structured native setup contract, completed selected dependencies,
-and confirmed first role settings. That path reuses all current approvals and
-tracker records, prepares selected Beads/Serena/Graphify, and needs no external
-hook or owner-session transfer. See [native setup](references/setup.md#native-v8-setup-after-approvals).
+and confirmed first role settings. See [native setup](references/setup.md#native-v8-setup-after-approvals).
 
 ## Requirements before installation
 
 You need written permission from the licensors. The Skill is proprietary and
 licensed under the Project Kickoff Private Use License. The GitHub repository
 is public. The examples target GitHub CLI and release tag
-[`v0.5.1`](https://github.com/thebpandey/project-kickoff/releases/tag/v0.5.1).
-Use these instructions after publication, then verify the release source and checksum before installation.
+[`v0.5.2`](https://github.com/thebpandey/project-kickoff/releases/tag/v0.5.2).
+Verify the release source and checksum before installation.
 
 Install the Skill into the repository where you will use it. Do not install it
 into an unrelated ancestor repository. Each command block stops when an existing
@@ -238,7 +234,7 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.agents/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.agents/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.agents/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.1 --single-branch
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.2 --single-branch
 kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
@@ -271,7 +267,7 @@ kickoff_exclude_path="$(git rev-parse --git-path info/exclude)"
 touch "$kickoff_exclude_path"
 grep -qxF '/.claude/skills/project-kickoff/' "$kickoff_exclude_path" || printf '%s\n' '/.claude/skills/project-kickoff/' >> "$kickoff_exclude_path"
 mkdir -p "$kickoff_project_root/.claude/skills"
-gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.1 --single-branch
+gh repo clone thebpandey/project-kickoff "$kickoff_skill_path" -- --branch v0.5.2 --single-branch
 kickoff_required_files='SKILL.md README.md CHANGELOG.md LICENSE agents/openai.yaml references/artifacts.md references/communication.md references/context-hook.md references/existing-projects.md references/handoff.md references/hosts.md references/interview.md references/model-effort.md references/setup.md references/wordmark.md assets/templates/AGENTS.md assets/templates/AGENT_TEAM_HANDOFF.json assets/templates/AUDIT.md assets/templates/CLAUDE.md assets/templates/CONTEXT.md assets/templates/DESIGN.md assets/templates/DISCOVERY.md assets/templates/MISTAKES.md assets/templates/PLAN.md assets/templates/PRD.md assets/templates/README.md assets/templates/TASKS.md assets/hooks/codex-session-start.json assets/hooks/claude-session-start.json scripts/check_agent_team_handoff.py scripts/check_checkpoint.py scripts/guard_edits.py scripts/hook_utils.py scripts/load_context.py'
 for kickoff_required_file in $kickoff_required_files; do
   test -f "$kickoff_skill_path/$kickoff_required_file" || { echo "Missing package file: $kickoff_required_file"; exit 1; }
@@ -299,7 +295,7 @@ Official host documentation:
 
 ## Release archive layout
 
-The release archive is `project-kickoff-0.5.1.zip`. Install the complete extracted
+The release archive is `project-kickoff-0.5.2.zip`. Install the complete extracted
 directory at one native host path. Its package root contains:
 
 ```text
@@ -517,15 +513,17 @@ Before an Agent-Team handoff, the Skill writes
 
 - The file is at most 250 KiB.
 - It contains no more than 1000 implementation tasks.
-- Its task IDs exactly match all rows in the selected tracker.
+- Its task IDs are a nonempty, order-independent subset of rows in the selected tracker.
 - Task titles, statuses, dependencies, and acceptance details stay in the
   approved plan and tracker instead of being copied into the handoff.
-- Task IDs are unique and dependencies have no missing IDs or cycles.
+- Task IDs are unique; selected tasks include every unfinished blocking dependency,
+  while terminal blockers may remain outside the subset.
 - The approved plan revision exists on the selected integration branch.
 - The recorded project revision equals the current integration branch tip.
 - At least one task is actionable when implementation remains.
 - The tracker is Beads, root `TASKS.md`, or `.agent-team/TASKS.md`.
-- Owned paths are project-relative and cannot traverse outside the project.
+- Owned paths are exact project-relative paths or directories ending in `/**`;
+  embedded globs are rejected.
 - Optional `plan.requiredCapabilities` entries are unique safe IDs. When omitted,
   Agent-Team retains its empty optional-capability behavior.
 
@@ -555,9 +553,9 @@ session, a unique operation ID, and the current setup version. Project Kickoff
 does not guess these runtime identities.
 
 Native setup consumes the approved handoff directly and does not use that
-legacy identity request. Its schema check returns `runtimeVerified: false`;
-the installed setup contract and actual preparation receipts establish runtime
-readiness; neither an 8.0.10 nor an 8.0.12 version string proves it.
+legacy identity request. The qualified 0.5.2/8.0.15 pair returns
+`runtimeVerified: true`; historical native pairs remain schema-only. The installed
+setup contract and actual preparation receipts still establish project readiness.
 
 Kickoff does not write `.agent-team/setup.json`. Agent-Team creates that file
 atomically with its team registry, state, and operation cache during project
@@ -596,8 +594,8 @@ default.
 
 ## Releases and upgrades
 
-Releases use semantic version numbers. Tags use the form `v0.5.1`. Archives use
-the form `project-kickoff-0.5.1.zip`. A patch release makes a compatible fix. A
+Releases use semantic version numbers. Tags use the form `v0.5.2`. Archives use
+the form `project-kickoff-0.5.2.zip`. A patch release makes a compatible fix. A
 minor release adds a compatible capability. During `0.x`, a documented breaking
 change also uses a minor bump. A major release changes a contract incompatibly.
 

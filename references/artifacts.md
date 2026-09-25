@@ -105,17 +105,23 @@ not yet run an application.
 
 ## Agent-Team handoff boundary
 
-The legacy handoff targets Agent-Team 7.3.1. The 0.5.1 native bridge uses
-the same nested shape, accepting both 0.5.0 and 0.5.1 producers, after the native setup contract is qualified as
-described in [setup](setup.md#native-v8-setup-after-approvals). Use only a selected Beads tracker or a
+The legacy handoff targets Agent-Team 7.3.1. The 0.5.2 native contract uses
+the same nested shape and is qualified with Agent-Team 8.0.15 as described in
+[setup](setup.md#native-v8-setup-after-approvals). Use only a selected Beads tracker or a
 Markdown tracker at `TASKS.md` or `.agent-team/TASKS.md`. Include no more than
 1000 implementation task records, keep the JSON at or below 250 KiB, use unique safe
 task IDs, and provide at least one dependency-ready task when implementation
-remains. The handoff lists only task IDs. They must exactly match all rows in the
-selected tracker. The checker reads status and dependencies from that tracker;
-the handoff must not duplicate canonical task content. The approved plan
+remains. The handoff lists a nonempty, order-independent subset of task IDs from
+the selected tracker. Every selected task's unfinished blocking dependencies must
+also be selected; a terminal blocker may remain outside the subset. Parent-child
+relations are provenance, not blocking dependencies. The checker reads status and
+dependencies from the tracker; the handoff must not duplicate canonical task content. The approved plan
 revision must exist on the named integration branch. The recorded project
 revision must equal the current branch tip.
+
+Each `plan.authority.ownedPaths` entry is either one exact project-relative path
+or a directory ending in `/**`. Embedded globs such as `src/*.ts` and
+`src/prefix*` are unsupported and must fail before handoff.
 
 Keep epics and stories in `PLAN.md`. Do not seed them as tracker rows. This
 prevents an open or ready summary record from becoming runnable Agent-Team work.

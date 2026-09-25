@@ -98,7 +98,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
         template = json.loads(TEMPLATE.read_text())
         self.assertEqual(template["schemaVersion"], 1)
         self.assertEqual(template["kind"], "project-kickoff-agent-team-handoff")
-        self.assertEqual(template["agentTeam"]["testedVersion"], "7.3.1")
+        self.assertEqual(template["projectKickoff"]["version"], "0.5.2")
+        self.assertEqual(template["agentTeam"]["testedVersion"], "8.0.15")
         self.assertEqual(template["plan"]["requiredCapabilities"], ["graphify"])
         self.assertIn("tasks", template["plan"])
         self.assertEqual(set(template["plan"]["tasks"][0]), {"id"})
@@ -135,6 +136,73 @@ class AgentTeamHandoffTests(unittest.TestCase):
         handoff["agentTeam"]["testedVersion"] = version
         return handoff
 
+    def write_native_tasks(self, rows):
+        lines = [
+            "# Tasks\n\n## Active tasks\n",
+            "| ID | Intended outcome / acceptance pointer | Owner | Depends on | Status |\n",
+            "| --- | --- | --- | --- | --- |\n",
+        ]
+        lines.extend(f"| {task_id} | Approved behavior | unassigned | {depends} | {status} |\n"
+                     for task_id, depends, status in rows)
+        (self.root / "TASKS.md").write_text("".join(lines))
+
+    def test_native_handoff_accepts_an_order_independent_explicit_subset(self):
+        handoff = self.native_handoff("8.0.15", "0.5.2")
+        self.write_native_tasks([
+            ("AT-001", "none", "ready"),
+            ("AT-002", "none", "blocked"),
+            ("AT-003", "none", "closed"),
+        ])
+        handoff["plan"]["tasks"] = [{"id": "AT-003"}, {"id": "AT-001"}]
+        result = self.check(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        output = json.loads(result.stdout)
+        self.assertEqual(output["taskCount"], 2)
+        self.assertEqual(output["compatibility"], "runtime-qualified")
+        self.assertTrue(output["runtimeVerified"])
+
+    def test_native_handoff_rejects_a_task_absent_from_the_tracker(self):
+        handoff = self.native_handoff("8.0.15", "0.5.2")
+        handoff["plan"]["tasks"] = [{"id": "AT-MISSING"}]
+        result = self.check(handoff)
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("handoff task AT-MISSING is absent from the selected tracker", result.stderr)
+
+    def test_native_subset_requires_unfinished_blocking_dependencies(self):
+        handoff = self.native_handoff("8.0.15", "0.5.2")
+        self.write_native_tasks([
+            ("AT-001", "none", "ready"),
+            ("AT-002", "AT-001", "ready"),
+        ])
+        handoff["plan"]["tasks"] = [{"id": "AT-002"}]
+        blocked = self.check(handoff)
+        self.assertNotEqual(blocked.returncode, 0)
+        self.assertIn("tracker task AT-002 has unresolved blocking dependency AT-001 outside handoff scope", blocked.stderr)
+
+        self.write_native_tasks([
+            ("AT-001", "none", "closed"),
+            ("AT-002", "AT-001", "ready"),
+        ])
+        allowed = self.check(handoff)
+        self.assertEqual(allowed.returncode, 0, allowed.stderr)
+
+    def test_native_handoff_rejects_unsupported_owned_path_globs(self):
+        for path in ("packages/*/result.txt", "packages/prefix*", "schemas/file?.json",
+                     " packages/file.txt", "packages/file.txt "):
+            with self.subTest(path=path):
+                handoff = self.native_handoff("8.0.15", "0.5.2")
+                handoff["plan"]["authority"]["ownedPaths"] = [path]
+                result = self.check(handoff)
+                self.assertNotEqual(result.returncode, 0)
+                self.assertIn(path, result.stderr)
+                self.assertIn("exact relative path or directory/**", result.stderr)
+
+    def test_native_handoff_accepts_literal_brackets_in_an_exact_owned_path(self):
+        handoff = self.native_handoff("8.0.15", "0.5.2")
+        handoff["plan"]["authority"]["ownedPaths"] = ["packages/[literal]/result.txt"]
+        result = self.check(handoff)
+        self.assertEqual(result.returncode, 0, result.stderr)
+
     def test_native_schema_check_does_not_claim_runtime_verified(self):
         for producer, version in (("0.5.0", "8.0.10"), ("0.5.0", "8.0.11"),
                                   ("0.5.0", "8.0.12"), ("0.5.1", "8.0.10"),
@@ -150,7 +218,8 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
     def test_native_unknown_versions_still_require_approved_migration(self):
         for producer, version in (("0.5.0", "8.0.13"), ("0.5.1", "8.0.13"),
-                                  ("0.5.1", "8.1.0"), ("0.5.2", "8.0.12")):
+                                  ("0.5.1", "8.0.14"), ("0.5.1", "8.1.0"),
+                                  ("0.5.2", "8.0.12"), ("0.5.2", "8.0.14")):
             with self.subTest(producer=producer, version=version):
                 result = self.check(self.native_handoff(version, producer))
                 self.assertNotEqual(result.returncode, 0)
@@ -191,7 +260,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         handoff["plan"]["authority"]["ownedPaths"] = ["../outside"]
         result = self.check(handoff)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("unsafe owned path", result.stderr)
+        self.assertIn("unsupported owned path", result.stderr)
         handoff["plan"]["authority"]["ownedPaths"] = ["src/**"]
         path = self.root / "TASKS.md"
         path.write_text(path.read_text().replace("## Active tasks", "## Other tasks"))
@@ -273,7 +342,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
 
         unsafe = valid_handoff(self.root)
         unsafe["plan"]["authority"]["ownedPaths"] = ["../outside/**"]
-        cases.append(("unsafe owned path", unsafe))
+        cases.append(("unsupported owned path", unsafe))
 
         alternative = valid_handoff(self.root)
         alternative["tracker"] = {"kind": "other", "path": "BACKLOG.md"}
@@ -333,7 +402,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
         handoff["plan"]["tasks"][0]["id"] = "AT-002"
         result = self.check(handoff)
         self.assertNotEqual(result.returncode, 0)
-        self.assertIn("tracker task IDs do not exactly match", result.stderr)
+        self.assertIn("handoff task AT-002 is absent from the selected tracker", result.stderr)
 
     def test_checker_rejects_an_oversized_handoff(self):
         handoff = valid_handoff(self.root)
@@ -405,15 +474,17 @@ class AgentTeamHandoffTests(unittest.TestCase):
             ("0.5.0", "7.3.1"),
             ("0.5.1", "7.3.0"),
             ("0.5.1", "7.3.1"),
+            ("0.5.2", "8.0.15"),
         ]
         for kickoff, agent_team in supported:
             with self.subTest(pair=(kickoff, agent_team)):
-                handoff = valid_handoff(self.root)
+                handoff = (self.native_handoff(agent_team, kickoff)
+                           if agent_team.startswith("8.") else valid_handoff(self.root))
                 handoff["projectKickoff"]["version"] = kickoff
                 handoff["agentTeam"]["testedVersion"] = agent_team
                 result = self.check(handoff)
                 self.assertEqual(result.returncode, 0, result.stderr)
-        for kickoff, agent_team in [("0.3.1", "7.2.0"), ("0.4.1", "7.0.2"), ("0.4.2", "7.2.2"), ("0.5.0", "7.2.0")]:
+        for kickoff, agent_team in [("0.3.1", "7.2.0"), ("0.4.1", "7.0.2"), ("0.4.2", "7.2.2"), ("0.5.0", "7.2.0"), ("0.5.1", "8.0.14"), ("0.5.2", "8.0.14")]:
             with self.subTest(unsupported=(kickoff, agent_team)):
                 handoff = valid_handoff(self.root)
                 handoff["projectKickoff"]["version"] = kickoff
@@ -421,7 +492,7 @@ class AgentTeamHandoffTests(unittest.TestCase):
                 result = self.check(handoff)
                 self.assertNotEqual(result.returncode, 0)
                 self.assertIn(f"unsupported handoff compatibility {kickoff}/{agent_team}", result.stderr)
-                self.assertIn("checker 0.5.1 requires an approved migration", result.stderr)
+                self.assertIn("checker 0.5.2 requires an approved migration", result.stderr)
 
     def test_emit_request_rebinds_the_current_descendant_tip(self):
         handoff = valid_handoff(self.root)

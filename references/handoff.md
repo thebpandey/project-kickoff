@@ -101,14 +101,15 @@ Declare `ready for handoff` only when:
   implementation work remains;
 - when Agent-Team is selected and implementation remains, its handoff is
   at most 250 KiB, contains at most 1000 implementation task IDs, does not
-  exceed the selected host's current effective `maxPlanTasks`, exactly matches
-  the selected tracker, records the current branch tip, names only a supported tracker, and passes
+  exceed the selected host's current effective `maxPlanTasks`, selects only IDs
+  present in the tracker, closes unfinished blocking dependencies within that
+  subset, records the current branch tip, names only a supported tracker, and passes
   `check_agent_team_handoff.py`;
 - for native v8, the actual controller exposes the structured setup contract,
   selected dependency preparation and first role settings are complete, and
   their evidence is saved. Schema compatibility alone is insufficient; the
-  original published 8.0.10 onboarding requires an update. Use the
-  verified 8.0.12 package after publication and verify its installed setup contract;
+  historical native pairs remain schema-only. Use the qualified 8.0.15 package
+  and verify its installed setup contract;
 - AGENTS, CLAUDE, MISTAKES, CONTEXT, discovery, and tracker ownership agree;
 - no roadmap item was activated and no feature implementation began.
 

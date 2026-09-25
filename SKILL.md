@@ -2,7 +2,7 @@
 name: project-kickoff
 description: Define new software projects and audit or re-plan existing projects, producing approved product, experience, technical, scaffold, and Agent-Team handoff artifacts. Use for project kickoff, ordinary existing-project audits, or major project revisions before feature implementation.
 metadata:
-  version: "0.5.1"
+  version: "0.5.2"
 ---
 
 # Project Kickoff
@@ -122,9 +122,9 @@ the one-question protocol and the approval boundaries below.
   approved choices and installation scope. Agent-Team owns its runtime receipts;
   Project Kickoff records the returned evidence and resolves remaining setup
   steps before handoff. No lifecycle hook or external hook is required.
-- Native schema compatibility does not prove runtime readiness. The original
-  published Agent-Team 8.0.10 onboarding needs an update. Project Kickoff 0.5.1
-  targets native Agent-Team 8.0.12 and retains the 8.0.10 schema bridge. Require structured `status` and `next_action` from the actual
+- Native schema compatibility does not prove runtime readiness. The 0.5.2
+  handoff contract is runtime-qualified with Agent-Team 8.0.15; historical
+  native pairs remain schema-only. Require structured `status` and `next_action` from the actual
   controller's setup contract, complete dependency
   preparation and first role settings, then hand off. For an explicitly selected
   legacy 7.3.1 runtime, retain its separate initialization path and capability

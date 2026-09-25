@@ -3,9 +3,21 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+## [0.5.2] - 2026-09-24
+
+- Qualified the nested handoff contract with Agent-Team 8.0.15 using a
+  disposable real-bd 1.2.2 multi-parent setup/import-to-start regression.
+- Handoff task IDs may be a nonempty, order-independent tracker subset. Every
+  selected task must exist, and unfinished blocking dependencies must remain in
+  the subset; terminal blockers and parent-child provenance may remain outside.
+- Aligned writable authority with Agent-Team: exact relative paths or terminal
+  `directory/**` only, with the offending path reported before handoff.
+- Historical compatibility pairs remain unchanged and schema-only, including
+  0.5.1/8.0.10-8.0.12. The unqualified 0.5.1/8.0.14 pair is not added.
+
 ## [0.5.1] - 2026-09-22
 
-Release candidate; publication and managed installation are pending. Native handoff targets the Agent-Team 8.0.12 managed-update repair.
+Native handoff targets Agent-Team 8.0.12.
 
 - Added handoff compatibility for native Agent-Team 8.0.12, retaining the
   8.0.10/8.0.11 schema bridge, 0.5.0 producer compatibility, and the explicit legacy

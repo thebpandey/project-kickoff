@@ -17,7 +17,7 @@ MAX_HANDOFF_BYTES = 250 * 1024
 MAX_REQUEST_BYTES = 256 * 1024
 MAX_TASKS = 1000
 MAX_LIST_ITEMS = 100
-CHECKER_VERSION = "0.5.1"
+CHECKER_VERSION = "0.5.2"
 SUPPORTED_PAIRS = frozenset({
     ("0.3.1", "7.0.2"),
     ("0.4.0", "7.0.2"),
@@ -32,16 +32,17 @@ SUPPORTED_PAIRS = frozenset({
     ("0.5.0", "7.3.1"),
     ("0.5.1", "7.3.0"),
     ("0.5.1", "7.3.1"),
-    # Schema compatibility only. The native setup contract must be probed;
-    # none of the known 8.0.10, 8.0.11 or 8.0.12 runtimes is qualified by a
-    # schema allowlist entry alone.
+    # Historical native pairs remain schema-only. Runtime qualification is
+    # recorded separately and currently covers only 0.5.2/8.0.15.
     ("0.5.0", "8.0.10"),
     ("0.5.0", "8.0.11"),
     ("0.5.0", "8.0.12"),
     ("0.5.1", "8.0.10"),
     ("0.5.1", "8.0.11"),
     ("0.5.1", "8.0.12"),
+    ("0.5.2", "8.0.15"),
 })
+RUNTIME_VERIFIED_PAIRS = frozenset({("0.5.2", "8.0.15")})
 ID_PATTERN = re.compile(r"^[A-Za-z0-9_.:-]{1,128}$")
 RESERVED_IDS = {"none", "unknown", "unassigned", "-"}
 READY = {"ready", "open", "todo", "pending"}
@@ -76,6 +77,28 @@ def safe_relative(value):
     if not text(value, 256) or os.path.isabs(value) or any(part == ".." for part in re.split(r"[\\/]", value)):
         return False
     return not any(character in value for character in ("\r", "\n", "|"))
+
+
+def safe_writable_path(value):
+    if not safe_relative(value):
+        return False
+    if value.strip() != value:
+        return False
+    normalized = value.replace("\\", "/")
+    recursive = normalized.endswith("/**")
+    base = normalized[:-3] if recursive else normalized
+    if not base or any(character in base for character in "*?"):
+        return False
+    for part in base.split("/"):
+        if (part in {"", ".", ".."} or part.rstrip(". ") != part
+                or any(character in part for character in ':<>"|?*')):
+            return False
+        stem = part.split(".", 1)[0].upper()
+        if (stem in {"CON", "PRN", "AUX", "NUL", "CLOCK$"}
+                or len(stem) == 4 and stem[:3] in {"COM", "LPT"}
+                and stem[3] in "123456789"):
+            return False
+    return True
 
 
 def native_contained(root, relative):
@@ -397,8 +420,12 @@ def validate_handoff(value, *, size=None, details=None):
         owned = authority.get("ownedPaths")
         if not string_list(owned, maximum=256):
             errors.append("plan.authority.ownedPaths must contain 1 to 100 paths")
-        elif any(not safe_relative(path) for path in owned):
-            errors.append("unsafe owned path")
+        elif any(not safe_writable_path(path) for path in owned):
+            for path in owned:
+                if not safe_writable_path(path):
+                    errors.append(
+                        f"unsupported owned path {path!r}; supported forms are an exact relative path or directory/**"
+                    )
         elif native and text(project.get("root"), 4096):
             for path in owned:
                 try:
@@ -445,21 +472,33 @@ def validate_handoff(value, *, size=None, details=None):
             details["trackerRows"] = tracker_rows
             details["trackerIdentity"] = tracker_identity
         tracker_by_id = {row["id"]: row for row in tracker_rows}
-        if [row["id"] for row in tracker_rows] != ids:
-            errors.append("tracker task IDs do not exactly match handoff task IDs")
-        else:
+        invalid_ids = any(not valid_id(task_id) for task_id in ids) or len(set(ids)) != len(ids)
+        missing_ids = [] if invalid_ids else sorted(id_set - set(tracker_by_id))
+        if missing_ids:
+            errors.extend(f"handoff task {task_id} is absent from the selected tracker"
+                          for task_id in missing_ids)
+        elif not invalid_ids:
             graph = {}
-            for row in tracker_rows:
+            selected_rows = [tracker_by_id[task_id] for task_id in ids]
+            for row in selected_rows:
                 if row["status"] not in KNOWN_STATUSES:
                     errors.append(f"status {row['status']} is not compatible with the selected Agent-Team contract")
                 dependencies = row["dependencies"]
                 if (len(set(dependencies)) != len(dependencies)
-                        or any(dependency not in id_set or dependency == row["id"]
+                        or any(dependency not in tracker_by_id or dependency == row["id"]
                                for dependency in dependencies)):
                     errors.append(f"tracker task {row['id']} dependencies are invalid")
                     graph[row["id"]] = []
                 else:
-                    graph[row["id"]] = dependencies
+                    unresolved = [dependency for dependency in dependencies
+                                  if dependency not in id_set
+                                  and tracker_by_id[dependency]["status"] not in FINISHED]
+                    errors.extend(
+                        f"tracker task {row['id']} has unresolved blocking dependency {dependency} outside handoff scope"
+                        for dependency in unresolved
+                    )
+                    graph[row["id"]] = [dependency for dependency in dependencies
+                                        if dependency in id_set]
 
             visiting = set()
             visited = set()
@@ -477,7 +516,7 @@ def validate_handoff(value, *, size=None, details=None):
 
             if any(cycle(task_id) for task_id in graph):
                 errors.append("task dependency cycle")
-            tracker_actionable = [row for row in tracker_rows if row["status"] in READY
+            tracker_actionable = [row for row in selected_rows if row["status"] in READY
                                   and row["owner"].lower() in UNCLAIMED
                                   and row.get("dependencyEvidence", True)
                                   and all(tracker_by_id.get(dependency, {}).get("status") in FINISHED
@@ -589,7 +628,10 @@ def main():
         "tracker": value["tracker"]["kind"],
     }
     if native:
-        output.update({"compatibility": "schema-only", "runtimeVerified": False,
+        pair = (value["projectKickoff"]["version"], value["agentTeam"]["testedVersion"])
+        verified = pair in RUNTIME_VERIFIED_PAIRS
+        output.update({"compatibility": "runtime-qualified" if verified else "schema-only",
+                       "runtimeVerified": verified,
                        "requiredSetupContract": "status-and-next-action"})
     print(json.dumps(output, separators=(",", ":")))
     return 0
