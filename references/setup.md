@@ -23,31 +23,33 @@ approved. Setup changes only the selected project.
 
 ## Inspect before proposing changes
 
-Check the host, operating system, project package manager, installed skills,
-executables, versions, supporting files, and project configuration. Reuse a
-compatible installation. A directory, download, or successful installer exit is
-not proof that a tool works. Use the selected executable's version/help output
-and a small functional check where appropriate.
+Check only the host, project configuration, tracker, and dependencies that the
+user selected or that the approved project truly requires. Reuse a compatible
+installation. A directory, download, or successful installer exit is not proof
+that a tool works. Use the selected executable's version/help output and a small
+functional check where appropriate.
 
-Present these dependencies even when some are already ready:
+Use this as a candidate menu, not a mandatory inventory. Do not probe, report,
+or verify an optional aid merely because it appears here. A v9 handoff checks
+its selected tracker and handoff only; it does not probe optional Agent-Team
+aids by default:
 
 | Dependency | Purpose | Authoritative source |
 | --- | --- | --- |
 | Ponytail | Minimal implementation and YAGNI guidance | https://github.com/DietrichGebert/ponytail |
 | Using-Superpowers | Existing planning, debugging, testing, and review procedures | https://github.com/obra/superpowers |
 | Beads | Dependency-aware implementation tracker | https://github.com/gastownhall/beads |
-| Agent-Team | Delegated implementation, integration, and coordination | Use the authorized package source recorded for the installed proprietary copy |
+| Agent-Team | Delegated implementation, integration, and coordination | Its public release and current documentation |
 | Impeccable | Product and interface design workflow | https://github.com/pbakaus/impeccable |
 | UI UX Pro Max Skill | UI/UX patterns, data, and search tools | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
 | Serena | Scoped semantic navigation for implementation | https://github.com/oraios/serena |
 | Graphify | Code-only repository structure and dependency analysis | https://github.com/Graphify-Labs/graphify |
 
-For each item, show purpose, Ready/Missing/Cannot use status, selected executable
-or skill path, source URL, version or exact revision, installation scope and
-location, license or access terms, required supporting files, and verification.
-Read the current official install instructions and license before proposing an
-installation. Agent-Team access is separate from open-source licenses; never
-copy or redistribute it based on filesystem access alone.
+For each selected or required item, show purpose, Ready/Missing/Cannot use
+status, selected executable or skill path, source URL, version or exact revision,
+installation scope and location, license or access terms, required supporting
+files, and verification. Read the current official install instructions and
+license before proposing an installation.
 
 Prefer project scope. Keep skill folders under the current host's project skill
 directory and packages in the project. Do not mutate user-wide stores, global
@@ -87,10 +89,10 @@ unrelated fields. Keep it in the canonical planning checkout and record:
 Do not store credentials or task status there. The receipt records choices; it
 does not grant new permission.
 
-Do not create or edit `.agent-team/setup.json`. Agent-Team owns that file and
-creates it atomically with its runtime state during project initialization.
-Project Kickoff may read an existing Agent-Team receipt to resume or audit, but
-must treat it as read-only.
+Do not create or edit `.agent-team/setup.json`. A v9 skill-first handoff has no
+initialization receipt. For a historical v8/controller project, Project Kickoff
+may read an existing Agent-Team receipt to resume or audit, but must treat it as
+read-only.
 
 Initialize and seed the selected tracker as project-orchestrator planning-record
 operations in the canonical checkout. This keeps the shared database or task file
@@ -146,8 +148,8 @@ After the plan, tracker, and scaffold are verified, adapt
 task in its task list. Include every selected tracker row exactly once. Do not
 copy titles, status, dependencies, or acceptance details into this list. The
 selected tracker and approved plan own that content. Limit the list to 1000 tasks
-and the file to 250 KiB so Agent-Team can wrap it in its
-256 KiB initialization request. Validate it with:
+and the file to 250 KiB, the handoff checker's bounded input size. Validate it
+with:
 
 ```bash
 python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \
