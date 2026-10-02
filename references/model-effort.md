@@ -1,5 +1,14 @@
 # Model and reasoning effort selection
 
+## Contents
+
+- [When to ask](#when-to-ask)
+- [The question](#the-question)
+- [Saved values](#saved-values)
+- [Where to record the selection](#where-to-record-the-selection)
+- [What the Skill can apply](#what-the-skill-can-apply)
+
+
 Contents: When to ask; The question; Saved values; Where to record the selection; What the Skill can apply.
 
 The user selects the model and the reasoning effort that Project Kickoff uses.

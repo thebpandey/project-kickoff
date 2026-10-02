@@ -1,5 +1,12 @@
 # Project artifact contracts
 
+## Contents
+
+- [Stable identity and traceability](#stable-identity-and-traceability)
+- [Required files](#required-files)
+- [Agent-Team handoff boundary](#agent-team-handoff-boundary)
+
+
 Contents: Stable identity and traceability; Required files; Agent-Team handoff boundary.
 
 Adapt the linked templates; do not overwrite an existing file.

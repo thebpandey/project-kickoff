@@ -1,5 +1,15 @@
 # Optional project hooks
 
+## Contents
+
+- [Enable for one approved project](#enable-for-one-approved-project)
+- [Saved-context loader](#saved-context-loader)
+- [Direct-edit guard](#direct-edit-guard)
+- [Checkpoint advisory](#checkpoint-advisory)
+- [Maintain and disable](#maintain-and-disable)
+- [Limits and boundaries](#limits-and-boundaries)
+
+
 Contents: Enable for one approved project; Saved-context loader; Direct-edit guard; Checkpoint advisory; Maintain and disable; Limits and boundaries.
 
 Project Kickoff includes three optional hook actions for Codex and Claude Code:

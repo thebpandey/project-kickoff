@@ -1,5 +1,15 @@
 # Safe setup and dependency selection
 
+## Contents
+
+- [Resolve the project and Git boundary](#resolve-the-project-and-git-boundary)
+- [Inspect before proposing changes](#inspect-before-proposing-changes)
+- [Record setup](#record-setup)
+- [Missing tools and alternatives](#missing-tools-and-alternatives)
+- [Minimal scaffold](#minimal-scaffold)
+- [Prepare the Agent-Team input](#prepare-the-agent-team-input)
+
+
 Contents: Resolve the project and Git boundary; Inspect before proposing changes; Record setup; Missing tools and alternatives; Minimal scaffold; Prepare the Agent-Team input (current v9 skill-first handoff; historical native v8 setup; legacy 7.3.1 initialization).
 
 Read this after the dependent product, scope, design, and technical decisions are

@@ -15,6 +15,18 @@ the completed workflow final report, subject to the no-duplicate rule there.
 Move the project through four explicit states: `discovery`, `approved planning`,
 `setup`, and `ready for handoff`. Do not start product feature implementation.
 
+Copy this checklist into your working notes and track the states:
+
+```
+- [ ] discovery: decisions approved
+- [ ] approved planning: artifacts approved
+- [ ] setup: setup verified
+- [ ] ready for handoff: AGENT_TEAM_HANDOFF.json validated
+```
+
+If a gate or validation fails, return to the step that produced that artifact,
+fix it, and re-run the check before you advance.
+
 ## Route the requested action
 
 Treat these as actions supplied after the host invokes the Skill. They are not
@@ -138,3 +150,19 @@ Use the templates in `assets/templates/`: `DISCOVERY.md`, `CONTEXT.md`,
 `AGENTS.md`, `CLAUDE.md`, `MISTAKES.md`, `AGENT_TEAM_SKILL_FIRST_HANDOFF.json`,
 and the historical `AGENT_TEAM_HANDOFF.json`. Adapt them to the project; do
 not copy unresolved placeholders into completed artifacts.
+
+## Additional reference files
+
+These files are also linked from other references. They are listed here so each one is one level from this file.
+
+- [`assets/templates/AGENTS.md`](assets/templates/AGENTS.md), used by `references/artifacts.md`
+- [`assets/templates/AUDIT.md`](assets/templates/AUDIT.md), used by `references/artifacts.md`
+- [`assets/templates/CLAUDE.md`](assets/templates/CLAUDE.md), used by `references/artifacts.md`
+- [`assets/templates/CONTEXT.md`](assets/templates/CONTEXT.md), used by `references/artifacts.md`
+- [`assets/templates/DESIGN.md`](assets/templates/DESIGN.md), used by `references/artifacts.md`
+- [`assets/templates/DISCOVERY.md`](assets/templates/DISCOVERY.md), used by `references/artifacts.md`
+- [`assets/templates/MISTAKES.md`](assets/templates/MISTAKES.md), used by `references/artifacts.md`
+- [`assets/templates/PLAN.md`](assets/templates/PLAN.md), used by `references/artifacts.md`
+- [`assets/templates/PRD.md`](assets/templates/PRD.md), used by `references/artifacts.md`
+- [`assets/templates/README.md`](assets/templates/README.md), used by `references/artifacts.md`
+- [`assets/templates/TASKS.md`](assets/templates/TASKS.md), used by `references/artifacts.md`

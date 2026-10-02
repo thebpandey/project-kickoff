@@ -1,5 +1,14 @@
 # Codex and Claude Code adapters
 
+## Contents
+
+- [Codex](#codex)
+- [Claude Code](#claude-code)
+- [Model and reasoning effort](#model-and-reasoning-effort)
+- [Instructions and handoff](#instructions-and-handoff)
+- [Optional project hooks](#optional-project-hooks)
+
+
 Contents: Codex; Claude Code; Model and reasoning effort; Instructions and handoff; Optional project hooks.
 
 Detect the current host from exposed runtime and tools. A mention in the prompt
