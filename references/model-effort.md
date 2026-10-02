@@ -1,5 +1,7 @@
 # Model and reasoning effort selection
 
+Contents: When to ask; The question; Saved values; Where to record the selection; What the Skill can apply.
+
 The user selects the model and the reasoning effort that Project Kickoff uses.
 The user makes two selections in one question:
 

@@ -1,5 +1,7 @@
 # Tracker seeding, handoff, and cleanup
 
+Contents: Seed one tracker idempotently; Scaffold execution and integration; Readiness gate; Cleanup after verified integration.
+
 ## Seed one tracker idempotently
 
 Seed only after `PLAN.md` is approved and the user selected the tracker. The

@@ -5,6 +5,12 @@
 All notable changes to Project Kickoff are recorded here. Versions follow
 [Semantic Versioning](https://semver.org/).
 
+- Add contents lines to the seven reference files over 100 lines.
+- Confirm a Python 3.9+ interpreter (`python3` or Windows `py -3`) before
+  running the handoff checker.
+- List the templates directly in `SKILL.md`; add informational
+  `metadata.intended_model`.
+
 ## [0.6.0] - 2026-09-25
 
 - New approved handoffs use the optional Agent-Team 9.0.0 skill-first template

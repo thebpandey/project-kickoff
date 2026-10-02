@@ -1,5 +1,7 @@
 # Codex and Claude Code adapters
 
+Contents: Codex; Claude Code; Model and reasoning effort; Instructions and handoff; Optional project hooks.
+
 Detect the current host from exposed runtime and tools. A mention in the prompt
 does not change the host. Use native paths and controls; do not emulate missing
 capabilities or claim a model/agent switch that the host did not perform.

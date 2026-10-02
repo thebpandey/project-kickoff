@@ -1,5 +1,7 @@
 # Adaptive interview and checkpoint
 
+Contents: State model; One-question protocol; Checkpoint.
+
 ## State model
 
 Use these stages in order, but ask only questions that remain material:

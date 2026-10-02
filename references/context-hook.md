@@ -1,5 +1,7 @@
 # Optional project hooks
 
+Contents: Enable for one approved project; Saved-context loader; Direct-edit guard; Checkpoint advisory; Maintain and disable; Limits and boundaries.
+
 Project Kickoff includes three optional hook actions for Codex and Claude Code:
 
 - `SessionStart` loads a bounded saved checkpoint.

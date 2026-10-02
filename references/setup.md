@@ -1,5 +1,7 @@
 # Safe setup and dependency selection
 
+Contents: Resolve the project and Git boundary; Inspect before proposing changes; Record setup; Missing tools and alternatives; Minimal scaffold; Prepare the Agent-Team input (current v9 skill-first handoff; historical native v8 setup; legacy 7.3.1 initialization).
+
 Read this after the dependent product, scope, design, and technical decisions are
 approved. Setup changes only the selected project.
 
@@ -148,8 +150,16 @@ After the plan, tracker, and scaffold are verified, adapt
 task in its task list. Include every selected tracker row exactly once. Do not
 copy titles, status, dependencies, or acceptance details into this list. The
 selected tracker and approved plan own that content. Limit the list to 1000 tasks
-and the file to 250 KiB, the handoff checker's bounded input size. Validate it
-with:
+and the file to 250 KiB, the handoff checker's bounded input size. The checker
+needs Python 3.9 or later and only the standard library. Confirm the interpreter
+first; on Windows use `py -3` where `python3` appears below. If neither exists,
+report the missing interpreter and stop instead of skipping validation:
+
+```bash
+python3 -c 'import sys; assert sys.version_info >= (3, 9)' || py -3 -c 'import sys; assert sys.version_info >= (3, 9)'
+```
+
+Validate it with:
 
 ```bash
 python3 <project-kickoff-skill-path>/scripts/check_agent_team_handoff.py \

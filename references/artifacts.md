@@ -1,5 +1,7 @@
 # Project artifact contracts
 
+Contents: Stable identity and traceability; Required files; Agent-Team handoff boundary.
+
 Adapt the linked templates; do not overwrite an existing file.
 Inspect it, retain user content, and merge approved additions. Record the source
 decision IDs, generating Skill version, and approved revision in each derived

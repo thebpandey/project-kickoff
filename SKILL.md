@@ -3,6 +3,7 @@ name: project-kickoff
 description: Define new software projects and audit or re-plan existing projects, producing approved product, experience, technical, scaffold, and Agent-Team handoff artifacts. Use for project kickoff, ordinary existing-project audits, or major project revisions before feature implementation.
 metadata:
   version: "0.6.0"
+  intended_model: opus
 ---
 
 # Project Kickoff
@@ -132,5 +133,8 @@ the one-question protocol and the approval boundaries below.
   eligible task branches, worktrees, and task-owned processes. This cleanup does
   not depend on production deployment.
 
-Use the templates in `assets/templates/`. Adapt them to the project; do not copy
-unresolved placeholders into completed artifacts.
+Use the templates in `assets/templates/`: `DISCOVERY.md`, `CONTEXT.md`,
+`AUDIT.md`, `PRD.md`, `DESIGN.md`, `PLAN.md`, `TASKS.md`, `README.md`,
+`AGENTS.md`, `CLAUDE.md`, `MISTAKES.md`, `AGENT_TEAM_SKILL_FIRST_HANDOFF.json`,
+and the historical `AGENT_TEAM_HANDOFF.json`. Adapt them to the project; do
+not copy unresolved placeholders into completed artifacts.
