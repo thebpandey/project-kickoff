@@ -24,9 +24,11 @@ Created by thebpandey.
 
 Project Kickoff is a skill for Codex and Claude Code. It turns a software idea
 into an approved product definition, design direction, technical blueprint, and
-implementation plan. You can use it alone. If you later choose Agent-Team, it
-can use your approved Beads task IDs without restarting the interview. It does
-not implement product features during kickoff.
+implementation plan. You can use it alone, then give the approved artifacts to
+Agent-Team or Lanes for implementation. Agent-Team can adopt selected Beads task
+IDs through its optional handoff. Lanes can use the same plan and tracker to
+prepare its own task briefs. Project Kickoff does not implement product features
+during kickoff.
 
 After installing, type `$project-kickoff start "your project idea"` in Codex
 chat, or `/project-kickoff start "your project idea"` in Claude Code chat.
@@ -51,6 +53,59 @@ The package uses short sentences, one topic per sentence, and active voice. The
 these principles for clear writing. The full standard is available free of
 charge from its official downloads page. This README does not claim formal
 certification or verified dictionary compliance.
+
+## Use the plan with Agent-Team or Lanes
+
+Project Kickoff supplies planning inputs for both skills. Choose the execution
+workflow after kickoff, and keep one live tracker. Neither skill is required to
+use Project Kickoff.
+
+| Planning artifact | Agent-Team | Lanes |
+| --- | --- | --- |
+| `PRD.md` and `DESIGN.md` | Product requirements and design obligations for task acceptance. | The same inputs for worker briefs and review criteria. |
+| `PLAN.md` | Approved task boundaries, dependencies, and verification. | The same task definitions, with complexity estimates to inform Lanes tiers. |
+| `AGENTS.md`, `CLAUDE.md`, and shared context | Project rules and relevant decision or mistake pointers. | Project rules and recovery pointers for each lane. |
+| Selected live tracker | Beads is the sole live task authority. | Beads when present, or the project's existing tracker convention. |
+| `.project-kickoff/AGENT_TEAM_HANDOFF.json` | Optional, validated Agent-Team input containing selected existing task IDs. | Reference context only; Lanes has no defined importer for this JSON. |
+
+### Continue with Agent-Team
+
+Finish the approved plan and setup, then validate the optional handoff using
+[the handoff procedure](references/setup.md#current-v9-skill-first-handoff-schema-validunverified).
+In a later Agent-Team session, explicitly ask it to adopt
+`.project-kickoff/AGENT_TEAM_HANDOFF.json`. Agent-Team verifies each selected
+Beads ID in the target database and continues from those existing tasks.
+
+If kickoff used `TASKS.md`, Agent-Team treats it as a one-time import candidate.
+Its import procedure needs approval before preparing the candidate and separate
+approval after displaying the dry run. Once adopted, Beads owns live task state.
+The 0.6.0/9.0.0 handoff remains `schema-valid-unverified` with
+`runtimeVerified: false`.
+
+### Continue with Lanes
+
+In a host with Lanes installed, invoke `lanes start` and ask it to use the
+approved kickoff documents and the existing live tracker. A useful request is:
+
+> Start Lanes using PRD.md, DESIGN.md, PLAN.md, AGENTS.md, and CONTEXT.md.
+> Keep the current tracker and plan-to-tracker IDs. Triage the next ready tasks
+> and prepare bounded briefs from their approved scope and acceptance checks.
+
+Lanes performs its own setup check and startup inspection. It assigns task
+tiers, resolves exact file ownership, and creates its own worktrees and lane
+records. Each brief also needs token limits and a stop condition. A kickoff
+complexity estimate informs triage; Lanes decides the execution tier.
+
+Kickoff's handoff uses directory scopes ending in `/**`; Lanes' `owned.txt`
+uses a trailing `/` for a directory. Resolve the approved scope into Lanes'
+format before dispatch. Keep lane state under Lanes' own state directory.
+Project Kickoff 0.6.0 supplies reusable documents, but has no Lanes handoff
+schema or runtime validation.
+
+Use one orchestrator for a task at a time. Switching between skills requires
+reconciling the tracker and unfinished worktrees before dispatch, especially
+because their review and resume rules differ. See the
+[Agent-Team and Lanes comparison](docs/agent-team-vs-lanes.md) for the details.
 
 ## How the workflow operates
 
@@ -103,7 +158,10 @@ flowchart TD
     DOCS --> WT["Delegate minimal scaffold work in a task worktree"]
     WT --> INT["Verify in one integration worktree"]
     INT --> CLEAN["Update the canonical branch and clean verified integrated work"]
-    CLEAN --> CONTRACT["Write and validate the bounded Agent-Team handoff"]
+    CLEAN --> EXECUTOR{"Which optional execution workflow?"}
+    EXECUTOR -->|Agent-Team| CONTRACT["Write and validate the bounded Agent-Team handoff"]
+    EXECUTOR -->|Lanes or standalone| REUSE["Keep approved documents and the selected live tracker"]
+    REUSE --> MANUAL["Stop; later start Lanes with those planning inputs"]
     CONTRACT --> READY["Give the validated handoff path and selected Beads IDs"]
     READY --> NOAUTO["Stop; the user may later choose Agent-Team adoption"]
     OTHER --> NOAUTO
@@ -164,6 +222,7 @@ Agent-Team.
 | Using-Superpowers | Supplies planning, debugging, testing, and review procedures. | https://github.com/obra/superpowers |
 | Beads | Supplies dependency-aware task tracking. | https://github.com/gastownhall/beads |
 | Agent-Team | Coordinates delegated implementation and integration. | Its public release and current documentation. |
+| Lanes | Routes tasks by complexity and coordinates worktrees, review, and integration. | The installed Lanes skill and its host-specific documentation. |
 | Impeccable | Guides product and interface design. | https://github.com/pbakaus/impeccable |
 | UI UX Pro Max Skill | Supplies UI patterns, data, and search tools. | https://github.com/nextlevelbuilder/ui-ux-pro-max-skill |
 | Serena | Supplies scoped semantic navigation. | https://github.com/oraios/serena |
