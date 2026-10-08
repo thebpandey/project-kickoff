@@ -5,7 +5,7 @@ for task state and Git for revisions. Lanes adds an installed orchestration
 harness with model routing and scripts for integration. Both can use Project
 Kickoff's approved documents. Their runtime records belong to each skill.
 
-This comparison checks Agent-Team 9.0.0, the installed unversioned Lanes skill
+This comparison checks Agent-Team 9.0.0, the installed Lanes 0.2.0 package
 and its Codex adapter, and Project Kickoff 0.6.0 on 2026-10-08. It is a contract
 review. Neither execution workflow was launched for this report.
 
@@ -65,6 +65,26 @@ Measure cost per accepted task, including fixes and reviews. Record elapsed
 time too. A cheaper first attempt that needs several repairs may cost more than
 a stronger worker completing the same task once.
 
+## Choosing by project size
+
+I would usually choose Lanes for a long, complex project with an elaborate
+implementation plan. Its task tiers and usage records help manage a large
+backlog over several sessions. Scripted integration adds a consistent process
+as more tasks finish.
+
+For a quick, small project with a simple plan, I would usually choose
+Agent-Team, especially when Beads is already in place. Its smaller setup means
+less preparation before the first task. If Lanes is already installed or the
+project uses another tracker, Lanes may be the easier choice even for a small
+job.
+
+Both can handle either project size. They are alternatives, but switching
+requires preparation: reconcile the live tracker and unfinished worktrees,
+then follow the new skill's review and resume rules. Their runtime records and
+handoff formats are different. An elaborate plan also works with Agent-Team
+when its tasks have clear boundaries and dependencies; project size alone
+does not force a particular skill.
+
 ## Scenarios that favor each skill
 
 These are examples of workloads, not results from observed runs. They assume
@@ -79,6 +99,74 @@ the selected skill and its required host capabilities are available.
 | An established project tracks work in a Markdown file and wants to keep that convention. | Lanes | It follows the existing tracker. Agent-Team requires Beads and treats Markdown tasks as an approved one-time import source. |
 | Project policy permits execution only through the current host's approved native agent facilities. | Agent-Team | Native dispatch is its required route. Lanes has native routes too, but its relay options require separate policy decisions. The host still needs to meet the project's data rules. |
 | A multi-session project needs fresh workers to continue checkpointed work in preserved worktrees after a restart. | Lanes | It explicitly supports new subagents in those worktrees and reattachment to relay jobs. Reconcile unfinished work and any still-running processes first. Agent-Team preserves uncertain earlier launches until original host evidence permits action. |
+
+## Agent-Team dependencies and aids
+
+Required means the workflow needs the item. Optional means it is used for a
+specific task or chosen route. Recommended means useful guidance with an
+optional installation. A conditional requirement applies only when its named
+operation is used. Project build and test tools are additional dependencies
+determined by the actual project.
+
+Agent-Team's project prerequisites are Git and Beads. Execution also requires
+a supported host with observable native agents and independent review.
+Its [v9 skill](https://github.com/thebpandey/agent-team/blob/v9.0.0/SKILL.md)
+defines the boundary; optional aids never determine readiness.
+
+| Status | Name | GitHub repository | What it does and when it is needed |
+| --- | --- | --- | --- |
+| Required | Git | [git/git](https://github.com/git/git) | Tracks revisions and supplies isolated worktrees. Needed for task development and verified integration. |
+| Required | Beads (`bd`) | [gastownhall/beads](https://github.com/gastownhall/beads) | Owns live task state and dependencies. Needed for ready-work selection, claims, and closure. Initialization requires approval. |
+| Required, choose a supported host | Codex or Claude Code native agent facilities | [openai/codex](https://github.com/openai/codex), [anthropics/claude-code](https://github.com/anthropics/claude-code) | Launches observable workers and independent reviewers. The running host must expose the required native tools; a CLI installation alone does not prove that capability. |
+| Recommended; package optional | Ponytail | [DietrichGebert/ponytail](https://github.com/DietrichGebert/ponytail) | Guides the smallest working implementation. Agent-Team applies that discipline even without the package and uses the skill when available. |
+| Optional | Project Kickoff | [thebpandey/project-kickoff](https://github.com/thebpandey/project-kickoff) | Supplies approved plans and an optional handoff. Useful before implementation; never a setup requirement. |
+| Optional | Serena | [oraios/serena](https://github.com/oraios/serena) | Provides semantic code navigation and scoped editing when those operations benefit a task. Native search and editing remain fallbacks. |
+| Optional | Graphify | [Graphify-Labs/graphify](https://github.com/Graphify-Labs/graphify) | Builds a queryable repository graph. Useful for a specific structure or relationship question. |
+| Optional | Playwright | [microsoft/playwright](https://github.com/microsoft/playwright) | Automates browsers for task-specific verification of web behavior. |
+
+Agent-Team also allows installed visual skills when a task needs visual work.
+It names no required visual package. LeanCTX is explicitly excluded from this
+workflow. Agent-Team v9 has no separate controller or mandatory hook package.
+
+## Lanes dependencies and aids
+
+Lanes has more supporting tooling. The
+[installer](https://github.com/thebpandey/lanes/blob/0f82a46898e6848f48b7d53555854b357d94f14c/install.sh)
+checks the machine prerequisites; the
+[Codex adapter](https://github.com/thebpandey/lanes/blob/0f82a46898e6848f48b7d53555854b357d94f14c/CODEX.md)
+defines the Codex review route. The installer marks Claude Code as required and
+reports both provider keys even when you intend to use another route. Each
+external relay actually needs its own configured provider key.
+
+| Status | Name | GitHub repository | What it does and when it is needed |
+| --- | --- | --- | --- |
+| Required | Lanes harness | [thebpandey/lanes](https://github.com/thebpandey/lanes) | Bundles worktree helpers, scope checking, integration, and relay launchers such as `model-relay` and `codex-review`. These scripts belong to Lanes. |
+| Required | Git | [git/git](https://github.com/git/git) | Supplies task branches and linked worktrees, plus the revision evidence used during review and integration. |
+| Required | Bash | [GNU Bash mirror](https://github.com/gnu-mirror-unofficial/bash) | Runs installation and lane shell scripts. This GitHub link is an unofficial mirror, not the GNU upstream. |
+| Required | Python 3 | [python/cpython](https://github.com/python/cpython) | Runs the bundled relay process launcher, parses provider results, and supports deterministic checks. |
+| Required | curl | [curl/curl](https://github.com/curl/curl) | Performs the installer's HTTP checks for configured provider credentials. |
+| Required, compatible host utilities | Unix core utilities | [coreutils/coreutils](https://github.com/coreutils/coreutils) | Supplies file and path operations used by the scripts, including `mktemp` and `readlink`. This is the GNU implementation; the host must supply compatible commands. |
+| Required by installer and Claude/provider routes | Claude Code | [anthropics/claude-code](https://github.com/anthropics/claude-code) | Runs Claude workers and the Claude-based DeepSeek/GLM relays. Installed Claude agent definitions load after a host restart. |
+| Required for Codex-hosted review; optional on Claude route | Codex CLI | [openai/codex](https://github.com/openai/codex) | Runs `codex-review` for an independent revision-bound review. Claude uses its lane-reviewer agent instead. |
+| Required before any push | Gitleaks | [gitleaks/gitleaks](https://github.com/gitleaks/gitleaks) | Scans the outgoing commit range for secrets. Lanes' pre-push script blocks when the scanner is absent or fails. |
+| Required before context compaction | Session Detail skill | [thebpandey/session-detail](https://github.com/thebpandey/session-detail) | Produces full and incremental session archives for recovery. Lanes requires an archive saved before compaction. |
+| Optional; use when it is the project tracker | Beads (`bd`) | [gastownhall/beads](https://github.com/gastownhall/beads) | Tracks ready work and dependencies. Lanes can follow an existing alternative tracker. |
+| Optional; needed for tasks using disposable containers | Docker | [docker/cli](https://github.com/docker/cli), [moby/moby](https://github.com/moby/moby) | Runs task-owned test databases or services. It is needed when the task's verification uses those containers. |
+| Optional, Linux watchdog timer | systemd | [systemd/systemd](https://github.com/systemd/systemd) | Schedules the bundled watchdog when the user timer is installed. It does not provide worker dispatch or task state. |
+| Recommended for elaborate new plans; optional | Project Kickoff | [thebpandey/project-kickoff](https://github.com/thebpandey/project-kickoff) | Provides approved scope and task definitions before lane triage. This recommendation is this report's judgment, not a Lanes prerequisite. |
+
+The external worker providers are service dependencies. Their runtime APIs
+have no standalone source repository identified by the Lanes package, so the
+GitHub links here point to the actual bundled integrations.
+
+| Status | Name | GitHub integration source | What it does and when it is needed |
+| --- | --- | --- | --- |
+| Optional route; required when selected | DeepSeek API and `DEEPSEEK_API_KEY` | [Lanes DeepSeek configuration](https://github.com/thebpandey/lanes/blob/0f82a46898e6848f48b7d53555854b357d94f14c/config/deepseek.json) | Supplies the external DeepSeek worker for bounded routine work. Requires a configured key for the [DeepSeek platform](https://platform.deepseek.com/). A model repository would not supply this service. |
+| Optional route; required when selected | GLM through OpenRouter and `OPENROUTER_API_KEY` | [Lanes GLM configuration](https://github.com/thebpandey/lanes/blob/0f82a46898e6848f48b7d53555854b357d94f14c/config/glm.json) | Supplies the external GLM worker through the [OpenRouter API](https://openrouter.ai/docs/quickstart). Requires its provider key; a separate Z.ai SDK is not a packaged requirement. |
+
+Both skills rely on whatever build and test tools the project itself needs.
+Neither dependency table is a promise that its model routes or review tools
+were exercised in this comparison.
 
 ## Which kickoff artifacts each skill can use
 
@@ -120,8 +208,9 @@ The comparison uses these local skill sources:
 
 - Agent-Team: `/home/server/.agents/skills/agent-team/SKILL.md`, plus
   `references/HOSTS.md`, `references/WORKER_RULES.md`, and `references/STATE.md`.
-- Lanes: `/home/server/.codex/skills/lanes/SKILL.md`, plus `CODEX.md` and
-  `rules/brief-template.md`.
+- Lanes: `/home/server/.codex/skills/lanes/SKILL.md`, plus `CODEX.md`,
+  `rules/brief-template.md`, `VERSION`, `README.md`, and `install.sh`. Provider
+  requirements also use the bundled routing configuration and relay scripts.
 - Project Kickoff: [artifact contracts](../references/artifacts.md),
   [setup](../references/setup.md), [handoff and cleanup](../references/handoff.md),
   and the [plan template](../assets/templates/PLAN.md).
