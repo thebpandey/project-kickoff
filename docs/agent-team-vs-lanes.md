@@ -41,6 +41,45 @@ permission to replace an uncertain worker. Lanes explicitly supports fresh
 subagents after a restart. Those policies need reconciliation when switching
 the orchestrator for existing work.
 
+## Efficiency depends on the workload
+
+Lanes has the stronger design for reducing model cost and token use.
+Agent-Team has the stronger design for keeping setup and coordination simple.
+This is an inference from their contracts, not a measured benchmark.
+
+| Efficiency measure | Likely advantage | Reason |
+| --- | --- | --- |
+| Model cost | Lanes | Explicit tiers route bounded routine work to cheaper workers and reserve stronger models for complex tasks. Agent-Team also allows cheaper available models through task preferences. |
+| Token use | Lanes | Task budgets, compact reports, completion notifications, and a usage ledger make consumption explicit. Agent-Team also limits its ready page to 20 rows and can retain useful worker context. |
+| Small documentation changes | Lanes | Its narrow TRIVIAL classification skips independent review. Agent-Team requires review before every integration. |
+| Setup effort | Agent-Team | Git, Beads, and native host agents are sufficient. Lanes adds a harness and tooling for the selected routes. |
+| Coordination overhead | Agent-Team | Beads and Git own task and revision state, with fewer supporting runtime records to maintain. |
+| Completion speed | Unproven | Worker quality and fix rounds can outweigh savings from model routing or fewer review steps. Neither workflow was benchmarked here. |
+
+For sustained work with many routine tasks, I would choose Lanes to control
+running costs. Its usage ledger gives you something to check. For occasional
+work in an existing Beads project, Agent-Team's smaller setup is easier to
+justify.
+
+Measure cost per accepted task, including fixes and reviews. Record elapsed
+time too. A cheaper first attempt that needs several repairs may cost more than
+a stronger worker completing the same task once.
+
+## Scenarios that favor each skill
+
+These are examples of workloads, not results from observed runs. They assume
+the selected skill and its required host capabilities are available.
+
+| Scenario | Preferred skill | Why |
+| --- | --- | --- |
+| A Beads project needs two contained bug fixes in the current session. | Agent-Team | It can select bounded ready work and dispatch native agents with little extra setup. Each fix still receives independent review. |
+| Kickoff has produced a validated Agent-Team handoff with existing Beads IDs. | Agent-Team | It has a defined adoption procedure that verifies those IDs in the target database. Lanes would prepare its own briefs from the documents. |
+| A backlog has many independent routine edits and a few difficult tasks. | Lanes | Tiers make the model choice explicit for each task, while budgets and usage records support cost comparisons. Harder tasks can move upward in tier. |
+| A README needs a prose-only addition of at most 40 lines, with no deletions or changes to instruction, control, or legal files. | Lanes | The classifier can identify TRIVIAL work and skip independent review. The integration script still checks the scope and classification. |
+| An established project tracks work in a Markdown file and wants to keep that convention. | Lanes | It follows the existing tracker. Agent-Team requires Beads and treats Markdown tasks as an approved one-time import source. |
+| Project policy permits execution only through the current host's approved native agent facilities. | Agent-Team | Native dispatch is its required route. Lanes has native routes too, but its relay options require separate policy decisions. The host still needs to meet the project's data rules. |
+| A multi-session project needs fresh workers to continue checkpointed work in preserved worktrees after a restart. | Lanes | It explicitly supports new subagents in those worktrees and reattachment to relay jobs. Reconcile unfinished work and any still-running processes first. Agent-Team preserves uncertain earlier launches until original host evidence permits action. |
+
 ## Which kickoff artifacts each skill can use
 
 | Artifact | Reuse in both workflows |
